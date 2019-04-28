@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
 
 namespace MVP.Entities.Entities
 {
@@ -6,9 +6,8 @@ namespace MVP.Entities.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        [ForeignKey("Location")]
         public int LocationId { get; set; }
-
         public Location Location { get; set; }
+        public List<Apartment> Apartments { get; set; } = new List<Apartment>();
     }
 }
