@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MVP.DataAccess\MVP.DataAccess.csproj" />
+    <ProjectReference Include="..\MVP.Entities\MVP.Entities.csproj" />
   </ItemGroup>
 
 </Project>
