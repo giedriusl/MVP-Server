@@ -12,8 +12,9 @@ namespace MVP.DataAccess.EntityTypeConfigurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Name).HasMaxLength(256);
             builder.Property(x => x.LocationId).IsRequired();
+
             builder.HasOne<Location>().WithMany().HasForeignKey(c => c.LocationId);
-            builder.HasMany(x => x.Apartments);
+            builder.HasMany(x => x.Apartments).WithOne().OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

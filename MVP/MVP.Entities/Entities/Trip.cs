@@ -17,8 +17,8 @@ namespace MVP.Entities.Entities
         public DateTimeOffset End { get; private set; }
         public int FromOfficeId { get; private set; }
         public int ToOfficeId { get; private set; }
-        public Office FromOffice { get; private set; }
-        public Office ToOffice { get; private set; }
+        public virtual Office FromOffice { get; private set; }
+        public virtual Office ToOffice { get; private set; }
         public TripStatus TripStatus { get; private set; }
         public virtual List<FlightInformation> FlightInformations { get; private set; } = new List<FlightInformation>();
         public virtual List<RentalCarInformation> RentalCarInformations { get; private set; } = new List<RentalCarInformation>();

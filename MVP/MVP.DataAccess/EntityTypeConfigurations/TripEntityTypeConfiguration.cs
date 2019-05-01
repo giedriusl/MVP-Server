@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MVP.Entities.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MVP.DataAccess.EntityTypeConfigurations
 {
@@ -20,8 +17,8 @@ namespace MVP.DataAccess.EntityTypeConfigurations
             builder.Property(x => x.FromOfficeId).IsRequired();
             builder.Property(x => x.TripStatus);
 
-            builder.HasOne(x => x.ToOffice).WithMany().HasForeignKey(x => x.ToOfficeId);
-            builder.HasOne(x => x.FromOffice).WithMany().HasForeignKey(x => x.FromOfficeId);
+            builder.HasOne(x => x.ToOffice).WithMany().HasForeignKey(x => x.ToOfficeId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.FromOffice).WithMany().HasForeignKey(x => x.FromOfficeId).OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(x => x.RentalCarInformations);
             builder.HasMany(x => x.FlightInformations);

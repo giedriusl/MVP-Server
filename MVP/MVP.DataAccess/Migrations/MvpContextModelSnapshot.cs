@@ -32,15 +32,18 @@ namespace MVP.DataAccess.Migrations
 
                     b.Property<int>("OfficeId");
 
+                    b.Property<int?>("OfficeId1");
+
                     b.Property<string>("Title")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId")
-                        .IsUnique();
+                    b.HasIndex("LocationId");
 
                     b.HasIndex("OfficeId");
+
+                    b.HasIndex("OfficeId1");
 
                     b.ToTable("Apartment");
                 });
@@ -256,14 +259,19 @@ namespace MVP.DataAccess.Migrations
             modelBuilder.Entity("MVP.Entities.Entities.Apartment", b =>
                 {
                     b.HasOne("MVP.Entities.Entities.Location", "Location")
-                        .WithOne()
-                        .HasForeignKey("MVP.Entities.Entities.Apartment", "LocationId")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("MVP.Entities.Entities.Office", "Office")
-                        .WithMany("Apartments")
+                        .WithMany()
                         .HasForeignKey("OfficeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("MVP.Entities.Entities.Office")
+                        .WithMany("Apartments")
+                        .HasForeignKey("OfficeId1")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("MVP.Entities.Entities.ApartmentRoom", b =>
@@ -318,12 +326,12 @@ namespace MVP.DataAccess.Migrations
                     b.HasOne("MVP.Entities.Entities.Office", "FromOffice")
                         .WithMany()
                         .HasForeignKey("FromOfficeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MVP.Entities.Entities.Office", "ToOffice")
                         .WithMany()
                         .HasForeignKey("ToOfficeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("MVP.Entities.Entities.User", b =>

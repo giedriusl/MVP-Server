@@ -13,8 +13,8 @@ namespace MVP.Entities.Entities
         public DateTimeOffset Start { get; private set; }
         public DateTimeOffset End { get; private set; }
         public int UserId { get; private set; }
-        public User User { get; private set; }
+        public virtual User User { get; private set; }
         public int ApartmentId { get; private set; }
-        public Apartment Apartment { get; private set; }
+        public virtual Apartment Apartment { get; private set; }
     }
 }

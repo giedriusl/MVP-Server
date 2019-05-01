@@ -12,7 +12,7 @@ namespace MVP.Entities.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public int LocationId { get; set; }
-        public Location Location { get; set; }
+        public virtual Location Location { get; set; }
         public virtual List<Apartment> Apartments { get; set; } = new List<Apartment>();
     }
 }
