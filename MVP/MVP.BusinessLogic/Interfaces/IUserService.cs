@@ -6,6 +6,6 @@ namespace MVP.BusinessLogic.Interfaces
 {
     public interface IUserService
     {
-        Task<User> CreateUser(NewUserDto newUserDto);
+        Task<User> CreateAsync(NewUserDto newUserDto);
     }
 }

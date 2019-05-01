@@ -21,7 +21,7 @@ namespace MVP.Controllers
         {
             try
             {
-                var user = await _userService.CreateUser(newUserDto);
+                var user = await _userService.CreateAsync(newUserDto);
 
                 return Ok(user);
             }
