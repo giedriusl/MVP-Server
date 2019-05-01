@@ -1,10 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using System.Reflection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using MVP.Entities.Entities;
 
 namespace MVP.DataAccess
 {
-    public class MvpContext : DbContext
+    public class MvpContext : IdentityDbContext<User>
     {
         public MvpContext() : base()
         {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,7 +35,12 @@ namespace MVP
                 options.UseSqlServer("ConnectionString"));
 
             services.AddDefaultIdentity<User>()
-                .AddEntityFrameworkStores<MvpContext>();
+                .AddEntityFrameworkStores<MvpContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddTransient<RoleManager<IdentityRole>>();
+            services.AddTransient<UserManager<User>>();
+            services.AddTransient<SignInManager<User>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
