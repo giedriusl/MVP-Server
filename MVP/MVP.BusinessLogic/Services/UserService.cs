@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using MVP.BusinessLogic.Helpers.TokenGenerator;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Entities;
 using MVP.Entities.Exceptions;
@@ -11,15 +13,18 @@ namespace MVP.BusinessLogic.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ITokenGenerator _tokenGenerator;
 
         public UserService(UserManager<User> userManager, 
-            SignInManager<User> signInManager)
+            SignInManager<User> signInManager, 
+            ITokenGenerator tokenGenerator)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenGenerator = tokenGenerator;
         }
 
-        public async Task<NewUserDto> CreateAsync(NewUserDto newUserDto)
+        public async Task<string> CreateAsync(NewUserDto newUserDto)
         {
             var user = NewUserDto.ToEntity(newUserDto);
 
@@ -31,11 +36,12 @@ namespace MVP.BusinessLogic.Services
             }
 
             await _signInManager.SignInAsync(user, isPersistent:false);
+            var token = _tokenGenerator.GenerateToken(user);
 
-            return newUserDto;
+            return token;
         }
 
-        public async Task<UserLoginDto> LoginAsync(UserLoginDto userLoginDto)
+        public async Task<string> LoginAsync(UserLoginDto userLoginDto)
         {
             var result = await _signInManager.PasswordSignInAsync(userLoginDto.Email, userLoginDto.Password, 
                 userLoginDto.RememberMe, false);
@@ -45,7 +51,10 @@ namespace MVP.BusinessLogic.Services
                 throw new InvalidUserException("Invalid login attempt");
             }
 
-            return userLoginDto;
+            var user = _userManager.Users.First(u => u.Email == userLoginDto.Email);
+            var token = _tokenGenerator.GenerateToken(user);
+
+            return token;
         }
     }
 }
