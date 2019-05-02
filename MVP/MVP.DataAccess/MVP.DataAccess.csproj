@@ -5,6 +5,67 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190501152200_mvpFixForeignKey.cs" />
+    <Compile Remove="Migrations\20190501152200_mvpFixForeignKey.Designer.cs" />
+    <Compile Remove="Migrations\20190502190747_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502190747_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502191425_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502191425_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502191453_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502191453_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502191723_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502191723_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502192010_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502192010_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502192139_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502192139_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502193538_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502193538_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502194106_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502194106_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502195038_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502195038_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502195233_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502195233_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502195443_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502195443_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502195543_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502195543_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502200422_FixKeys.cs" />
+    <Compile Remove="Migrations\20190502200422_FixKeys.Designer.cs" />
+    <Compile Remove="Migrations\20190502204316_AddLocation.cs" />
+    <Compile Remove="Migrations\20190502204316_AddLocation.Designer.cs" />
+    <Compile Remove="Migrations\20190502204442_AddLocation.cs" />
+    <Compile Remove="Migrations\20190502204442_AddLocation.Designer.cs" />
+    <Compile Remove="Migrations\20190502204727_AddLocation.cs" />
+    <Compile Remove="Migrations\20190502204727_AddLocation.Designer.cs" />
+    <Compile Remove="Migrations\20190502205009_AddLocation.cs" />
+    <Compile Remove="Migrations\20190502205009_AddLocation.Designer.cs" />
+    <Compile Remove="Migrations\20190502205327_AddLocation.cs" />
+    <Compile Remove="Migrations\20190502205327_AddLocation.Designer.cs" />
+    <Compile Remove="Migrations\20190502205646_AddLocation.cs" />
+    <Compile Remove="Migrations\20190502205646_AddLocation.Designer.cs" />
+    <Compile Remove="Migrations\20190502205748_AddLocation.cs" />
+    <Compile Remove="Migrations\20190502205748_AddLocation.Designer.cs" />
+    <Compile Remove="Migrations\20190502205845_AddLocation.cs" />
+    <Compile Remove="Migrations\20190502205845_AddLocation.Designer.cs" />
+    <Compile Remove="Migrations\20190502210010_AddLocation.cs" />
+    <Compile Remove="Migrations\20190502210010_AddLocation.Designer.cs" />
+    <Compile Remove="Migrations\20190502210432_AddRoom.cs" />
+    <Compile Remove="Migrations\20190502210432_AddRoom.Designer.cs" />
+    <Compile Remove="Migrations\20190502210705_AddCalendar.cs" />
+    <Compile Remove="Migrations\20190502210705_AddCalendar.Designer.cs" />
+    <Compile Remove="Migrations\20190502211036_AddCalendar.cs" />
+    <Compile Remove="Migrations\20190502211036_AddCalendar.Designer.cs" />
+    <Compile Remove="Migrations\20190502211459_AddTrip.cs" />
+    <Compile Remove="Migrations\20190502211459_AddTrip.Designer.cs" />
+    <Compile Remove="Migrations\20190502211830_AddTrip.cs" />
+    <Compile Remove="Migrations\20190502211830_AddTrip.Designer.cs" />
+    <Compile Remove="Migrations\20190502212218_AddCalendarToRoom.cs" />
+    <Compile Remove="Migrations\20190502212218_AddCalendarToRoom.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Interfaces\" />
     <Folder Include="Repositories\" />
   </ItemGroup>

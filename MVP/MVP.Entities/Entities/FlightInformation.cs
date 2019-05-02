@@ -5,11 +5,6 @@ namespace MVP.Entities.Entities
 {
     public class FlightInformation
     {
-        public FlightInformation()
-        {
-            //for ef
-        }
-
         public int Id { get; private set; }
         public int TripId { get; private set; }
         public Trip Trip { get; private set; }

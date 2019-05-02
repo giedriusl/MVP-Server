@@ -4,11 +4,6 @@ namespace MVP.Entities.Entities
 {
     public class Apartment
     {
-        public Apartment()
-        {
-            //for ef
-        }
-
         public int Id { get; private set; }
         public string Title { get; private set; }
         public int OfficeId { get; private set; }

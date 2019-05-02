@@ -5,11 +5,6 @@ namespace MVP.Entities.Entities
 {
     public class RentalCarInformation
     {
-        public RentalCarInformation()
-        {
-            //for ef
-        }
-
         public int Id { get; private set; }
         public int TripId { get; private set; }
         public virtual Trip Trip { get; private set; }

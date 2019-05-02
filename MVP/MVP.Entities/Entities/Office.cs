@@ -4,11 +4,6 @@ namespace MVP.Entities.Entities
 {
     public class Office
     {
-        public Office()
-        {
-            //for ef
-        }
-
         public int Id { get; set; }
         public string Name { get; set; }
         public int LocationId { get; set; }

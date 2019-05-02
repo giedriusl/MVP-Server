@@ -6,11 +6,6 @@ namespace MVP.Entities.Entities
 {
     public class Trip
     {
-        public Trip()
-        {
-            //for ef
-        }
-
         public int Id { get; private set; }
         public string Title { get; private set; }
         public DateTimeOffset Start { get; private set; }
@@ -22,6 +17,6 @@ namespace MVP.Entities.Entities
         public TripStatus TripStatus { get; private set; }
         public virtual List<FlightInformation> FlightInformations { get; private set; } = new List<FlightInformation>();
         public virtual List<RentalCarInformation> RentalCarInformations { get; private set; } = new List<RentalCarInformation>();
-        public virtual List<User> Users { get; private set; } = new List<User>();
+        //public virtual List<User> Users { get; private set; } = new List<User>();
     }
 }
