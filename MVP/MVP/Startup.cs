@@ -10,6 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using MVP.BusinessLogic.Helpers.TokenGenerator;
+using MVP.BusinessLogic.Interfaces;
+using MVP.BusinessLogic.Services;
 using MVP.DataAccess;
 using MVP.Entities.Entities;
 
@@ -64,6 +67,11 @@ namespace MVP
             services.AddTransient<RoleManager<IdentityRole>>();
             services.AddTransient<UserManager<User>>();
             services.AddTransient<SignInManager<User>>();
+
+            services.AddTransient<IUserService, UserService>();
+
+            services.AddTransient<ITokenGenerator, JwtTokenGenerator>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
