@@ -19,7 +19,7 @@ namespace MVP.BusinessLogic.Services
             _signInManager = signInManager;
         }
 
-        public async Task<User> CreateAsync(NewUserDto newUserDto)
+        public async Task<NewUserDto> CreateAsync(NewUserDto newUserDto)
         {
             var user = NewUserDto.ToEntity(newUserDto);
 
@@ -32,8 +32,20 @@ namespace MVP.BusinessLogic.Services
 
             await _signInManager.SignInAsync(user, isPersistent:false);
 
-            return user;
+            return newUserDto;
         }
 
+        public async Task<UserLoginDto> LoginAsync(UserLoginDto userLoginDto)
+        {
+            var result = await _signInManager.PasswordSignInAsync(userLoginDto.Email, userLoginDto.Password, 
+                userLoginDto.RememberMe, false);
+
+            if (!result.Succeeded)
+            {
+                throw new InvalidUserException("Invalid login attempt");
+            }
+
+            return userLoginDto;
+        }
     }
 }
