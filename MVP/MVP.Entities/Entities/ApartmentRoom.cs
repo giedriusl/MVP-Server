@@ -2,11 +2,15 @@
 {
     public class ApartmentRoom
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public int RoomNumber { get; set; }
-        public int AppartmentId { get; set; }
-        public Apartment Apartment{ get; set; }
-        public int BedCount{ get; set; }
+        public ApartmentRoom()
+        {
+            //for ef
+        }
+
+        public int Id { get; private set; }
+        public string Title { get; private set; }
+        public int RoomNumber { get; private set; }
+        public int AppartmentId { get; private set; }
+        public int BedCount{ get; private set; }
     }
 }

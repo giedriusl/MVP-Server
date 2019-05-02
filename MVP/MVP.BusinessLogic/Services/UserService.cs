@@ -1,11 +1,11 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using MVP.BusinessLogic.Helpers.TokenGenerator;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Entities;
 using MVP.Entities.Exceptions;
 using MVP.Entities.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MVP.BusinessLogic.Services
 {

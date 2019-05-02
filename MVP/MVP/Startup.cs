@@ -1,7 +1,4 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +12,9 @@ using MVP.BusinessLogic.Interfaces;
 using MVP.BusinessLogic.Services;
 using MVP.DataAccess;
 using MVP.Entities.Entities;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace MVP
 {
@@ -32,8 +32,8 @@ namespace MVP
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddDbContext<MvpContext>(options => 
-                options.UseSqlServer("ConnectionString"));
+            services.AddDbContext<MvpContext>
+                (options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<User>()
                 .AddEntityFrameworkStores<MvpContext>()
