@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MVP.Entities.Entities;
 
@@ -9,6 +8,9 @@ namespace MVP.DataAccess.EntityTypeConfigurations
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
+            builder.Property(x => x.Name).HasMaxLength(255).IsRequired();
+            builder.Property(x => x.Surname).HasMaxLength(255).IsRequired();
+
             builder.HasMany(user => user.Claims)
                 .WithOne()
                 .HasForeignKey(userClaim => userClaim.UserId)
