@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MVP.DataAccess.Migrations
 {
     [DbContext(typeof(MvpContext))]
-    [Migration("20190502212624_FixRelationships")]
-    partial class FixRelationships
+    [Migration("20190503050712_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
