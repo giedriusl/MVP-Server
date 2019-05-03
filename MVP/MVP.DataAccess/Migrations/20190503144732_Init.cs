@@ -18,9 +18,9 @@ namespace MVP.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    City = table.Column<string>(maxLength: 500, nullable: true),
-                    CountryCode = table.Column<string>(maxLength: 500, nullable: true),
-                    Address = table.Column<string>(maxLength: 500, nullable: true)
+                    City = table.Column<string>(maxLength: 500, nullable: false),
+                    CountryCode = table.Column<string>(maxLength: 500, nullable: false),
+                    Address = table.Column<string>(maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {

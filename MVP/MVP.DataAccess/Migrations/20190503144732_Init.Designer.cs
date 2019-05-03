@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MVP.DataAccess.Migrations
 {
     [DbContext(typeof(MvpContext))]
-    [Migration("20190503050712_Init")]
+    [Migration("20190503144732_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,12 +120,15 @@ namespace MVP.DataAccess.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.Property<string>("CountryCode")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.HasKey("Id");
@@ -224,8 +227,8 @@ namespace MVP.DataAccess.Migrations
 
             modelBuilder.Entity("MVP.Entities.Entities.Calendar", b =>
                 {
-                    b.HasOne("MVP.Entities.Entities.ApartmentRoom", "Apartment")
-                        .WithMany("Calendar")
+                    b.HasOne("MVP.Entities.Entities.ApartmentRoom", "ApartmentRoom")
+                        .WithMany("Calendars")
                         .HasForeignKey("ApartmentRoomId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

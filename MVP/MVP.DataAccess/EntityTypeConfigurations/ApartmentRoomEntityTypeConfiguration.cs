@@ -15,7 +15,7 @@ namespace MVP.DataAccess.EntityTypeConfigurations
             builder.Property(x => x.BedCount).IsRequired();
             builder.Property(x => x.AppartmentId).IsRequired();
 
-            builder.HasMany(x => x.Calendar);
+            builder.HasMany(x => x.Calendars);
         }
     }
 }

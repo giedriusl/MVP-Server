@@ -118,12 +118,15 @@ namespace MVP.DataAccess.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.Property<string>("CountryCode")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.HasKey("Id");
@@ -222,8 +225,8 @@ namespace MVP.DataAccess.Migrations
 
             modelBuilder.Entity("MVP.Entities.Entities.Calendar", b =>
                 {
-                    b.HasOne("MVP.Entities.Entities.ApartmentRoom", "Apartment")
-                        .WithMany("Calendar")
+                    b.HasOne("MVP.Entities.Entities.ApartmentRoom", "ApartmentRoom")
+                        .WithMany("Calendars")
                         .HasForeignKey("ApartmentRoomId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
