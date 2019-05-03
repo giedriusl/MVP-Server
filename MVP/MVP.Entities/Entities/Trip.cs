@@ -17,6 +17,7 @@ namespace MVP.Entities.Entities
         public TripStatus TripStatus { get; set; }
         public virtual List<FlightInformation> FlightInformations { get; set; } = new List<FlightInformation>();
         public virtual List<RentalCarInformation> RentalCarInformations { get; set; } = new List<RentalCarInformation>();
+        //TODO: add user to calendar after introducing users to app
         //public virtual List<User> Users { get; private set; } = new List<User>();
     }
 }
