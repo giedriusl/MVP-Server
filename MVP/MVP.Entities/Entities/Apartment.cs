@@ -1,18 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
 
 namespace MVP.Entities.Entities
 {
     public class Apartment
     {
-        public int Id { get; set; }
+        public int Id { get; private set; }
         public string Title { get; set; }
-        [ForeignKey("Office")]
         public int OfficeId { get; set; }
         public int BedCount { get; set; }
-        [ForeignKey("Location")]
         public int LocationId { get; set; }
-
-        public Office Office { get; set; }
+        public virtual Office Office { get; set; }
         public Location Location { get; set; }
+        public virtual List<ApartmentRoom> Rooms { get; set; } = new List<ApartmentRoom>();
     }
 }

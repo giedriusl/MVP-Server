@@ -1,24 +1,23 @@
 ﻿using MVP.Entities.Enums;
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace MVP.Entities.Entities
 {
     public class Trip
     {
-        public int Id { get; set; }
+        public int Id { get; private set; }
         public string Title { get; set; }
         public DateTimeOffset Start { get; set; }
         public DateTimeOffset End { get; set; }
-        public string FlightTicketStatus { get; set; }
-        public string RentalCarStatus { get; set; }
-        [ForeignKey("FromOffice")]
         public int FromOfficeId { get; set; }
-        [ForeignKey("ToOffice")]
         public int ToOfficeId { get; set; }
+        public virtual Office FromOffice { get; set; }
+        public virtual Office ToOffice { get; set; }
         public TripStatus TripStatus { get; set; }
-
-        public Office FromOffice { get; set; }
-        public Office ToOffice { get; set; }
+        public virtual List<FlightInformation> FlightInformations { get; set; } = new List<FlightInformation>();
+        public virtual List<RentalCarInformation> RentalCarInformations { get; set; } = new List<RentalCarInformation>();
+        //TODO: add user to calendar after introducing users to app
+        //public virtual List<User> Users { get; private set; } = new List<User>();
     }
 }
