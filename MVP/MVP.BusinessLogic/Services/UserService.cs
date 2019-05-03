@@ -6,6 +6,7 @@ using MVP.Entities.Exceptions;
 using MVP.Entities.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using MVP.Entities.Enums;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -35,10 +36,22 @@ namespace MVP.BusinessLogic.Services
                 throw new InvalidUserException("User creation failed on CreateAsync.");
             }
 
+            await AssignUserToRole(user, newUserDto.Role);
+
             await _signInManager.SignInAsync(user, isPersistent:false);
             var token = _tokenGenerator.GenerateToken(user);
 
             return token;
+        }
+
+        private async Task AssignUserToRole(User user, UserRole role)
+        {
+            var identityResult = await _userManager.AddToRoleAsync(user, role.ToString());
+
+            if (!identityResult.Succeeded)
+            {
+                throw new InvalidUserException("Assigning user to role failed.");
+            }
         }
 
         public async Task<string> LoginAsync(UserLoginDto userLoginDto)

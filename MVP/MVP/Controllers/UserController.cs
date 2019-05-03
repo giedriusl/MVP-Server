@@ -63,13 +63,5 @@ namespace MVP.Controllers
             }
             
         }
-
-        [HttpGet]
-        [Route("Get")]
-        [Authorize(AuthenticationSchemes = "Bearer")]
-        public ActionResult Get()
-        {
-            return Ok("Testing");
-        }
     }
 }

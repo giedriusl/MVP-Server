@@ -1,9 +1,11 @@
 ﻿using MVP.Entities.Entities;
+using MVP.Entities.Enums;
 
 namespace MVP.Entities.Models
 {
     public class NewUserDto : UserDto
     {
+        public UserRole Role { get; set; }
         public static User ToEntity(NewUserDto newUserDto)
         {
             var user = new User
