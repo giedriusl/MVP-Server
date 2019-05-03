@@ -10,7 +10,8 @@ namespace MVP.Entities.Models
             {
                 Name = newUserDto.Name,
                 Surname = newUserDto.Surname,
-                Email = newUserDto.Email
+                Email = newUserDto.Email,
+                UserName = newUserDto.Email
             };
 
             return user;

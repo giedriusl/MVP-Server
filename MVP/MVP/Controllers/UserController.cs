@@ -4,10 +4,11 @@ using MVP.Entities.Exceptions;
 using MVP.Entities.Models;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MVP.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -18,7 +19,10 @@ namespace MVP.Controllers
             _userService = userService;
         }
 
-        public async Task<ActionResult> CreateUser(NewUserDto newUserDto)
+        [HttpPost]
+        [Route("CreateUser")]
+        [Authorize]
+        public async Task<ActionResult> CreateUser([FromBody] NewUserDto newUserDto)
         {
             try
             {
@@ -38,6 +42,8 @@ namespace MVP.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("Login")]
         public async Task<ActionResult> Login([FromBody] UserLoginDto userLogin)
         {
             try
@@ -56,6 +62,14 @@ namespace MVP.Controllers
                 return BadRequest("common.internal");
             }
             
+        }
+
+        [HttpGet]
+        [Route("Get")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public ActionResult Get()
+        {
+            return Ok("Testing");
         }
     }
 }
