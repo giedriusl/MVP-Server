@@ -2,12 +2,18 @@
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using MVP.DataAccess.EntityTypeConfigurations;
+using MVP.Entities.Entities;
 using System.IO;
 
 namespace MVP.DataAccess
 {
     public class MvpContext : DbContext
     {
+        public DbSet<Apartment> Apartments { get; set; }
+        public DbSet<Calendar> Calendars{ get; set; }
+        public DbSet<Location> Locations{ get; set; }
+        public DbSet<Office> Offices{ get; set; }
+        public DbSet<Trip> Trips{ get; set; }
         public MvpContext(DbContextOptions<MvpContext> options) : base(options)
         {
         }
