@@ -14,6 +14,8 @@ namespace MVP.DataAccess.EntityTypeConfigurations
             builder.Property(x => x.Title).IsRequired().HasMaxLength(256);
             builder.Property(x => x.BedCount).IsRequired();
             builder.Property(x => x.AppartmentId).IsRequired();
+
+            builder.HasMany(x => x.Calendars);
         }
     }
 }

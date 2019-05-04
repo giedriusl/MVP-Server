@@ -142,8 +142,6 @@ namespace MVP.DataAccess.Migrations
 
                     b.Property<int>("OfficeId");
 
-                    b.Property<int?>("OfficeId1");
-
                     b.Property<string>("Title")
                         .HasMaxLength(256);
 
@@ -152,8 +150,6 @@ namespace MVP.DataAccess.Migrations
                     b.HasIndex("LocationId");
 
                     b.HasIndex("OfficeId");
-
-                    b.HasIndex("OfficeId1");
 
                     b.ToTable("Apartment");
                 });
@@ -189,21 +185,15 @@ namespace MVP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ApartmentId");
+                    b.Property<int>("ApartmentRoomId");
 
                     b.Property<DateTimeOffset>("End");
 
                     b.Property<DateTimeOffset>("Start");
 
-                    b.Property<int>("UserId");
-
-                    b.Property<string>("UserId1");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ApartmentId");
-
-                    b.HasIndex("UserId1");
+                    b.HasIndex("ApartmentRoomId");
 
                     b.ToTable("Calendar");
                 });
@@ -238,12 +228,15 @@ namespace MVP.DataAccess.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.Property<string>("CountryCode")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.HasKey("Id");
@@ -259,16 +252,12 @@ namespace MVP.DataAccess.Migrations
 
                     b.Property<int>("LocationId");
 
-                    b.Property<int?>("LocationId1");
-
                     b.Property<string>("Name")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
-
-                    b.HasIndex("LocationId1");
 
                     b.ToTable("Office");
                 });
@@ -437,17 +426,12 @@ namespace MVP.DataAccess.Migrations
                     b.HasOne("MVP.Entities.Entities.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MVP.Entities.Entities.Office", "Office")
-                        .WithMany()
-                        .HasForeignKey("OfficeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("MVP.Entities.Entities.Office")
                         .WithMany("Apartments")
-                        .HasForeignKey("OfficeId1")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("OfficeId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("MVP.Entities.Entities.ApartmentRoom", b =>
@@ -459,14 +443,10 @@ namespace MVP.DataAccess.Migrations
 
             modelBuilder.Entity("MVP.Entities.Entities.Calendar", b =>
                 {
-                    b.HasOne("MVP.Entities.Entities.Apartment", "Apartment")
-                        .WithMany()
-                        .HasForeignKey("ApartmentId")
+                    b.HasOne("MVP.Entities.Entities.ApartmentRoom", "ApartmentRoom")
+                        .WithMany("Calendars")
+                        .HasForeignKey("ApartmentRoomId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("MVP.Entities.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("MVP.Entities.Entities.FlightInformation", b =>
@@ -479,14 +459,10 @@ namespace MVP.DataAccess.Migrations
 
             modelBuilder.Entity("MVP.Entities.Entities.Office", b =>
                 {
-                    b.HasOne("MVP.Entities.Entities.Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("MVP.Entities.Entities.Location", "Location")
                         .WithMany()
-                        .HasForeignKey("LocationId1");
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("MVP.Entities.Entities.RentalCarInformation", b =>
@@ -508,13 +484,6 @@ namespace MVP.DataAccess.Migrations
                         .WithMany()
                         .HasForeignKey("ToOfficeId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("MVP.Entities.Entities.User", b =>
-                {
-                    b.HasOne("MVP.Entities.Entities.Trip")
-                        .WithMany("Users")
-                        .HasForeignKey("TripId");
                 });
 #pragma warning restore 612, 618
         }

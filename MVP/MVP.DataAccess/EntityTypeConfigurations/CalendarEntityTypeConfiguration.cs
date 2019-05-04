@@ -10,8 +10,7 @@ namespace MVP.DataAccess.EntityTypeConfigurations
         {
             builder.ToTable(nameof(Calendar));
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.UserId).IsRequired();
-            builder.Property(x => x.ApartmentId).IsRequired();
+            builder.Property(x => x.ApartmentRoomId).IsRequired();
             builder.Property(x => x.Start).IsRequired();
             builder.Property(x => x.End).IsRequired();
         }

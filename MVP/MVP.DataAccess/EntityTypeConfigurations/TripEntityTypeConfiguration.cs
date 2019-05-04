@@ -22,7 +22,6 @@ namespace MVP.DataAccess.EntityTypeConfigurations
 
             builder.HasMany(x => x.RentalCarInformations);
             builder.HasMany(x => x.FlightInformations);
-            builder.HasMany(x => x.Users);
         }
     }
 }

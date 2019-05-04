@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MVP.DataAccess.Migrations
 {
-    public partial class mvpInit : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,9 +18,9 @@ namespace MVP.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    City = table.Column<string>(maxLength: 500, nullable: true),
-                    CountryCode = table.Column<string>(maxLength: 500, nullable: true),
-                    Address = table.Column<string>(maxLength: 500, nullable: true)
+                    City = table.Column<string>(maxLength: 500, nullable: false),
+                    CountryCode = table.Column<string>(maxLength: 500, nullable: false),
+                    Address = table.Column<string>(maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -35,8 +35,7 @@ namespace MVP.DataAccess.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 256, nullable: true),
-                    LocationId = table.Column<int>(nullable: false),
-                    LocationId1 = table.Column<int>(nullable: true)
+                    LocationId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,13 +43,6 @@ namespace MVP.DataAccess.Migrations
                     table.ForeignKey(
                         name: "FK_Office_Location_LocationId",
                         column: x => x.LocationId,
-                        principalSchema: "mvp",
-                        principalTable: "Location",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Office_Location_LocationId1",
-                        column: x => x.LocationId1,
                         principalSchema: "mvp",
                         principalTable: "Location",
                         principalColumn: "Id",
@@ -67,8 +59,7 @@ namespace MVP.DataAccess.Migrations
                     Title = table.Column<string>(maxLength: 256, nullable: true),
                     OfficeId = table.Column<int>(nullable: false),
                     BedCount = table.Column<int>(nullable: false),
-                    LocationId = table.Column<int>(nullable: false),
-                    OfficeId1 = table.Column<int>(nullable: true)
+                    LocationId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,21 +70,14 @@ namespace MVP.DataAccess.Migrations
                         principalSchema: "mvp",
                         principalTable: "Location",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Apartment_Office_OfficeId",
                         column: x => x.OfficeId,
                         principalSchema: "mvp",
                         principalTable: "Office",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Apartment_Office_OfficeId1",
-                        column: x => x.OfficeId1,
-                        principalSchema: "mvp",
-                        principalTable: "Office",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -205,40 +189,6 @@ namespace MVP.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
-                schema: "mvp",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    UserName = table.Column<string>(nullable: true),
-                    NormalizedUserName = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true),
-                    NormalizedEmail = table.Column<string>(nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    TripId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_User_Trip_TripId",
-                        column: x => x.TripId,
-                        principalSchema: "mvp",
-                        principalTable: "Trip",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Calendar",
                 schema: "mvp",
                 columns: table => new
@@ -247,27 +197,18 @@ namespace MVP.DataAccess.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Start = table.Column<DateTimeOffset>(nullable: false),
                     End = table.Column<DateTimeOffset>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    UserId1 = table.Column<string>(nullable: true),
-                    ApartmentId = table.Column<int>(nullable: false)
+                    ApartmentRoomId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Calendar", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Calendar_Apartment_ApartmentId",
-                        column: x => x.ApartmentId,
+                        name: "FK_Calendar_ApartmentRoom_ApartmentRoomId",
+                        column: x => x.ApartmentRoomId,
                         principalSchema: "mvp",
-                        principalTable: "Apartment",
+                        principalTable: "ApartmentRoom",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Calendar_User_UserId1",
-                        column: x => x.UserId1,
-                        principalSchema: "mvp",
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -283,28 +224,16 @@ namespace MVP.DataAccess.Migrations
                 column: "OfficeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Apartment_OfficeId1",
-                schema: "mvp",
-                table: "Apartment",
-                column: "OfficeId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ApartmentRoom_ApartmentId",
                 schema: "mvp",
                 table: "ApartmentRoom",
                 column: "ApartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Calendar_ApartmentId",
+                name: "IX_Calendar_ApartmentRoomId",
                 schema: "mvp",
                 table: "Calendar",
-                column: "ApartmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Calendar_UserId1",
-                schema: "mvp",
-                table: "Calendar",
-                column: "UserId1");
+                column: "ApartmentRoomId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FlightInformation_TripId",
@@ -317,12 +246,6 @@ namespace MVP.DataAccess.Migrations
                 schema: "mvp",
                 table: "Office",
                 column: "LocationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Office_LocationId1",
-                schema: "mvp",
-                table: "Office",
-                column: "LocationId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RentalCarInformation_TripId",
@@ -341,20 +264,10 @@ namespace MVP.DataAccess.Migrations
                 schema: "mvp",
                 table: "Trip",
                 column: "ToOfficeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_TripId",
-                schema: "mvp",
-                table: "User",
-                column: "TripId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ApartmentRoom",
-                schema: "mvp");
-
             migrationBuilder.DropTable(
                 name: "Calendar",
                 schema: "mvp");
@@ -368,15 +281,15 @@ namespace MVP.DataAccess.Migrations
                 schema: "mvp");
 
             migrationBuilder.DropTable(
-                name: "Apartment",
-                schema: "mvp");
-
-            migrationBuilder.DropTable(
-                name: "User",
+                name: "ApartmentRoom",
                 schema: "mvp");
 
             migrationBuilder.DropTable(
                 name: "Trip",
+                schema: "mvp");
+
+            migrationBuilder.DropTable(
+                name: "Apartment",
                 schema: "mvp");
 
             migrationBuilder.DropTable(

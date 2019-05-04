@@ -10,9 +10,9 @@ namespace MVP.DataAccess.EntityTypeConfigurations
         {
             builder.ToTable(nameof(Location));
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.City).HasMaxLength(500);
-            builder.Property(x => x.CountryCode).HasMaxLength(500);
-            builder.Property(x => x.Address).HasMaxLength(500);
+            builder.Property(x => x.City).HasMaxLength(500).IsRequired();
+            builder.Property(x => x.CountryCode).HasMaxLength(500).IsRequired();
+            builder.Property(x => x.Address).HasMaxLength(500).IsRequired();
         }
     }
 }
