@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MVP.DataAccess;
 using MVP.Entities.Entities;
+using NLog.Extensions.Logging;
+using NLog.Web;
 
 namespace MVP
 {
@@ -31,7 +34,7 @@ namespace MVP
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -45,6 +48,9 @@ namespace MVP
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMvc();
+
+            env.ConfigureNLog("nlog.config");
+            loggerFactory.AddNLog();
         }
     }
 }
