@@ -1,9 +1,10 @@
-﻿using MVP.Entities.Entities;
+﻿using System.Threading.Tasks;
+using MVP.Entities.Entities;
 
 namespace MVP.BusinessLogic.Helpers.TokenGenerator
 {
     public interface ITokenGenerator
     {
-        string GenerateToken(User user);
+        Task<string> GenerateToken(User user);
     }
 }

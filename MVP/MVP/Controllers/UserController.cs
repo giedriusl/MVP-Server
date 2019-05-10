@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Exceptions;
 using MVP.Entities.Models;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 namespace MVP.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -20,8 +19,7 @@ namespace MVP.Controllers
         }
 
         [HttpPost]
-        [Route("CreateUser")]
-        [Authorize]
+        [Authorize(Policy = "RequireAdministratorRole")]
         public async Task<ActionResult> CreateUser([FromBody] NewUserDto newUserDto)
         {
             try
@@ -43,7 +41,7 @@ namespace MVP.Controllers
         }
 
         [HttpPost]
-        [Route("Login")]
+        [AllowAnonymous]
         public async Task<ActionResult> Login([FromBody] UserLoginDto userLogin)
         {
             try
@@ -61,7 +59,6 @@ namespace MVP.Controllers
                 //TODO: use exception for logging
                 return BadRequest("common.internal");
             }
-            
         }
     }
 }

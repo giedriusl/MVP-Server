@@ -5,7 +5,9 @@ namespace MVP.Entities.Models
 {
     public class NewUserDto : UserDto
     {
-        public UserRole Role { get; set; }
+        public UserRoles Role { get; set; }
+
+
         public static User ToEntity(NewUserDto newUserDto)
         {
             var user = new User

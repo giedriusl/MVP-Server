@@ -27,7 +27,7 @@ namespace MVP
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -36,6 +36,7 @@ namespace MVP
                 (options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<User>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<MvpContext>()
                 .AddDefaultTokenProviders();
 
@@ -63,6 +64,18 @@ namespace MVP
                     };
                 });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdministratorRole",
+                    policy => policy.RequireRole("Administrator"));
+
+                options.AddPolicy("RequireOrganizerRole", 
+                    policy => policy.RequireRole("Administrator", "Organizer"));
+
+                options.AddPolicy("AllowAllRoles",
+                                policy => policy.RequireRole("Administrator", "Organizer", "User"));
+            });
+
 
             services.AddTransient<RoleManager<IdentityRole>>();
             services.AddTransient<UserManager<User>>();
@@ -88,7 +101,11 @@ namespace MVP
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
-            app.UseMvc();
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }
