@@ -10,6 +10,11 @@ namespace MVP.DataAccess
 {
     public class MvpContext : IdentityDbContext<User>
     {
+        public DbSet<Apartment> Apartments { get; set; }
+        public DbSet<Calendar> Calendars{ get; set; }
+        public DbSet<Location> Locations{ get; set; }
+        public DbSet<Office> Offices{ get; set; }
+        public DbSet<Trip> Trips{ get; set; }
         public MvpContext(DbContextOptions<MvpContext> options) : base(options)
         {
         }

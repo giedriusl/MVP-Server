@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using MVP.DataAccess;
+using MVP.DataAccess.Seed;
+using MVP.Extensions;
 
 namespace MVP
 {
@@ -7,11 +10,16 @@ namespace MVP
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            BuildWebHost(args)
+                .MigrateDbContext<MvpContext>((context, services) =>
+                {
+                    InitialDataSeed.SeedAsync(context, services).Wait();
+                }).Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .Build();
     }
 }
