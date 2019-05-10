@@ -11,6 +11,12 @@ namespace MVP.DataAccess.EntityTypeConfigurations
             builder.Property(x => x.Name).HasMaxLength(255).IsRequired();
             builder.Property(x => x.Surname).HasMaxLength(255).IsRequired();
 
+            builder.HasMany(user => user.Calendars)
+                .WithOne()
+                .HasForeignKey(calendar => calendar.UserId)
+                .IsRequired();
+
+
             builder.HasMany(user => user.Claims)
                 .WithOne()
                 .HasForeignKey(userClaim => userClaim.UserId)

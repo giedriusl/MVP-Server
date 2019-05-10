@@ -189,9 +189,18 @@ namespace MVP.DataAccess.Migrations
 
                     b.Property<DateTimeOffset>("Start");
 
+                    b.Property<string>("UserId")
+                        .IsRequired();
+
+                    b.Property<string>("UserId1");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ApartmentRoomId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Calendar");
                 });
@@ -352,8 +361,6 @@ namespace MVP.DataAccess.Migrations
                         .IsRequired()
                         .HasMaxLength(255);
 
-                    b.Property<int?>("TripId");
-
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
@@ -369,9 +376,20 @@ namespace MVP.DataAccess.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("MVP.Entities.Entities.UserTrip", b =>
+                {
+                    b.Property<string>("UserId");
+
+                    b.Property<int>("TripId");
+
+                    b.HasKey("UserId", "TripId");
+
                     b.HasIndex("TripId");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("UserTrip");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -445,6 +463,15 @@ namespace MVP.DataAccess.Migrations
                         .WithMany("Calendars")
                         .HasForeignKey("ApartmentRoomId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MVP.Entities.Entities.User")
+                        .WithMany("Calendars")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MVP.Entities.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("MVP.Entities.Entities.FlightInformation", b =>
@@ -482,6 +509,19 @@ namespace MVP.DataAccess.Migrations
                         .WithMany()
                         .HasForeignKey("ToOfficeId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("MVP.Entities.Entities.UserTrip", b =>
+                {
+                    b.HasOne("MVP.Entities.Entities.Trip", "Trip")
+                        .WithMany("UserTrips")
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MVP.Entities.Entities.User", "User")
+                        .WithMany("UserTrips")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

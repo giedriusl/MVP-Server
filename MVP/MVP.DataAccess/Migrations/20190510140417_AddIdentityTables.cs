@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MVP.DataAccess.Migrations
@@ -7,90 +8,18 @@ namespace MVP.DataAccess.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Calendar_User_UserId1",
-                schema: "mvp",
-                table: "Calendar");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_User_Trip_TripId",
-                schema: "mvp",
-                table: "User");
-
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_User",
-                schema: "mvp",
-                table: "User");
-
-            migrationBuilder.RenameTable(
-                name: "User",
-                schema: "mvp",
-                newName: "AspNetUsers",
-                newSchema: "mvp");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_User_TripId",
-                schema: "mvp",
-                table: "AspNetUsers",
-                newName: "IX_AspNetUsers_TripId");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "UserName",
-                schema: "mvp",
-                table: "AspNetUsers",
-                maxLength: 256,
-                nullable: true,
-                oldClrType: typeof(string),
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "NormalizedUserName",
-                schema: "mvp",
-                table: "AspNetUsers",
-                maxLength: 256,
-                nullable: true,
-                oldClrType: typeof(string),
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "NormalizedEmail",
-                schema: "mvp",
-                table: "AspNetUsers",
-                maxLength: 256,
-                nullable: true,
-                oldClrType: typeof(string),
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Email",
-                schema: "mvp",
-                table: "AspNetUsers",
-                maxLength: 256,
-                nullable: true,
-                oldClrType: typeof(string),
-                oldNullable: true);
-
             migrationBuilder.AddColumn<string>(
-                name: "Name",
+                name: "UserId",
                 schema: "mvp",
-                table: "AspNetUsers",
-                maxLength: 255,
+                table: "Calendar",
                 nullable: false,
                 defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
-                name: "Surname",
+                name: "UserId1",
                 schema: "mvp",
-                table: "AspNetUsers",
-                maxLength: 255,
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_AspNetUsers",
-                schema: "mvp",
-                table: "AspNetUsers",
-                column: "Id");
+                table: "Calendar",
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
@@ -105,6 +34,57 @@ namespace MVP.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                schema: "mvp",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    UserName = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 255, nullable: false),
+                    Surname = table.Column<string>(maxLength: 255, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                schema: "mvp",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    RoleId = table.Column<string>(nullable: false),
+                    ClaimType = table.Column<string>(nullable: true),
+                    ClaimValue = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalSchema: "mvp",
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -153,51 +133,6 @@ namespace MVP.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserTokens",
-                schema: "mvp",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(nullable: false),
-                    LoginProvider = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    Value = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "mvp",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
-                schema: "mvp",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    RoleId = table.Column<string>(nullable: false),
-                    ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalSchema: "mvp",
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetUserRoles",
                 schema: "mvp",
                 columns: table => new
@@ -224,19 +159,66 @@ namespace MVP.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "EmailIndex",
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
                 schema: "mvp",
-                table: "AspNetUsers",
-                column: "NormalizedEmail");
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Value = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "mvp",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserTrip",
+                schema: "mvp",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false),
+                    TripId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserTrip", x => new { x.UserId, x.TripId });
+                    table.ForeignKey(
+                        name: "FK_UserTrip_Trip_TripId",
+                        column: x => x.TripId,
+                        principalSchema: "mvp",
+                        principalTable: "Trip",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserTrip_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "mvp",
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
+                name: "IX_Calendar_UserId",
                 schema: "mvp",
-                table: "AspNetUsers",
-                column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                table: "Calendar",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Calendar_UserId1",
+                schema: "mvp",
+                table: "Calendar",
+                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -270,15 +252,35 @@ namespace MVP.DataAccess.Migrations
                 table: "AspNetUserRoles",
                 column: "RoleId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_Trip_TripId",
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
                 schema: "mvp",
                 table: "AspNetUsers",
-                column: "TripId",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                schema: "mvp",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTrip_TripId",
+                schema: "mvp",
+                table: "UserTrip",
+                column: "TripId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Calendar_AspNetUsers_UserId",
+                schema: "mvp",
+                table: "Calendar",
+                column: "UserId",
                 principalSchema: "mvp",
-                principalTable: "Trip",
+                principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Calendar_AspNetUsers_UserId1",
@@ -294,9 +296,9 @@ namespace MVP.DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUsers_Trip_TripId",
+                name: "FK_Calendar_AspNetUsers_UserId",
                 schema: "mvp",
-                table: "AspNetUsers");
+                table: "Calendar");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Calendar_AspNetUsers_UserId1",
@@ -324,107 +326,36 @@ namespace MVP.DataAccess.Migrations
                 schema: "mvp");
 
             migrationBuilder.DropTable(
+                name: "UserTrip",
+                schema: "mvp");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles",
                 schema: "mvp");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_AspNetUsers",
-                schema: "mvp",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropIndex(
-                name: "EmailIndex",
-                schema: "mvp",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropIndex(
-                name: "UserNameIndex",
-                schema: "mvp",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "Name",
-                schema: "mvp",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "Surname",
-                schema: "mvp",
-                table: "AspNetUsers");
-
-            migrationBuilder.RenameTable(
+            migrationBuilder.DropTable(
                 name: "AspNetUsers",
-                schema: "mvp",
-                newName: "User",
-                newSchema: "mvp");
+                schema: "mvp");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_AspNetUsers_TripId",
+            migrationBuilder.DropIndex(
+                name: "IX_Calendar_UserId",
                 schema: "mvp",
-                table: "User",
-                newName: "IX_User_TripId");
+                table: "Calendar");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "UserName",
+            migrationBuilder.DropIndex(
+                name: "IX_Calendar_UserId1",
                 schema: "mvp",
-                table: "User",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldMaxLength: 256,
-                oldNullable: true);
+                table: "Calendar");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "NormalizedUserName",
+            migrationBuilder.DropColumn(
+                name: "UserId",
                 schema: "mvp",
-                table: "User",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldMaxLength: 256,
-                oldNullable: true);
+                table: "Calendar");
 
-            migrationBuilder.AlterColumn<string>(
-                name: "NormalizedEmail",
+            migrationBuilder.DropColumn(
+                name: "UserId1",
                 schema: "mvp",
-                table: "User",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldMaxLength: 256,
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Email",
-                schema: "mvp",
-                table: "User",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldMaxLength: 256,
-                oldNullable: true);
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_User",
-                schema: "mvp",
-                table: "User",
-                column: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Calendar_User_UserId1",
-                schema: "mvp",
-                table: "Calendar",
-                column: "UserId1",
-                principalSchema: "mvp",
-                principalTable: "User",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_User_Trip_TripId",
-                schema: "mvp",
-                table: "User",
-                column: "TripId",
-                principalSchema: "mvp",
-                principalTable: "Trip",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                table: "Calendar");
         }
     }
 }

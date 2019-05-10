@@ -32,6 +32,7 @@ namespace MVP.DataAccess
             modelBuilder.ApplyConfiguration(new RentalCarInformationEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TripEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new UserTripEntityTypeConfiguration());
         }
     }
 

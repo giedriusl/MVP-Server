@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MVP.DataAccess.Migrations
 {
     [DbContext(typeof(MvpContext))]
-    [Migration("20190502201106_AddIdentityTables")]
+    [Migration("20190510140417_AddIdentityTables")]
     partial class AddIdentityTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -142,9 +142,7 @@ namespace MVP.DataAccess.Migrations
 
                     b.Property<int>("LocationId");
 
-                    b.Property<int>("OfficeId");
-
-                    b.Property<int?>("OfficeId1");
+                    b.Property<int?>("OfficeId");
 
                     b.Property<string>("Title")
                         .HasMaxLength(256);
@@ -155,8 +153,6 @@ namespace MVP.DataAccess.Migrations
 
                     b.HasIndex("OfficeId");
 
-                    b.HasIndex("OfficeId1");
-
                     b.ToTable("Apartment");
                 });
 
@@ -166,9 +162,7 @@ namespace MVP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ApartmentId");
-
-                    b.Property<int>("AppartmentId");
+                    b.Property<int>("ApartmentId");
 
                     b.Property<int>("BedCount");
 
@@ -191,19 +185,22 @@ namespace MVP.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ApartmentId");
+                    b.Property<int>("ApartmentRoomId");
 
                     b.Property<DateTimeOffset>("End");
 
                     b.Property<DateTimeOffset>("Start");
 
-                    b.Property<int>("UserId");
+                    b.Property<string>("UserId")
+                        .IsRequired();
 
                     b.Property<string>("UserId1");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApartmentId");
+                    b.HasIndex("ApartmentRoomId");
+
+                    b.HasIndex("UserId");
 
                     b.HasIndex("UserId1");
 
@@ -240,12 +237,15 @@ namespace MVP.DataAccess.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.Property<string>("CountryCode")
+                        .IsRequired()
                         .HasMaxLength(500);
 
                     b.HasKey("Id");
@@ -261,16 +261,12 @@ namespace MVP.DataAccess.Migrations
 
                     b.Property<int>("LocationId");
 
-                    b.Property<int?>("LocationId1");
-
                     b.Property<string>("Name")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
-
-                    b.HasIndex("LocationId1");
 
                     b.ToTable("Office");
                 });
@@ -367,8 +363,6 @@ namespace MVP.DataAccess.Migrations
                         .IsRequired()
                         .HasMaxLength(255);
 
-                    b.Property<int?>("TripId");
-
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
@@ -384,9 +378,20 @@ namespace MVP.DataAccess.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("MVP.Entities.Entities.UserTrip", b =>
+                {
+                    b.Property<string>("UserId");
+
+                    b.Property<int>("TripId");
+
+                    b.HasKey("UserId", "TripId");
+
                     b.HasIndex("TripId");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("UserTrip");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -439,31 +444,31 @@ namespace MVP.DataAccess.Migrations
                     b.HasOne("MVP.Entities.Entities.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MVP.Entities.Entities.Office", "Office")
-                        .WithMany()
-                        .HasForeignKey("OfficeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("MVP.Entities.Entities.Office")
                         .WithMany("Apartments")
-                        .HasForeignKey("OfficeId1")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("OfficeId");
                 });
 
             modelBuilder.Entity("MVP.Entities.Entities.ApartmentRoom", b =>
                 {
                     b.HasOne("MVP.Entities.Entities.Apartment")
                         .WithMany("Rooms")
-                        .HasForeignKey("ApartmentId");
+                        .HasForeignKey("ApartmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("MVP.Entities.Entities.Calendar", b =>
                 {
-                    b.HasOne("MVP.Entities.Entities.Apartment", "Apartment")
-                        .WithMany()
-                        .HasForeignKey("ApartmentId")
+                    b.HasOne("MVP.Entities.Entities.ApartmentRoom", "ApartmentRoom")
+                        .WithMany("Calendars")
+                        .HasForeignKey("ApartmentRoomId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MVP.Entities.Entities.User")
+                        .WithMany("Calendars")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("MVP.Entities.Entities.User", "User")
@@ -481,14 +486,10 @@ namespace MVP.DataAccess.Migrations
 
             modelBuilder.Entity("MVP.Entities.Entities.Office", b =>
                 {
-                    b.HasOne("MVP.Entities.Entities.Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("MVP.Entities.Entities.Location", "Location")
                         .WithMany()
-                        .HasForeignKey("LocationId1");
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("MVP.Entities.Entities.RentalCarInformation", b =>
@@ -512,11 +513,17 @@ namespace MVP.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("MVP.Entities.Entities.User", b =>
+            modelBuilder.Entity("MVP.Entities.Entities.UserTrip", b =>
                 {
-                    b.HasOne("MVP.Entities.Entities.Trip")
-                        .WithMany("Users")
-                        .HasForeignKey("TripId");
+                    b.HasOne("MVP.Entities.Entities.Trip", "Trip")
+                        .WithMany("UserTrips")
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MVP.Entities.Entities.User", "User")
+                        .WithMany("UserTrips")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
