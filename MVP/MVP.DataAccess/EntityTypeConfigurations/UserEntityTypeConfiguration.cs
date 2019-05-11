@@ -13,9 +13,7 @@ namespace MVP.DataAccess.EntityTypeConfigurations
 
             builder.HasMany(user => user.Calendars)
                 .WithOne()
-                .HasForeignKey(calendar => calendar.UserId)
-                .IsRequired();
-
+                .HasForeignKey(calendar => calendar.UserId);
 
             builder.HasMany(user => user.Claims)
                 .WithOne()

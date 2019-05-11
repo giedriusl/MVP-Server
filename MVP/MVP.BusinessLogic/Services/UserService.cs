@@ -4,10 +4,10 @@ using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Entities;
 using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
-using MVP.Entities.Models;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos;
 
 namespace MVP.BusinessLogic.Services
 {

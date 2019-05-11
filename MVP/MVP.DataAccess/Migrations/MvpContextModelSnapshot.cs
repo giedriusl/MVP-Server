@@ -189,8 +189,7 @@ namespace MVP.DataAccess.Migrations
 
                     b.Property<DateTimeOffset>("Start");
 
-                    b.Property<string>("UserId")
-                        .IsRequired();
+                    b.Property<string>("UserId");
 
                     b.Property<string>("UserId1");
 
@@ -466,8 +465,7 @@ namespace MVP.DataAccess.Migrations
 
                     b.HasOne("MVP.Entities.Entities.User")
                         .WithMany("Calendars")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
 
                     b.HasOne("MVP.Entities.Entities.User", "User")
                         .WithMany()

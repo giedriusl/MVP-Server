@@ -15,8 +15,8 @@ namespace MVP.Entities.Entities
         public virtual Office FromOffice { get; set; }
         public virtual Office ToOffice { get; set; }
         public TripStatus TripStatus { get; set; }
-        public virtual ICollection<FlightInformation> FlightInformations { get; set; }
-        public virtual ICollection<RentalCarInformation> RentalCarInformations { get; set; }
-        public ICollection<UserTrip> UserTrips { get; set; }
+        public virtual List<FlightInformation> FlightInformations { get; set; } = new List<FlightInformation>();
+        public virtual List<RentalCarInformation> RentalCarInformations { get; set; } = new List<RentalCarInformation>();
+        public virtual ICollection<UserTrip> UserTrips { get; set; } = new List<UserTrip>();
     }
 }

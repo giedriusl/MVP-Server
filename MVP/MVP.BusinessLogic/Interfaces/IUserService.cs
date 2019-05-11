@@ -1,5 +1,5 @@
-﻿using MVP.Entities.Models;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using MVP.Entities.Dtos;
 
 namespace MVP.BusinessLogic.Interfaces
 {

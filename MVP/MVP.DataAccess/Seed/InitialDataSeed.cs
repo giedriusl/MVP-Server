@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using MVP.Entities.Entities;
 using MVP.Entities.Enums;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MVP.DataAccess.Seed
@@ -49,6 +50,7 @@ namespace MVP.DataAccess.Seed
                     locationEntity1 = context.Locations.Add(location1).Entity;
                     locationEntity2 = context.Locations.Add(location2).Entity;
                     await context.SaveChangesAsync();
+
                 }
 
                 return (locationEntity1, locationEntity2);

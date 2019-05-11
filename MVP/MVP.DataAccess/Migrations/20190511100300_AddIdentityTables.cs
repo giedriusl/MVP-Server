@@ -12,8 +12,7 @@ namespace MVP.DataAccess.Migrations
                 name: "UserId",
                 schema: "mvp",
                 table: "Calendar",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "UserId1",
@@ -280,7 +279,7 @@ namespace MVP.DataAccess.Migrations
                 principalSchema: "mvp",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Calendar_AspNetUsers_UserId1",

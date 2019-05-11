@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Exceptions;
-using MVP.Entities.Models;
 using System;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos;
 
 namespace MVP.Controllers
 {
