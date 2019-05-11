@@ -1,9 +1,11 @@
 ﻿
 using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using MVP.DataAccess;
 using MVP.DataAccess.Seed;
 using MVP.Extensions;
+using NLog.Web;
 
 namespace MVP
 {
@@ -21,6 +23,7 @@ namespace MVP
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseNLog()
                 .Build();
     }
 }
