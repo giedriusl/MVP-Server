@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MVP.Entities.Entities;
@@ -14,6 +15,10 @@ namespace MVP.DataAccess.Seed
         {
             context.Database.EnsureCreated();
             var logger = serviceProvider.GetService<ILogger<MvpContext>>();
+            var userManager = serviceProvider.GetService<UserManager<User>>();
+            var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
+
+            await SeedUser(logger, userManager, roleManager);
             await SeedTrip(context, logger);
         }
         private static async Task<(Location, Location)> SeedLocations(MvpContext context, ILogger<MvpContext> logger)
@@ -44,6 +49,7 @@ namespace MVP.DataAccess.Seed
                     locationEntity1 = context.Locations.Add(location1).Entity;
                     locationEntity2 = context.Locations.Add(location2).Entity;
                     await context.SaveChangesAsync();
+
                 }
 
                 return (locationEntity1, locationEntity2);
@@ -176,6 +182,65 @@ namespace MVP.DataAccess.Seed
                 }
 
                 return firstTrip;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to seed default Calendar");
+                throw;
+            }
+        }
+
+
+
+        private static async Task<User> SeedUser(ILogger<MvpContext> logger, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            try
+            {
+                var firstUser = await userManager.Users.FirstOrDefaultAsync();
+                await SeedRoles(logger, roleManager);
+
+                if (firstUser is null)
+                {
+                    var user = new User
+                    {
+                        Email = "mvpteamas@gmail.com",
+                        Name = "Mvp",
+                        Surname = "Team",
+                        UserName = "mvpteamas@gmail.com",
+                        SecurityStamp = Guid.NewGuid().ToString()
+                    };
+
+                    await userManager.CreateAsync(user, "Psk@team123");
+                    await userManager.AddToRoleAsync(user, UserRoles.Administrator.ToString());
+
+                    firstUser = await userManager.FindByEmailAsync("mvpteamas@gmail.com");
+                }
+
+                return firstUser;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to seed default Calendar");
+                throw;
+            }
+        }
+
+
+        private static async Task SeedRoles(ILogger<MvpContext> logger, RoleManager<IdentityRole> roleManager)
+        {
+            try
+            {
+                var roles = await roleManager.Roles.ToListAsync();
+
+                if (roles.Count < 3)
+                {
+                    var rolesValues = Enum.GetValues(typeof(UserRoles));
+                    foreach (var roleValue in rolesValues)
+                    {
+                        var role = new IdentityRole(roleValue.ToString());
+                        await roleManager.CreateAsync(role);
+                    }
+                }
             }
             catch (Exception ex)
             {

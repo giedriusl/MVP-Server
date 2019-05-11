@@ -9,10 +9,13 @@ namespace MVP.DataAccess.EntityTypeConfigurations
         public void Configure(EntityTypeBuilder<Calendar> builder)
         {
             builder.ToTable(nameof(Calendar));
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.ApartmentRoomId);
-            builder.Property(x => x.Start).IsRequired();
-            builder.Property(x => x.End).IsRequired();
+            builder.HasKey(c => c.Id);
+            builder.Property(c => c.ApartmentRoomId);
+            builder.HasOne(c => c.User)
+                .WithMany(u => u.Calendars)
+                .HasForeignKey(c => c.UserId);
+            builder.Property(c => c.Start).IsRequired();
+            builder.Property(c => c.End).IsRequired();
         }
     }
 }

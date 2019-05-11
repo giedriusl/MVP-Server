@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using MVP.DataAccess.EntityTypeConfigurations;
@@ -7,7 +8,7 @@ using System.IO;
 
 namespace MVP.DataAccess
 {
-    public class MvpContext : DbContext
+    public class MvpContext : IdentityDbContext<User>
     {
         public DbSet<Apartment> Apartments { get; set; }
         public DbSet<Calendar> Calendars{ get; set; }
@@ -30,6 +31,8 @@ namespace MVP.DataAccess
             modelBuilder.ApplyConfiguration(new FlightInformationEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new RentalCarInformationEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new TripEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new UserTripEntityTypeConfiguration());
         }
     }
 
