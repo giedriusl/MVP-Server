@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using MVP.Entities.Entities;
 using MVP.Entities.Enums;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MVP.DataAccess.Seed

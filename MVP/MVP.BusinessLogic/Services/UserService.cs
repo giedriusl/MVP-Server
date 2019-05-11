@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MVP.BusinessLogic.Helpers.TokenGenerator;
 using MVP.BusinessLogic.Interfaces;
+using MVP.Entities.Dtos;
 using MVP.Entities.Entities;
 using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using MVP.Entities.Dtos;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -15,18 +14,15 @@ namespace MVP.BusinessLogic.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ITokenGenerator _tokenGenerator;
 
         public UserService(UserManager<User> userManager, 
             SignInManager<User> signInManager,
-            RoleManager<IdentityRole> roleManager,
             ITokenGenerator tokenGenerator)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenGenerator = tokenGenerator;
-            _roleManager = roleManager;
         }
 
         public async Task<string> CreateAsync(NewUserDto newUserDto)

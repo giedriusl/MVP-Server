@@ -6,12 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MVP.BusinessLogic.Helpers.TokenGenerator;
 using MVP.BusinessLogic.Interfaces;
 using MVP.BusinessLogic.Services;
 using MVP.DataAccess;
 using MVP.Entities.Entities;
+using NLog.Extensions.Logging;
+using NLog.Web;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -88,7 +91,7 @@ namespace MVP
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -101,6 +104,9 @@ namespace MVP
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
+
+            env.ConfigureNLog("nlog.config");
+            loggerFactory.AddNLog();
 
             app.UseMvc(routes =>
             {
