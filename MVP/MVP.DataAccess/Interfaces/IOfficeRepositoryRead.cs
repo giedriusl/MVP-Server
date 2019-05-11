@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MVP.Entities.Entities;
 
 namespace MVP.DataAccess.Interfaces
 {
     interface IOfficeRepositoryRead
     {
-        Office GetOfficeById(int officeId);
-        Office GetOfficeByName(string name);
-        IEnumerable<Office> GetAllOffices();
+        Task<Office> GetOfficeById(int officeId);
+        Task<Office> GetOfficeByName(string name);
+        Task<List<Office>> GetAllOffices();
     }
 }
