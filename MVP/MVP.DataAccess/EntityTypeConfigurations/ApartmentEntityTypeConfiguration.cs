@@ -11,7 +11,7 @@ namespace MVP.DataAccess.EntityTypeConfigurations
             builder.ToTable(nameof(Apartment));
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Title).HasMaxLength(256);
-            builder.Property(x => x.LocationId);
+            builder.Property(x => x.LocationId).IsRequired();
             builder.Property(x => x.OfficeId);
 
             builder.HasOne(x => x.Location).WithMany().HasForeignKey(x => x.LocationId).OnDelete(DeleteBehavior.Restrict);
