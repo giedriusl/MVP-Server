@@ -79,14 +79,11 @@ namespace MVP
                                 policy => policy.RequireRole("Administrator", "Organizer", "User"));
             });
 
-
-            services.AddTransient<RoleManager<IdentityRole>>();
-            services.AddTransient<UserManager<User>>();
-            services.AddTransient<SignInManager<User>>();
-
-            services.AddTransient<IUserService, UserService>();
-
-            services.AddTransient<ITokenGenerator, JwtTokenGenerator>();
+            services.AddScoped<RoleManager<IdentityRole>>();
+            services.AddScoped<UserManager<User>>();
+            services.AddScoped<SignInManager<User>>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITokenGenerator, JwtTokenGenerator>();
 
         }
 
