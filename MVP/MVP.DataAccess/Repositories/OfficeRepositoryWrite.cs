@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Entities;
 
@@ -13,22 +14,22 @@ namespace MVP.DataAccess.Repositories
             _context = context;
         }
 
-        public void WriteOffice(Office office)
+        public async Task WriteOffice(Office office)
         {
             _context.Offices.Add(office);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void WriteListOffice(List<Office> offices)
+        public async Task WriteListOffice(List<Office> offices)
         {
             _context.Offices.AddRange(offices);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateOffice(Office office)
+        public async Task UpdateOffice(Office office)
         {
             _context.Offices.Update(office);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }
