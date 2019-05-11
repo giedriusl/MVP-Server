@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MVP.DataAccess.Migrations
 {
     [DbContext(typeof(MvpContext))]
-    [Migration("20190511100300_AddIdentityTables")]
+    [Migration("20190511133915_AddIdentityTables")]
     partial class AddIdentityTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,15 +193,11 @@ namespace MVP.DataAccess.Migrations
 
                     b.Property<string>("UserId");
 
-                    b.Property<string>("UserId1");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ApartmentRoomId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Calendar");
                 });
@@ -465,13 +461,9 @@ namespace MVP.DataAccess.Migrations
                         .HasForeignKey("ApartmentRoomId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("MVP.Entities.Entities.User")
+                    b.HasOne("MVP.Entities.Entities.User", "User")
                         .WithMany("Calendars")
                         .HasForeignKey("UserId");
-
-                    b.HasOne("MVP.Entities.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("MVP.Entities.Entities.FlightInformation", b =>

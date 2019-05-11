@@ -5,12 +5,12 @@ namespace MVP.Entities.Enums
     public enum UserRoles
     {
         [Description("User")]
-        User = 1,
+        User = 0,
 
         [Description("Organizer")]
-        Organizer = 2,
+        Organizer = 1,
 
         [Description("Administrator")]
-        Administrator = 3
+        Administrator = 2
     }
 }

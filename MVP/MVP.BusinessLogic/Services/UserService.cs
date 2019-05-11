@@ -25,9 +25,9 @@ namespace MVP.BusinessLogic.Services
             _tokenGenerator = tokenGenerator;
         }
 
-        public async Task<string> CreateAsync(NewUserDto newUserDto)
+        public async Task<string> CreateAsync(CreateUserDto newUserDto)
         {
-            var user = NewUserDto.ToEntity(newUserDto);
+            var user = CreateUserDto.ToEntity(newUserDto);
 
             var identityResult = await _userManager.CreateAsync(user, newUserDto.Password);
 

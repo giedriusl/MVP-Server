@@ -46,7 +46,7 @@ namespace MVP.BusinessLogic.Helpers.TokenGenerator
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<List<Claim>> GetValidClaims(User user)
+        private async Task<List<Claim>> GetValidClaims(User user)
         {
             var option = new IdentityOptions();
 

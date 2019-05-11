@@ -3,12 +3,11 @@ using MVP.Entities.Enums;
 
 namespace MVP.Entities.Dtos
 {
-    public class NewUserDto : UserDto
+    public class CreateUserDto : UserDto
     {
         public UserRoles Role { get; set; }
 
-
-        public static User ToEntity(NewUserDto newUserDto)
+        public static User ToEntity(CreateUserDto newUserDto)
         {
             var user = new User
             {

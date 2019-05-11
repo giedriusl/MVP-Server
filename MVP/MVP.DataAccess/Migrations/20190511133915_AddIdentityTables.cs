@@ -14,12 +14,6 @@ namespace MVP.DataAccess.Migrations
                 table: "Calendar",
                 nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "UserId1",
-                schema: "mvp",
-                table: "Calendar",
-                nullable: true);
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 schema: "mvp",
@@ -214,12 +208,6 @@ namespace MVP.DataAccess.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Calendar_UserId1",
-                schema: "mvp",
-                table: "Calendar",
-                column: "UserId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 schema: "mvp",
                 table: "AspNetRoleClaims",
@@ -280,27 +268,12 @@ namespace MVP.DataAccess.Migrations
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Calendar_AspNetUsers_UserId1",
-                schema: "mvp",
-                table: "Calendar",
-                column: "UserId1",
-                principalSchema: "mvp",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Calendar_AspNetUsers_UserId",
-                schema: "mvp",
-                table: "Calendar");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Calendar_AspNetUsers_UserId1",
                 schema: "mvp",
                 table: "Calendar");
 
@@ -341,18 +314,8 @@ namespace MVP.DataAccess.Migrations
                 schema: "mvp",
                 table: "Calendar");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Calendar_UserId1",
-                schema: "mvp",
-                table: "Calendar");
-
             migrationBuilder.DropColumn(
                 name: "UserId",
-                schema: "mvp",
-                table: "Calendar");
-
-            migrationBuilder.DropColumn(
-                name: "UserId1",
                 schema: "mvp",
                 table: "Calendar");
         }

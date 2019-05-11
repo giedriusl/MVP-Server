@@ -4,6 +4,7 @@ using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using MVP.Entities.Dtos;
 
 namespace MVP.Controllers
@@ -12,15 +13,18 @@ namespace MVP.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, 
+            ILogger<UserController> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
 
         [HttpPost]
         [Authorize(Policy = "RequireAdministratorRole")]
-        public async Task<ActionResult> CreateUser([FromBody] NewUserDto newUserDto)
+        public async Task<ActionResult> CreateUser([FromBody] CreateUserDto newUserDto)
         {
             try
             {
@@ -30,13 +34,13 @@ namespace MVP.Controllers
             }
             catch (InvalidUserException exception)
             {
-                return BadRequest("user.invalidCreation");
+                _logger.Log(LogLevel.Warning, $"Invalid user creation request: {exception.Message}");
+                return BadRequest($"user.{exception.ErrorCode}");
             }
             catch (Exception exception)
             {
-                //TODO: use exception for logging
-
-                return BadRequest("common.internal");
+                _logger.Log(LogLevel.Error,$"Internal error occured: {exception.Message}");
+                return StatusCode(500, "common.internal");
             }
         }
 
@@ -52,12 +56,13 @@ namespace MVP.Controllers
             }
             catch (InvalidUserException exception)
             {
-                return BadRequest("user.invalidLogin");
+                _logger.Log(LogLevel.Warning, $"Invalid user creation request: {exception.Message}");
+                return BadRequest($"user.invalidLogin");
             }
             catch (Exception exception)
             {
-                //TODO: use exception for logging
-                return BadRequest("common.internal");
+                _logger.Log(LogLevel.Warning, $"Invalid user creation request: {exception.Message}");
+                return StatusCode(500, "common.internal");
             }
         }
     }
