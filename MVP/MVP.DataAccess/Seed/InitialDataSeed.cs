@@ -210,9 +210,9 @@ namespace MVP.DataAccess.Seed
                         UserName = "mvpteamas@gmail.com",
                         SecurityStamp = Guid.NewGuid().ToString()
                     };
-                    var identityResult = await userManager.CreateAsync(user, "Psk@team123");
 
-                    var roleResult = await userManager.AddToRoleAsync(user, UserRoles.Administrator.ToString());
+                    await userManager.CreateAsync(user, "Psk@team123");
+                    await userManager.AddToRoleAsync(user, UserRoles.Administrator.ToString());
 
                     firstUser = await userManager.FindByEmailAsync("mvpteamas@gmail.com");
                 }
@@ -233,7 +233,7 @@ namespace MVP.DataAccess.Seed
             {
                 var roles = await roleManager.Roles.ToListAsync();
 
-                if (roles.Count != 3)
+                if (roles.Count < 3)
                 {
                     var rolesValues = Enum.GetValues(typeof(UserRoles));
                     foreach (var roleValue in rolesValues)

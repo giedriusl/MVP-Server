@@ -64,20 +64,6 @@ namespace MVP.BusinessLogic.Services
             return token;
         }
 
-        private async Task AddNewRole(string roleName)
-        {
-            var role = new IdentityRole(roleName);
-
-            var identityResult = await _roleManager.CreateAsync(role);
-
-            if (!identityResult.Succeeded)
-            {
-                throw new InvalidUserException("Role creation failed.");
-            }
-
-            await _roleManager.AddClaimAsync(role, new Claim(ClaimTypes.Role, roleName));
-        }
-
         private async Task AssignUserToRole(User user, UserRoles role)
         {
             var roleName = role.ToString();
