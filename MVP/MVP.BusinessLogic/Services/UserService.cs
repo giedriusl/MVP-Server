@@ -7,6 +7,7 @@ using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
 using System.Linq;
 using System.Threading.Tasks;
+using MVP.EmailService.Interfaces;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -15,14 +16,17 @@ namespace MVP.BusinessLogic.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenGenerator _tokenGenerator;
+        private readonly IEmailManager _emailManager;
 
         public UserService(UserManager<User> userManager, 
             SignInManager<User> signInManager,
-            ITokenGenerator tokenGenerator)
+            ITokenGenerator tokenGenerator, 
+            IEmailManager emailManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenGenerator = tokenGenerator;
+            _emailManager = emailManager;
         }
 
         public async Task<string> CreateAsync(CreateUserDto newUserDto)
@@ -58,6 +62,11 @@ namespace MVP.BusinessLogic.Services
             var token = await _tokenGenerator.GenerateToken(user);
 
             return token;
+        }
+
+        public void SendEmail(string url, string email)
+        {
+            _emailManager.SendConfirmationEmail(email, url);
         }
 
         private async Task AssignUserToRole(User user, UserRoles role)

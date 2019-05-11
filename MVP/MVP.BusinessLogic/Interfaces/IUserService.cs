@@ -7,5 +7,6 @@ namespace MVP.BusinessLogic.Interfaces
     {
         Task<string> CreateAsync(CreateUserDto newUserDto);
         Task<string> LoginAsync(UserLoginDto userLoginDto);
+        void SendEmail(string url, string email);
     }
 }
