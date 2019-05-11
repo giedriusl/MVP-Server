@@ -1,6 +1,5 @@
 ﻿
 using Microsoft.AspNetCore;
-﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using MVP.DataAccess;
 using MVP.DataAccess.Seed;
