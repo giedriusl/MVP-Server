@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using MVP.Entities.Dtos.Apartments.ApartmentRooms;
-using MVP.Entities.Dtos.Locations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MVP.Entities.Dtos.Apartments
 {
@@ -14,9 +11,7 @@ namespace MVP.Entities.Dtos.Apartments
 
         [Required]
         public int BedCount { get; set; }
-        public List<CreateApartmentRoomDto> Rooms { get; set; } = new List<CreateApartmentRoomDto>();
 
         //public Office Office { get; set; }
-        public LocationCreateDto Location { get; set; }
     }
 }

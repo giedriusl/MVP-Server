@@ -7,8 +7,9 @@ namespace MVP.DataAccess.Interfaces
     public interface IApartmentRepository
     {
         Task<Apartment> AddApartment(Apartment apartment);
-        Task<Apartment> UpdateApartment(Apartment apartment);
+        Task UpdateApartment(Apartment apartment);
         Task<IEnumerable<Apartment>> GetAllApartments();
         Task<Apartment> GetApartmentById(int apartmentId);
+        Task<Apartment> GetApartmentWithRoomsById(int apartmentId);
     }
 }

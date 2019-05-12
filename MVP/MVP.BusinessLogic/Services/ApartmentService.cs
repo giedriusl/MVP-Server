@@ -32,5 +32,27 @@ namespace MVP.BusinessLogic.Services
             }
 
         }
+        public async Task<UpdateApartmentDto> UpdateApartment(UpdateApartmentDto apartment)
+        {
+            try
+            {
+                var existingApartment = await _apartmentRepository.GetApartmentWithRoomsById(apartment.Id);
+
+                if (existingApartment is null)
+                {
+                    throw new ApartmentException("Apartment was not found");
+                }
+
+                existingApartment.UpdateApartment(apartment.Title, apartment.BedCount);
+
+                await _apartmentRepository.UpdateApartment(existingApartment);
+                return apartment;
+            }
+            catch (Exception ex)
+            {
+                throw new ApartmentException(ex, "Failed to update apartment");
+            }
+
+        }
     }
 }

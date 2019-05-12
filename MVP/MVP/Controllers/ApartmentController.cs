@@ -46,5 +46,30 @@ namespace MVP.Controllers
                 return StatusCode(500, "common.internal");
             }
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateApartment([FromBody] UpdateApartmentDto updateApartmentDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
+                var response = await _apartmentService.UpdateApartment(updateApartmentDto);
+                return Ok(response);
+            }
+            catch(ApartmentException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
     }
 }

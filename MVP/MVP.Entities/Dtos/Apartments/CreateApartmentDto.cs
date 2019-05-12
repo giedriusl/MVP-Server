@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 using MVP.Entities.Dtos.Locations;
 using MVP.Entities.Entities;
@@ -7,6 +8,8 @@ namespace MVP.Entities.Dtos.Apartments
 {
     public class CreateApartmentDto : ApartmentDto
     {
+        public LocationCreateDto Location { get; set; }
+        public List<SubmitApartmentRoomDto> Rooms { get; set; } = new List<SubmitApartmentRoomDto>();
         public int Id { get; set; }
         public static Apartment ToEntity(CreateApartmentDto createApartment)
         {
@@ -15,7 +18,7 @@ namespace MVP.Entities.Dtos.Apartments
                 Title = createApartment.Title,
                 BedCount = createApartment.BedCount,
                 Location = LocationCreateDto.ToEntity(createApartment.Location),
-                Rooms = createApartment.Rooms.Select(CreateApartmentRoomDto.ToEntity).ToList()
+                Rooms = createApartment.Rooms.Select(SubmitApartmentRoomDto.ToEntity).ToList()
             };
         }
 
@@ -27,7 +30,7 @@ namespace MVP.Entities.Dtos.Apartments
                 Title = apartment.Title,
                 BedCount = apartment.BedCount,
                 Location = LocationCreateDto.ToDto(apartment.Location),
-                Rooms = apartment.Rooms.Select(CreateApartmentRoomDto.ToDto).ToList()
+                Rooms = apartment.Rooms.Select(SubmitApartmentRoomDto.ToDto).ToList()
             };
         }
     }

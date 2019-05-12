@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MVP.Entities.Dtos.Apartments.ApartmentRooms
 {
-    public class CreateApartmentRoomDto
+    public class SubmitApartmentRoomDto
     {
         public int Id { get; set; }
 
@@ -17,19 +17,19 @@ namespace MVP.Entities.Dtos.Apartments.ApartmentRooms
         [Required]
         public int BedCount { get; set; }
 
-        public static ApartmentRoom ToEntity(CreateApartmentRoomDto createRoom)
+        public static ApartmentRoom ToEntity(SubmitApartmentRoomDto submitRoom)
         {
             return new ApartmentRoom
             {
-                Title = createRoom.Title,
-                RoomNumber = createRoom.RoomNumber,
-                BedCount = createRoom.BedCount
+                Title = submitRoom.Title,
+                RoomNumber = submitRoom.RoomNumber,
+                BedCount = submitRoom.BedCount
             };
         }
 
-        public static CreateApartmentRoomDto ToDto(ApartmentRoom room)
+        public static SubmitApartmentRoomDto ToDto(ApartmentRoom room)
         {
-            return new CreateApartmentRoomDto
+            return new SubmitApartmentRoomDto
             {
                 Id = room.Id,
                 Title = room.Title,
