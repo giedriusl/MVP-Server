@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using MVP.Entities.Entities;
+﻿using MVP.Entities.Entities;
+using System.Threading.Tasks;
 
 namespace MVP.BusinessLogic.Helpers.TokenGenerator
 {

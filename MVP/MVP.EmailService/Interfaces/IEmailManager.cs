@@ -2,7 +2,7 @@
 {
     public interface IEmailManager
     {
-        void SendConfirmationEmail(string email, string url);
+        void SendInvitationEmail(string email, string url);
 
     }
 }

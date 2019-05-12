@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
+using MVP.Entities.Dtos;
 using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using MVP.Entities.Dtos;
 
 namespace MVP.Controllers
 {
@@ -28,9 +28,9 @@ namespace MVP.Controllers
         {
             try
             {
-                var token = await _userService.CreateAsync(newUserDto);
+                await _userService.CreateAsync(newUserDto);
 
-                return Ok(token);
+                return Ok();
             }
             catch (InvalidUserException exception)
             {
@@ -68,12 +68,40 @@ namespace MVP.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult SendEmail(string url, string email)
+        public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {
-            _userService.SendEmail(url, email);
-
-            return Ok();
+            try
+            {
+                await _userService.ResetPassword(resetPasswordDto);
+                return Ok();
+            }
+            catch (InvalidUserException exception)
+            {
+                _logger.Log(LogLevel.Error, $"Password reset failed. {exception.Message}");
+                return BadRequest("invalidPasswordReset");
+            }
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult> SendResetPasswordLink(string email)
+        {
+            try
+            {
+                await _userService.SendResetPasswordLink(email);
+
+                return Ok();
+            }
+            catch (InvalidUserException exception)
+            {
+                _logger.Log(LogLevel.Warning, $"Invalid user. {exception.Message}");
+                return BadRequest("user.notFound");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, $"Internal error occured. {exception.Message}");
+                return StatusCode(500);
+            }
+        }
     }
 }
