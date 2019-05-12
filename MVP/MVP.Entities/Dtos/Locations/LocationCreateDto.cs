@@ -5,6 +5,8 @@ namespace MVP.Entities.Dtos.Locations
 {
     public class LocationCreateDto
     {
+        public  int Id { get; set; }
+
         [Required]
         [StringLength(256)]
         public string City { get; set; }
@@ -21,6 +23,17 @@ namespace MVP.Entities.Dtos.Locations
         {
             return new Location
             {
+                Address = location.Address,
+                City = location.City,
+                CountryCode = location.CountryCode
+            };
+        }
+
+        public static LocationCreateDto ToDto(Location location)
+        {
+            return new LocationCreateDto
+            {
+                Id = location.Id,
                 Address = location.Address,
                 City = location.City,
                 CountryCode = location.CountryCode

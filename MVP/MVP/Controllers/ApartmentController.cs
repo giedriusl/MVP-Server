@@ -32,8 +32,8 @@ namespace MVP.Controllers
                     return BadRequest("Model is not valid");
                 }
 
-                await _apartmentService.CreateApartment(createApartmentDto);
-                return Ok(createApartmentDto);
+                var response = await _apartmentService.CreateApartment(createApartmentDto);
+                return Ok(response);
             }
             catch(ApartmentException ex)
             {
@@ -42,16 +42,9 @@ namespace MVP.Controllers
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Error, $"Internal error occured:", ex);
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
                 return StatusCode(500, "common.internal");
             }
         }
-
-        [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok("asdadasdsd");
-        }
-
     }
 }

@@ -5,6 +5,8 @@ namespace MVP.Entities.Dtos.Apartments.ApartmentRooms
 {
     public class CreateApartmentRoomDto
     {
+        public int Id { get; set; }
+
         [Required]
         [StringLength(256)]
         public string Title { get; set; }
@@ -22,6 +24,17 @@ namespace MVP.Entities.Dtos.Apartments.ApartmentRooms
                 Title = createRoom.Title,
                 RoomNumber = createRoom.RoomNumber,
                 BedCount = createRoom.BedCount
+            };
+        }
+
+        public static CreateApartmentRoomDto ToDto(ApartmentRoom room)
+        {
+            return new CreateApartmentRoomDto
+            {
+                Id = room.Id,
+                Title = room.Title,
+                RoomNumber = room.RoomNumber,
+                BedCount = room.BedCount
             };
         }
     }

@@ -16,13 +16,15 @@ namespace MVP.BusinessLogic.Services
             _apartmentRepository = apartmentRepository;
         }
 
-        public async Task CreateApartment(CreateApartmentDto createApartmentDto)
+        public async Task<CreateApartmentDto> CreateApartment(CreateApartmentDto createApartmentDto)
         {
             try
             {
                 var apartment = CreateApartmentDto.ToEntity(createApartmentDto);
 
-                await _apartmentRepository.AddApartment(apartment);
+                var apartmentEntity = await _apartmentRepository.AddApartment(apartment);
+
+                return CreateApartmentDto.ToDto(apartmentEntity);
             }
             catch (Exception ex)
             {

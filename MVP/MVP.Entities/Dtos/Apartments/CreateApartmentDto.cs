@@ -7,6 +7,7 @@ namespace MVP.Entities.Dtos.Apartments
 {
     public class CreateApartmentDto : ApartmentDto
     {
+        public int Id { get; set; }
         public static Apartment ToEntity(CreateApartmentDto createApartment)
         {
             return new Apartment
@@ -15,6 +16,18 @@ namespace MVP.Entities.Dtos.Apartments
                 BedCount = createApartment.BedCount,
                 Location = LocationCreateDto.ToEntity(createApartment.Location),
                 Rooms = createApartment.Rooms.Select(CreateApartmentRoomDto.ToEntity).ToList()
+            };
+        }
+
+        public static CreateApartmentDto ToDto(Apartment apartment)
+        {
+            return new CreateApartmentDto
+            {
+                Id = apartment.Id,
+                Title = apartment.Title,
+                BedCount = apartment.BedCount,
+                Location = LocationCreateDto.ToDto(apartment.Location),
+                Rooms = apartment.Rooms.Select(CreateApartmentRoomDto.ToDto).ToList()
             };
         }
     }
