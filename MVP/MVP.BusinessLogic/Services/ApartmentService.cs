@@ -1,6 +1,9 @@
 ﻿using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
-using MVP.Entities.Entities;
+using MVP.Entities.Dtos.Apartments;
+using MVP.Entities.Exceptions;
+using System;
+using System.Threading.Tasks;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -13,9 +16,19 @@ namespace MVP.BusinessLogic.Services
             _apartmentRepository = apartmentRepository;
         }
 
-        /*public Apartment GetApartmentById(int apartmentId)
+        public async Task CreateApartment(CreateApartmentDto createApartmentDto)
         {
+            try
+            {
+                var apartment = CreateApartmentDto.ToEntity(createApartmentDto);
 
-        }*/
+                await _apartmentRepository.AddApartment(apartment);
+            }
+            catch (Exception ex)
+            {
+                throw new ApartmentException(ex.Message);
+            }
+
+        }
     }
 }

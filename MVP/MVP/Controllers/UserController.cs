@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
+using MVP.Entities.Dtos;
 using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using MVP.Entities.Dtos;
 
 namespace MVP.Controllers
 {
@@ -24,7 +24,7 @@ namespace MVP.Controllers
 
         [HttpPost]
         [Authorize(Policy = "RequireAdministratorRole")]
-        public async Task<ActionResult> CreateUser([FromBody] CreateUserDto newUserDto)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto newUserDto)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace MVP.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> Login([FromBody] UserLoginDto userLogin)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto userLogin)
         {
             try
             {

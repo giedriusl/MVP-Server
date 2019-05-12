@@ -15,16 +15,16 @@ namespace MVP.DataAccess.Repositories
             _context = context;
         }
 
-        public void AddApartment(Apartment apartment)
+        public async Task AddApartment(Apartment apartment)
         {
             _context.Apartments.Add(apartment);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateApartment(Apartment apartment)
+        public async Task UpdateApartment(Apartment apartment)
         {
             _context.Apartments.Update(apartment);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         public async Task<Apartment> GetApartmentById(int apartmentId)
         {

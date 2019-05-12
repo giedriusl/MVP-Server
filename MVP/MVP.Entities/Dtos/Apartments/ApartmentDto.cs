@@ -5,7 +5,7 @@ using MVP.Entities.Dtos.Locations;
 
 namespace MVP.Entities.Dtos.Apartments
 {
-    public class ApartmentCreateDto
+    public class ApartmentDto
     {
         [Required]
         [StringLength(256)]
@@ -14,11 +14,9 @@ namespace MVP.Entities.Dtos.Apartments
 
         [Required]
         public int BedCount { get; set; }
+        public List<CreateApartmentRoomDto> Rooms { get; set; } = new List<CreateApartmentRoomDto>();
 
-        [Required]
-        public int LocationId { get; set; }
         //public Office Office { get; set; }
         public LocationCreateDto Location { get; set; }
-        public List<ApartmentRoomCreateDto> Rooms { get; set; } = new List<ApartmentRoomCreateDto>();
     }
 }
