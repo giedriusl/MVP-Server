@@ -28,6 +28,11 @@ namespace MVP.DataAccess.Repositories
              _context.Apartments.Update(apartment);
             await _context.SaveChangesAsync();
         }
+        public async Task DeleteApartment(Apartment apartment)
+        {
+            _context.Apartments.Remove(apartment);
+            await _context.SaveChangesAsync();
+        }
         public async Task<Apartment> GetApartmentById(int apartmentId)
         {
             var apartment = await _context.Apartments

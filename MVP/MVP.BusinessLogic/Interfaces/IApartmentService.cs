@@ -7,5 +7,6 @@ namespace MVP.BusinessLogic.Interfaces
     {
         Task<CreateApartmentDto> CreateApartment(CreateApartmentDto createApartmentDto);
         Task<UpdateApartmentDto> UpdateApartment(UpdateApartmentDto apartment);
+        Task DeleteApartment(int apartmentId);
     }
 }

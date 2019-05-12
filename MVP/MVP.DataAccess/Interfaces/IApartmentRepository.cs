@@ -11,5 +11,6 @@ namespace MVP.DataAccess.Interfaces
         Task<IEnumerable<Apartment>> GetAllApartments();
         Task<Apartment> GetApartmentById(int apartmentId);
         Task<Apartment> GetApartmentWithRoomsById(int apartmentId);
+        Task DeleteApartment(Apartment apartment);
     }
 }

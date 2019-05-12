@@ -52,7 +52,24 @@ namespace MVP.BusinessLogic.Services
             {
                 throw new ApartmentException(ex, "Failed to update apartment");
             }
+        }
+        public async Task DeleteApartment(int apartmentId)
+        {
+            try
+            {
+                var existingApartment = await _apartmentRepository.GetApartmentWithRoomsById(apartmentId);
 
+                if (existingApartment is null)
+                {
+                    throw new ApartmentException("Apartment was not found");
+                }
+
+                await _apartmentRepository.DeleteApartment(existingApartment);
+            }
+            catch (Exception ex)
+            {
+                throw new ApartmentException(ex, "Failed to update apartment");
+            }
         }
     }
 }

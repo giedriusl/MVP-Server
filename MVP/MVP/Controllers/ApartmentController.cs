@@ -6,10 +6,11 @@ using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace MVP.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("")]
     [ApiController]
     //[Authorize(Policy = "RequireAdministratorRole")]
     public class ApartmentController : ControllerBase
@@ -22,7 +23,7 @@ namespace MVP.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
+        [HttpPost("api/[controller]/Create")]
         public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentDto createApartmentDto)
         {
             try
@@ -47,7 +48,7 @@ namespace MVP.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("api/[controller]/Update")]
         public async Task<IActionResult> UpdateApartment([FromBody] UpdateApartmentDto updateApartmentDto)
         {
             try
@@ -61,6 +62,52 @@ namespace MVP.Controllers
                 return Ok(response);
             }
             catch(ApartmentException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [HttpPost("api/[controller]/Calendar")]
+        public async Task<IActionResult> UploadCalendar(IFormFile file)
+        {
+            try
+            {
+                if (file.ContentType != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                {
+                    return BadRequest("Invalid file format");
+                }
+
+                return Ok();
+
+            }
+            catch (ApartmentException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [HttpDelete("api/[controller]/{apartmentId}")]
+        public async Task<IActionResult> DeleteApartment(int apartmentId)
+        {
+            try
+            {
+                await _apartmentService.DeleteApartment(apartmentId);
+                return Ok();
+
+            }
+            catch (ApartmentException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
