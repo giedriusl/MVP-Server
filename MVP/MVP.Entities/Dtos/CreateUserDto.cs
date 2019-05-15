@@ -7,14 +7,14 @@ namespace MVP.Entities.Dtos
     {
         public UserRoles Role { get; set; }
 
-        public static User ToEntity(CreateUserDto newUserDto)
+        public static User ToEntity(CreateUserDto createUserDto)
         {
             var user = new User
             {
-                Name = newUserDto.Name,
-                Surname = newUserDto.Surname,
-                Email = newUserDto.Email,
-                UserName = newUserDto.Email
+                Name = createUserDto.Name,
+                Surname = createUserDto.Surname,
+                Email = createUserDto.Email,
+                UserName = createUserDto.Email
             };
 
             return user;

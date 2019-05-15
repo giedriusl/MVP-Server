@@ -24,11 +24,11 @@ namespace MVP.Controllers
 
         [HttpPost]
         [Authorize(Policy = "RequireAdministratorRole")]
-        public async Task<ActionResult> CreateUser([FromBody] CreateUserDto newUserDto)
+        public async Task<ActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
         {
             try
             {
-                await _userService.CreateAsync(newUserDto);
+                await _userService.CreateAsync(createUserDto);
 
                 return Ok();
             }
@@ -46,11 +46,11 @@ namespace MVP.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> Login([FromBody] UserLoginDto userLogin)
+        public async Task<ActionResult> Login([FromBody] UserDto userDto)
         {
             try
             {
-                var token = await _userService.LoginAsync(userLogin);
+                var token = await _userService.LoginAsync(userDto);
 
                 return Ok(token);
             }

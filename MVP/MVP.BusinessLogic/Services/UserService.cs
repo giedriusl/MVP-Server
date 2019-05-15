@@ -74,17 +74,17 @@ namespace MVP.BusinessLogic.Services
             await SendResetPasswordLink(user);
         }
 
-        public async Task<string> LoginAsync(UserLoginDto userLoginDto)
+        public async Task<string> LoginAsync(UserDto userDto)
         {
-            var result = await _signInManager.PasswordSignInAsync(userLoginDto.Email, userLoginDto.Password, 
-                userLoginDto.RememberMe, false);
+            var result = await _signInManager.PasswordSignInAsync(userDto.Email, userDto.Password, 
+                false, false);
 
             if (!result.Succeeded)
             {
                 throw new InvalidUserException("Invalid login attempt");
             }
 
-            var user = _userManager.Users.First(u => u.Email == userLoginDto.Email);
+            var user = _userManager.Users.First(u => u.Email == userDto.Email);
             var token = await _tokenGenerator.GenerateToken(user);
 
             return token;
