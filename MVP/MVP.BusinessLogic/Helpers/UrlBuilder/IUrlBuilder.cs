@@ -2,6 +2,6 @@
 {
     public interface IUrlBuilder
     {
-        string BuildInvitationUrl(string token);
+        string BuildPasswordResetLink(string token, string email);
     }
 }
