@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MVP.DataAccess.Repositories
 {
@@ -36,6 +37,7 @@ namespace MVP.DataAccess.Repositories
         public async Task<Apartment> GetApartmentById(int apartmentId)
         {
             var apartment = await _context.Apartments
+                .Include(a => a.Location)
                 .FirstOrDefaultAsync(x => x.Id == apartmentId);
 
             return apartment;
@@ -49,12 +51,35 @@ namespace MVP.DataAccess.Repositories
 
             return apartment;
         }
-        public async Task<IEnumerable<Apartment>> GetAllApartments()
+
+        public async Task<List<ApartmentRoom>> GetApartmentRoomsByNumber(int apartmentId, List<int> roomNumbers)
         {
             var apartment = await _context.Apartments
+                .Include(a => a.Rooms)
+                .Where(a => a.Id == apartmentId)
+                .SelectMany(r => r.Rooms)
+                .Where(a => roomNumbers.Contains(a.RoomNumber))
                 .ToListAsync();
 
             return apartment;
+        }
+
+        public async Task<IEnumerable<Apartment>> GetAllApartments()
+        {
+            var apartment = await _context.Apartments
+                .Include(a => a.Location)
+                .ToListAsync();
+
+            return apartment;
+        }
+        public async Task<List<ApartmentRoom>> GetRoomsByApartmentId(int apartmentId)
+        {
+            var room = await _context.Apartments
+                .Where(a => a.Id == apartmentId)
+                .SelectMany(a => a.Rooms)
+                .ToListAsync();
+
+            return room;
         }
     }
 }

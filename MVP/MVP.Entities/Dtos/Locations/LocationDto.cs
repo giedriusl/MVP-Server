@@ -3,7 +3,7 @@ using MVP.Entities.Entities;
 
 namespace MVP.Entities.Dtos.Locations
 {
-    public class LocationCreateDto
+    public class LocationDto
     {
         public  int Id { get; set; }
 
@@ -19,7 +19,7 @@ namespace MVP.Entities.Dtos.Locations
         [StringLength(256)]
         public string Address { get; set; }
 
-        public static Location ToEntity(LocationCreateDto location)
+        public static Location ToEntity(LocationDto location)
         {
             return new Location
             {
@@ -29,9 +29,9 @@ namespace MVP.Entities.Dtos.Locations
             };
         }
 
-        public static LocationCreateDto ToDto(Location location)
+        public static LocationDto ToDto(Location location)
         {
-            return new LocationCreateDto
+            return new LocationDto
             {
                 Id = location.Id,
                 Address = location.Address,

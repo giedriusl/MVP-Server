@@ -1,29 +1,31 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Dtos.Apartments;
 using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 
 namespace MVP.Controllers
 {
     [Route("")]
     [ApiController]
-    //[Authorize(Policy = "RequireAdministratorRole")]
+    [Authorize(Policy = "RequireAdministratorRole")]
     public class ApartmentController : ControllerBase
     {
         private readonly IApartmentService _apartmentService;
+        private readonly IFileReader _fileReader;
         private readonly ILogger<ApartmentController> _logger;
-        public ApartmentController(IApartmentService apartmentService, ILogger<ApartmentController> logger)
+        public ApartmentController(IApartmentService apartmentService, ILogger<ApartmentController> logger, IFileReader fileReader)
         {
             _apartmentService = apartmentService;
             _logger = logger;
+            _fileReader = fileReader;
         }
 
-        [HttpPost("api/[controller]/Create")]
+        [HttpPost("api/[controller]")]
         public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentDto createApartmentDto)
         {
             try
@@ -48,7 +50,7 @@ namespace MVP.Controllers
             }
         }
 
-        [HttpPut("api/[controller]/Update")]
+        [HttpPut("api/[controller]")]
         public async Task<IActionResult> UpdateApartment([FromBody] UpdateApartmentDto updateApartmentDto)
         {
             try
@@ -73,20 +75,21 @@ namespace MVP.Controllers
             }
         }
 
-        [HttpPost("api/[controller]/Calendar")]
-        public async Task<IActionResult> UploadCalendar(IFormFile file)
+        [HttpPost("api/[controller]/{apartmentId}/Calendar")]
+        public async Task<IActionResult> UploadCalendar(int apartmentId, IFormFile file)
         {
             try
             {
-                if (file.ContentType != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                if (file.ContentType != "text/csv")
                 {
                     return BadRequest("Invalid file format");
                 }
 
-                return Ok();
+                await _fileReader.ReadCalendarFile(apartmentId, file);
 
+                return Ok();
             }
-            catch (ApartmentException ex)
+            catch (FileReaderException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
@@ -110,6 +113,90 @@ namespace MVP.Controllers
             catch (ApartmentException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [HttpGet("api/[controller]")]
+        public async Task<IActionResult> GetAllApartments()
+        {
+            try
+            {
+                var apartments = await _apartmentService.GetAllApartments();
+                return Ok(apartments);
+
+            }
+            catch (ApartmentException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment get request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [HttpGet("api/[controller]/{apartmentId}")]
+        public async Task<IActionResult> GetApartmentById(int apartmentId)
+        {
+            try
+            {
+                var apartment = await _apartmentService.GetApartmentById(apartmentId);
+                return Ok(apartment);
+
+            }
+            catch (ApartmentException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment get request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [HttpGet("api/[controller]/{apartmentId}/Rooms")]
+        public async Task<IActionResult> GetRooms(int apartmentId)
+        {
+            try
+            {
+                var rooms = await _apartmentService.GetRoomsByApartmentId(apartmentId);
+                return Ok(rooms);
+
+            }
+            catch (ApartmentException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment rooms get request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [HttpGet("api/[controller]/{apartmentId}/Room/{roomId}/Calendar")]
+        public async Task<IActionResult> GetRoomsCalendar(int apartmentId, int roomId)
+        {
+            try
+            {
+                var calendars = await _apartmentService.GetCalendarByRoomAndApartmentId(apartmentId, roomId);
+                return Ok(calendars);
+
+            }
+            catch (ApartmentException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment rooms get request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)

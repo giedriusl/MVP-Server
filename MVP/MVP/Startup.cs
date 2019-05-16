@@ -89,9 +89,11 @@ namespace MVP
             //services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IApartmentService, ApartmentService>();
+            services.AddScoped<IFileReader, CsvReaderService>();
 
             //repositories
             services.AddScoped<IApartmentRepository, ApartmentRepository>();
+            services.AddScoped<ICalendarRepository, CalendarRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

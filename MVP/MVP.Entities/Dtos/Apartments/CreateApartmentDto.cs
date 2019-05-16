@@ -8,16 +8,16 @@ namespace MVP.Entities.Dtos.Apartments
 {
     public class CreateApartmentDto : ApartmentDto
     {
-        public LocationCreateDto Location { get; set; }
-        public List<SubmitApartmentRoomDto> Rooms { get; set; } = new List<SubmitApartmentRoomDto>();
         public int Id { get; set; }
+        public LocationDto Location { get; set; }
+        public List<SubmitApartmentRoomDto> Rooms { get; set; } = new List<SubmitApartmentRoomDto>();
         public static Apartment ToEntity(CreateApartmentDto createApartment)
         {
             return new Apartment
             {
                 Title = createApartment.Title,
                 BedCount = createApartment.BedCount,
-                Location = LocationCreateDto.ToEntity(createApartment.Location),
+                Location = LocationDto.ToEntity(createApartment.Location),
                 Rooms = createApartment.Rooms.Select(SubmitApartmentRoomDto.ToEntity).ToList()
             };
         }
@@ -29,7 +29,7 @@ namespace MVP.Entities.Dtos.Apartments
                 Id = apartment.Id,
                 Title = apartment.Title,
                 BedCount = apartment.BedCount,
-                Location = LocationCreateDto.ToDto(apartment.Location),
+                Location = LocationDto.ToDto(apartment.Location),
                 Rooms = apartment.Rooms.Select(SubmitApartmentRoomDto.ToDto).ToList()
             };
         }
