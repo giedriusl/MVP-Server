@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MVP.DataAccess.Interfaces;
@@ -7,7 +6,7 @@ using MVP.Entities.Entities;
 
 namespace MVP.DataAccess.Repositories
 {
-    class OfficeRepository : IOfficeRepositoryRead
+    class OfficeRepository : IOfficeRepository
     {
         private readonly MvpContext _context;
 
@@ -16,7 +15,7 @@ namespace MVP.DataAccess.Repositories
             _context = context;
         }
 
-        public async Task<List<Office>> GetAllOffices()
+        public async Task<IEnumerable<Office>> GetAllOffices()
         {
             var offices = await _context
                 .Offices
@@ -40,6 +39,24 @@ namespace MVP.DataAccess.Repositories
                 .FirstOrDefaultAsync(off => off.Name == name);
 
             return office;
+        }
+
+        public async Task AddOffice(Office office)
+        {
+            _context.Offices.Add(office);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddOfficeList(List<Office> offices)
+        {
+            _context.Offices.AddRange(offices);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateOffice(Office office)
+        {
+            _context.Offices.Update(office);
+            await _context.SaveChangesAsync();
         }
     }
 }
