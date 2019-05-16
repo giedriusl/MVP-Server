@@ -15,6 +15,7 @@ using MVP.DataAccess;
 using MVP.DataAccess.Interfaces;
 using MVP.DataAccess.Repositories;
 using MVP.Entities.Entities;
+using MVP.Middlewares;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using System;
@@ -25,6 +26,8 @@ namespace MVP
 {
     public class Startup
     {
+        private readonly string ALLOW_ALL_HEADERS_POLICY = "AllowAllHeaders";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -35,6 +38,18 @@ namespace MVP
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(ALLOW_ALL_HEADERS_POLICY,
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyHeader()
+                               .AllowAnyMethod();
+                    }
+                );
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddDbContext<MvpContext>
@@ -74,7 +89,7 @@ namespace MVP
                 options.AddPolicy("RequireAdministratorRole",
                     policy => policy.RequireRole("Administrator"));
 
-                options.AddPolicy("RequireOrganizerRole", 
+                options.AddPolicy("RequireOrganizerRole",
                     policy => policy.RequireRole("Administrator", "Organizer"));
 
                 options.AddPolicy("AllowAllRoles",
@@ -107,6 +122,8 @@ namespace MVP
             {
                 app.UseHsts();
             }
+
+            app.UseOptions(ALLOW_ALL_HEADERS_POLICY);
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

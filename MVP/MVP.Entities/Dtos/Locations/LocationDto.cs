@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using System.ComponentModel.DataAnnotations;
 using MVP.Entities.Entities;
 
@@ -39,5 +40,6 @@ namespace MVP.Entities.Dtos.Locations
                 CountryCode = location.CountryCode
             };
         }
+
     }
 }
