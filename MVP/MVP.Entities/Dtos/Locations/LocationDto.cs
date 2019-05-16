@@ -8,15 +8,15 @@ namespace MVP.Entities.Dtos.Locations
     class LocationDto
     {
         [Required]
-        [StringLength(500)]
+        [StringLength(256)]
         public string City { get; set; }
 
         [Required]
-        [StringLength(500)]
+        [StringLength(256)]
         public string CountryCode { get; set; }
 
         [Required]
-        [StringLength(500)]
+        [StringLength(256)]
         public string Address { get; set; }
     }
 }
