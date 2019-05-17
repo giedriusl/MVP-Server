@@ -13,11 +13,11 @@ namespace MVP.EmailService
             _emailSender = emailSender;
         }
 
-        private const string ConfirmPasswordPath = "C://Users//giedr//source//repos//MVP-Server//MVP//MVP.EmailService//EmailTemplates//CreateAccountPassword.html";
+        private const string CreatePasswordPath = "C://Users//giedr//source//repos//MVP-Server//MVP//MVP.EmailService//EmailTemplates//CreateAccountPassword.html";
 
-        public void SendConfirmationEmail(string email, string url)
+        public void SendInvitationEmail(string email, string url)
         {
-            var body = BuildBody(ConfirmPasswordPath);
+            var body = BuildBody(CreatePasswordPath);
             var messageBody = string.Format(body.HtmlBody, url);
 
             var emailMessage = new EmailMessageDto
@@ -34,7 +34,7 @@ namespace MVP.EmailService
         {
             var bodyBuilder = new BodyBuilder();
 
-            using (var sourceReader = System.IO.File.OpenText(ConfirmPasswordPath))
+            using (var sourceReader = System.IO.File.OpenText(CreatePasswordPath))
             {
                 bodyBuilder.HtmlBody = sourceReader.ReadToEnd();
             }

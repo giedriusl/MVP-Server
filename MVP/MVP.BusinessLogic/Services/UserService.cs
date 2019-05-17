@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using MVP.BusinessLogic.Helpers.TokenGenerator;
+using MVP.BusinessLogic.Helpers.UrlBuilder;
 using MVP.BusinessLogic.Interfaces;
+using MVP.EmailService.Interfaces;
 using MVP.Entities.Dtos;
 using MVP.Entities.Entities;
 using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
 using System.Linq;
 using System.Threading.Tasks;
-using MVP.EmailService.Interfaces;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -17,35 +19,59 @@ namespace MVP.BusinessLogic.Services
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenGenerator _tokenGenerator;
         private readonly IEmailManager _emailManager;
+        private readonly IUrlBuilder _urlBuilder;
+        private readonly IConfiguration _configuration;
 
         public UserService(UserManager<User> userManager, 
             SignInManager<User> signInManager,
             ITokenGenerator tokenGenerator, 
-            IEmailManager emailManager)
+            IEmailManager emailManager, 
+            IUrlBuilder urlBuilder, 
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenGenerator = tokenGenerator;
             _emailManager = emailManager;
+            _urlBuilder = urlBuilder;
+            _configuration = configuration;
         }
 
-        public async Task<string> CreateAsync(CreateUserDto newUserDto)
+        public async Task SendResetPasswordLink(string email)
         {
-            var user = CreateUserDto.ToEntity(newUserDto);
+            var user = _userManager.Users.FirstOrDefault(u => u.Email == email);
+            if (user is null)
+            {
+                throw new InvalidUserException($"User with email {email} was not found.");
+            }
 
-            var identityResult = await _userManager.CreateAsync(user, newUserDto.Password);
+            await SendResetPasswordLink(user);
+        }
+
+        private async Task SendResetPasswordLink(User user)
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var url = _urlBuilder.BuildInvitationUrl(token);
+
+            _emailManager.SendInvitationEmail(user.Email, url);
+        }
+
+        public async Task CreateAsync(CreateUserDto createUserDto)
+        {
+            var user = CreateUserDto.ToEntity(createUserDto);
+            var temporaryPassword = _configuration["TemporaryPassword"];
+
+            var identityResult = await _userManager.CreateAsync(user, temporaryPassword);
 
             if (!identityResult.Succeeded)
             {
                 throw new InvalidUserException("User creation failed on CreateAsync.");
             }
 
-            await AssignUserToRole(user, newUserDto.Role);
+            await AssignUserToRole(user, createUserDto.Role);
 
-            await _signInManager.SignInAsync(user, isPersistent:false);
-            var token = await _tokenGenerator.GenerateToken(user);
-
-            return token;
+            await SendResetPasswordLink(user);
         }
 
         public async Task<string> LoginAsync(UserLoginDto userLoginDto)
@@ -64,9 +90,16 @@ namespace MVP.BusinessLogic.Services
             return token;
         }
 
-        public void SendEmail(string url, string email)
+        public async Task ResetPassword(ResetPasswordDto resetPasswordDto)
         {
-            _emailManager.SendConfirmationEmail(email, url);
+            var user = _userManager.Users.First(u => u.Email == resetPasswordDto.Email);
+
+            var result = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.Password);
+
+            if (!result.Succeeded)
+            {
+                throw new InvalidUserException("Password reset failed.");
+            }
         }
 
         private async Task AssignUserToRole(User user, UserRoles role)
