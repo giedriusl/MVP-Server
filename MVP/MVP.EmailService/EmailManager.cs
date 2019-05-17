@@ -1,4 +1,6 @@
-﻿using MimeKit;
+﻿using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using MimeKit;
 using MVP.EmailService.Interfaces;
 using MVP.Entities.Dtos.Emails;
 
@@ -6,18 +8,19 @@ namespace MVP.EmailService
 {
     public class EmailManager : IEmailManager
     {
+        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IEmailSender _emailSender;
 
-        public EmailManager(IEmailSender emailSender)
+        public EmailManager(IEmailSender emailSender, IHostingEnvironment hostingEnvironment)
         {
             _emailSender = emailSender;
+            _hostingEnvironment = hostingEnvironment;
         }
-
-        private const string CreatePasswordPath = "C://Users//giedr//source//repos//MVP-Server//MVP//MVP.EmailService//EmailTemplates//CreateAccountPassword.html";
 
         public void SendInvitationEmail(string email, string url)
         {
-            var body = BuildBody(CreatePasswordPath);
+            var path = Path.Combine(_hostingEnvironment.WebRootPath, "CreateAccountPassword.html");
+            var body = BuildBody(path);
             var messageBody = string.Format(body.HtmlBody, url);
 
             var emailMessage = new EmailMessageDto
@@ -34,7 +37,7 @@ namespace MVP.EmailService
         {
             var bodyBuilder = new BodyBuilder();
 
-            using (var sourceReader = System.IO.File.OpenText(CreatePasswordPath))
+            using (var sourceReader = File.OpenText(pathToFile))
             {
                 bodyBuilder.HtmlBody = sourceReader.ReadToEnd();
             }

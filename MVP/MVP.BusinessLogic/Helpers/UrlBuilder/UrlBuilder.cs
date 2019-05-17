@@ -11,10 +11,10 @@ namespace MVP.BusinessLogic.Helpers.UrlBuilder
             _configuration = configuration;
         }
 
-        public string BuildInvitationUrl(string token)
+        public string BuildPasswordResetLink(string token, string email)
         {
-            var invitationUrl = _configuration["Urls:InvitationUrl"];
-            var urlWithToken = invitationUrl + $"?{token}";
+            var invitationUrl = _configuration["Urls:PasswordResetUrl"];
+            var urlWithToken = invitationUrl + $"?{token}&{email}";
 
             return urlWithToken;
         }

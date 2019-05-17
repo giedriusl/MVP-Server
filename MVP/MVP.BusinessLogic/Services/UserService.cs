@@ -52,7 +52,7 @@ namespace MVP.BusinessLogic.Services
         {
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            var url = _urlBuilder.BuildInvitationUrl(token);
+            var url = _urlBuilder.BuildPasswordResetLink(token, user.Email);
 
             _emailManager.SendInvitationEmail(user.Email, url);
         }
