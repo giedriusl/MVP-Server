@@ -65,5 +65,15 @@ namespace MVP.Controllers
                 return StatusCode(500, "common.internal");
             }
         }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult SendEmail(string url, string email)
+        {
+            _userService.SendEmail(url, email);
+
+            return Ok();
+        }
+
     }
 }
