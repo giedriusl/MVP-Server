@@ -14,8 +14,7 @@ namespace MVP.Entities.Dtos.Offices
         {
             var office = new Office
             {
-                Name = newOfficeDto.Name,
-                Location = LocationDto.ToEntity(newOfficeDto.Location)
+                Name = newOfficeDto.Name
             };
 
             return office;

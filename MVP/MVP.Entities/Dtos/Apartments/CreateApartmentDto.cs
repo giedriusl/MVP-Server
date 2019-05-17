@@ -17,7 +17,6 @@ namespace MVP.Entities.Dtos.Apartments
             {
                 Title = createApartment.Title,
                 BedCount = createApartment.BedCount,
-                Location = LocationDto.ToEntity(createApartment.Location),
                 Rooms = createApartment.Rooms.Select(SubmitApartmentRoomDto.ToEntity).ToList()
             };
         }

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.Locations;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -15,11 +16,15 @@ namespace MVP.BusinessLogic.Services
     {
         private readonly IApartmentRepository _apartmentRepository;
         private readonly ICalendarRepository _calendarRepository;
+        private readonly ILocationRepository _locationRepository;
 
-        public ApartmentService(IApartmentRepository apartmentRepository, ICalendarRepository calendarRepository)
+        public ApartmentService(IApartmentRepository apartmentRepository,
+            ICalendarRepository calendarRepository,
+            ILocationRepository locationRepository)
         {
             _apartmentRepository = apartmentRepository;
             _calendarRepository = calendarRepository;
+            _locationRepository = locationRepository;
         }
 
         public async Task<CreateApartmentDto> CreateApartmentAsync(CreateApartmentDto createApartmentDto)
@@ -27,6 +32,16 @@ namespace MVP.BusinessLogic.Services
             try
             {
                 var apartment = CreateApartmentDto.ToEntity(createApartmentDto);
+
+                var location = await _locationRepository.GetLocationByCityAndCountryCodeAndAddress
+                    (createApartmentDto.Location.City, createApartmentDto.Location.CountryCode, createApartmentDto.Location.Address);
+
+                if (location is null)
+                {
+                    location = LocationDto.ToEntity(createApartmentDto.Location);
+                }
+
+                apartment.Location = location;
 
                 var apartmentEntity = await _apartmentRepository.AddApartmentAsync(apartment);
 

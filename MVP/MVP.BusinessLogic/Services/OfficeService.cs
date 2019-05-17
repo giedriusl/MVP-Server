@@ -6,18 +6,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.Locations;
 
 namespace MVP.BusinessLogic.Services
 {
     public class OfficeService : IOfficeService
     {
         private readonly IOfficeRepository _officeRepository;
+        private readonly ILocationRepository _locationRepository;
         private readonly IApartmentRepository _apartmentRepository;
 
-        public OfficeService(IOfficeRepository officeRepository, IApartmentRepository apartmentRepository)
+        public OfficeService(IOfficeRepository officeRepository, IApartmentRepository apartmentRepository, ILocationRepository locationRepository)
         {
             _officeRepository = officeRepository;
             _apartmentRepository = apartmentRepository;
+            _locationRepository = locationRepository;
         }
 
         public async Task<CreateOfficeDto> CreateOfficeAsync(CreateOfficeDto createOfficeDto)
@@ -25,6 +28,16 @@ namespace MVP.BusinessLogic.Services
             try
             {
                 var office = CreateOfficeDto.ToEntity(createOfficeDto);
+
+                var location = await _locationRepository.GetLocationByCityAndCountryCodeAndAddress
+                    (createOfficeDto.Location.City, createOfficeDto.Location.CountryCode, createOfficeDto.Location.Address);
+
+                if (location is null)
+                {
+                    location = LocationDto.ToEntity(createOfficeDto.Location);
+                }
+
+                office.Location = location;
 
                 var entity = await _officeRepository.AddOfficeAsync(office);
 
