@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using MimeKit;
 using MVP.EmailService.Interfaces;
 using MVP.Entities.Dtos.Emails;
+using MVP.Entities.Helpers;
 
 namespace MVP.EmailService
 {
@@ -19,14 +20,14 @@ namespace MVP.EmailService
 
         public void SendInvitationEmail(string email, string url)
         {
-            var path = Path.Combine(_hostingEnvironment.WebRootPath, "CreateAccountPassword.html");
+            var path = Path.Combine(_hostingEnvironment.WebRootPath, Email.CreateAccountPasswordPath);
             var body = BuildBody(path);
             var messageBody = string.Format(body.HtmlBody, url);
 
             var emailMessage = new EmailMessageDto
             {
                 ToAddress = email,
-                Subject = "Create Password",
+                Subject = Email.CreateAccountPasswordSubject,
                 Body = messageBody
             };
 

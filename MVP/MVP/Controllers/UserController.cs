@@ -72,7 +72,7 @@ namespace MVP.Controllers
         {
             try
             {
-                await _userService.ResetPassword(resetPasswordDto);
+                await _userService.ResetPasswordAsync(resetPasswordDto);
                 return Ok();
             }
             catch (InvalidUserException exception)
@@ -88,7 +88,7 @@ namespace MVP.Controllers
         {
             try
             {
-                await _userService.SendResetPasswordLink(email);
+                await _userService.SendResetPasswordLinkAsync(email);
 
                 return Ok();
             }
