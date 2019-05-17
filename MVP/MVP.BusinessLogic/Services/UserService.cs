@@ -37,7 +37,7 @@ namespace MVP.BusinessLogic.Services
             _configuration = configuration;
         }
 
-        public async Task SendResetPasswordLink(string email)
+        public async Task SendResetPasswordLinkAsync(string email)
         {
             var user = _userManager.Users.FirstOrDefault(u => u.Email == email);
             if (user is null)
@@ -45,23 +45,13 @@ namespace MVP.BusinessLogic.Services
                 throw new InvalidUserException($"User with email {email} was not found.");
             }
 
-            await SendResetPasswordLink(user);
-        }
-
-        private async Task SendResetPasswordLink(User user)
-        {
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-            var url = _urlBuilder.BuildPasswordResetLink(token, user.Email);
-
-            _emailManager.SendInvitationEmail(user.Email, url);
+            await SendResetPasswordLinkAsync(user);
         }
 
         public async Task CreateAsync(CreateUserDto createUserDto)
         {
             var user = CreateUserDto.ToEntity(createUserDto);
             var temporaryPassword = _configuration["TemporaryPassword"];
-
             var identityResult = await _userManager.CreateAsync(user, temporaryPassword);
 
             if (!identityResult.Succeeded)
@@ -71,7 +61,7 @@ namespace MVP.BusinessLogic.Services
 
             await AssignUserToRole(user, createUserDto.Role);
 
-            await SendResetPasswordLink(user);
+            await SendResetPasswordLinkAsync(user);
         }
 
         public async Task<string> LoginAsync(UserDto userDto)
@@ -90,10 +80,9 @@ namespace MVP.BusinessLogic.Services
             return token;
         }
 
-        public async Task ResetPassword(ResetPasswordDto resetPasswordDto)
+        public async Task ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
         {
             var user = _userManager.Users.First(u => u.Email == resetPasswordDto.Email);
-
             var result = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.Password);
 
             if (!result.Succeeded)
@@ -102,10 +91,16 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
+        private async Task SendResetPasswordLinkAsync(User user)
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var url = _urlBuilder.BuildPasswordResetLink(token, user.Email);
+            _emailManager.SendInvitationEmail(user.Email, url);
+        }
+
         private async Task AssignUserToRole(User user, UserRoles role)
         {
             var roleName = role.ToString();
-            
             var identityResult = await _userManager.AddToRoleAsync(user, roleName);
 
             if (!identityResult.Succeeded)

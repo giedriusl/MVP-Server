@@ -7,7 +7,7 @@ namespace MVP.BusinessLogic.Interfaces
     {
         Task CreateAsync(CreateUserDto createUserDto);
         Task<string> LoginAsync(UserDto userDto);
-        Task ResetPassword(ResetPasswordDto resetPasswordDto);
-        Task SendResetPasswordLink(string email);
+        Task ResetPasswordAsync(ResetPasswordDto resetPasswordDto);
+        Task SendResetPasswordLinkAsync(string email);
     }
 }

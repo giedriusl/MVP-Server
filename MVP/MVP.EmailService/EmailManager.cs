@@ -11,6 +11,9 @@ namespace MVP.EmailService
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IEmailSender _emailSender;
 
+        private const string CreateAccountPasswordPath = "CreateAccountPassword.html";
+        public const string CreateAccountPasswordSubject = "Create Password";
+
         public EmailManager(IEmailSender emailSender, IHostingEnvironment hostingEnvironment)
         {
             _emailSender = emailSender;
@@ -19,14 +22,14 @@ namespace MVP.EmailService
 
         public void SendInvitationEmail(string email, string url)
         {
-            var path = Path.Combine(_hostingEnvironment.WebRootPath, "CreateAccountPassword.html");
+            var path = Path.Combine(_hostingEnvironment.WebRootPath, CreateAccountPasswordPath);
             var body = BuildBody(path);
             var messageBody = string.Format(body.HtmlBody, url);
 
             var emailMessage = new EmailMessageDto
             {
                 ToAddress = email,
-                Subject = "Create Password",
+                Subject = CreateAccountPasswordSubject,
                 Body = messageBody
             };
 
