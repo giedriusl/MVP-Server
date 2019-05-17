@@ -7,6 +7,7 @@ using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
 using System.Linq;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.Token;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -25,7 +26,7 @@ namespace MVP.BusinessLogic.Services
             _tokenGenerator = tokenGenerator;
         }
 
-        public async Task<string> CreateAsync(CreateUserDto newUserDto)
+        public async Task<TokenWithClaimsPrincipal> CreateAsync(CreateUserDto newUserDto)
         {
             var user = CreateUserDto.ToEntity(newUserDto);
 
@@ -39,12 +40,12 @@ namespace MVP.BusinessLogic.Services
             await AssignUserToRole(user, newUserDto.Role);
 
             await _signInManager.SignInAsync(user, isPersistent:false);
-            var token = await _tokenGenerator.GenerateToken(user);
+            var tokenWithClaimsPrincipal = await _tokenGenerator.GenerateTokenAsync(user);
 
-            return token;
+            return tokenWithClaimsPrincipal;
         }
 
-        public async Task<string> LoginAsync(UserLoginDto userLoginDto)
+        public async Task<TokenWithClaimsPrincipal> LoginAsync(UserLoginDto userLoginDto)
         {
             var result = await _signInManager.PasswordSignInAsync(userLoginDto.Email, userLoginDto.Password, 
                 userLoginDto.RememberMe, false);
@@ -55,9 +56,9 @@ namespace MVP.BusinessLogic.Services
             }
 
             var user = _userManager.Users.First(u => u.Email == userLoginDto.Email);
-            var token = await _tokenGenerator.GenerateToken(user);
+            var tokenWithClaimsPrincipal = await _tokenGenerator.GenerateTokenAsync(user);
 
-            return token;
+            return tokenWithClaimsPrincipal;
         }
 
         private async Task AssignUserToRole(User user, UserRoles role)

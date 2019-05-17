@@ -4,6 +4,7 @@ using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using MVP.Entities.Dtos;
 
@@ -29,7 +30,7 @@ namespace MVP.Controllers
             try
             {
                 var token = await _userService.CreateAsync(newUserDto);
-
+                await HttpContext.SignInAsync(token.ClaimsPrincipal, token.AuthProperties);
                 return Ok(token);
             }
             catch (InvalidUserException exception)
@@ -51,7 +52,7 @@ namespace MVP.Controllers
             try
             {
                 var token = await _userService.LoginAsync(userLogin);
-
+                await HttpContext.SignInAsync(token.ClaimsPrincipal, token.AuthProperties);
                 return Ok(token);
             }
             catch (InvalidUserException exception)

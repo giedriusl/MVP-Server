@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MVP.Entities.Dtos.Token;
 using MVP.Entities.Entities;
 using System;
 using System.Collections.Generic;
@@ -7,7 +10,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
 namespace MVP.BusinessLogic.Helpers.TokenGenerator
 {
@@ -26,24 +28,47 @@ namespace MVP.BusinessLogic.Helpers.TokenGenerator
             _roleManager = roleManager;
         }
 
-        public async Task<string> GenerateToken(User user)
+        public async Task<TokenWithClaimsPrincipal> GenerateTokenAsync(User user)
         {
             var claims = await GetValidClaims(user);
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Token:JwtKey"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["JwtExpireDays"]));
+            var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Token:JwtExpireDays"]));
             var notBefore = DateTime.Now;
 
             var token = new JwtSecurityToken(
-                _configuration["JwtIssuer"],
-                _configuration["JwtIssuer"],
+                _configuration["Token:Issuer"],
+                _configuration["Token:Audience"],
                 claims,
                 notBefore,
                 expires,
                 credentials
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return new TokenWithClaimsPrincipal
+            {
+                AccessToken = accessToken,
+                ClaimsPrincipal = ClaimsPrincipalFactory.CreatePrincipal(claims),
+                AuthProperties = CreateAuthProperties(accessToken)
+            };
+        }
+
+        private static AuthenticationProperties CreateAuthProperties(string accessToken)
+        {
+            var authProps = new AuthenticationProperties();
+            authProps.StoreTokens(
+                new[]
+                {
+                    new AuthenticationToken()
+                    {
+                        Name = "jwt",
+                        Value = accessToken
+                    }
+                });
+
+            return authProps;
         }
 
         private async Task<List<Claim>> GetValidClaims(User user)

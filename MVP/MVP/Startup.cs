@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using MVP.BusinessLogic.Helpers.TokenGenerator;
 using MVP.BusinessLogic.Interfaces;
 using MVP.BusinessLogic.Services;
@@ -19,26 +20,31 @@ using NLog.Web;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using MVP.Helpers;
 
 namespace MVP
 {
     public class Startup
     {
-        private readonly string ALLOW_ALL_HEADERS_POLICY = "AllowAllHeaders";
+        private const string AllowAllHeadersPolicy = "AllowAllHeaders";
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration,
+            IHostingEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment Environment { get; }
 
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options =>
             {
-                options.AddPolicy(ALLOW_ALL_HEADERS_POLICY,
+                options.AddPolicy(AllowAllHeadersPolicy,
                     builder =>
                     {
                         builder.AllowAnyOrigin()
@@ -48,7 +54,13 @@ namespace MVP
                 );
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddDataProtection(options =>
+                    options.ApplicationDiscriminator = $"{Environment.ApplicationName}")
+                .SetApplicationName($"{Environment.ApplicationName}");
+
+
+            services.AddMvc(options => options.Filters.Add(new RequireHttpsAttribute()))
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddDbContext<MvpContext>
                 (options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -59,27 +71,49 @@ namespace MVP
                 .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options => { options.User.RequireUniqueEmail = true; });
-
+            services.AddScoped<IDataSerializer<AuthenticationTicket>,
+                TicketSerializer>();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            var validationParams = new TokenValidationParameters()
+            {
+                ClockSkew = TimeSpan.Zero,
+
+                ValidateAudience = true,
+                ValidAudience = Configuration["Token:Audience"],
+
+                ValidateIssuer = true,
+                ValidIssuer = Configuration["Token:Issuer"],
+
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Token:JwtKey"])),
+                ValidateIssuerSigningKey = true,
+
+                RequireExpirationTime = true,
+                ValidateLifetime = true
+            };
+
             services
                 .AddAuthentication(options =>
                 {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
+                    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
-                .AddJwtBearer(cfg =>
+                .AddCookie(options =>
                 {
-                    cfg.RequireHttpsMetadata = false;
-                    cfg.SaveToken = true;
-                    cfg.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidIssuer = Configuration["JwtIssuer"],
-                        ValidAudience = Configuration["JwtIssuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtKey"])),
-                        ClockSkew = TimeSpan.Zero
-                    };
+                    options.Cookie.Expiration = TimeSpan.FromMinutes(5);
+                    options.TicketDataFormat = new JwtAuthTicketFormat(validationParams,
+                        services
+                            .BuildServiceProvider()
+                            .GetService<IDataSerializer<AuthenticationTicket>>(),
+                        services
+                            .BuildServiceProvider()
+                            .GetDataProtector(new[] {$"{Environment.ApplicationName}-Auth1"}));
+
+                    options.LoginPath = "/login";
+                    options.LogoutPath = "/logout";
+                    options.AccessDeniedPath = options.LoginPath;
+                    options.ReturnUrlParameter = "returnUrl";
                 });
 
             services.AddAuthorization(options =>
@@ -114,7 +148,7 @@ namespace MVP
                 app.UseHsts();
             }
 
-            app.UseOptions(ALLOW_ALL_HEADERS_POLICY);
+            app.UseOptions(AllowAllHeadersPolicy);
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
