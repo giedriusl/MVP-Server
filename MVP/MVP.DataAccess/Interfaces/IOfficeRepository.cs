@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using MVP.Entities.Entities;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using MVP.Entities.Entities;
 
 namespace MVP.DataAccess.Interfaces
 {
-    interface IOfficeRepository
+    public interface IOfficeRepository
     {
-        Task<Office> GetOfficeById(int officeId);
-        Task<Office> GetOfficeByName(string name);
-        Task<IEnumerable<Office>> GetAllOffices();
+        Task<Office> AddOfficeAsync(Office office);
+        Task UpdateOfficeAsync(Office office);
+        Task DeleteOfficeAsync(Office office);
 
-        Task AddOffice(Office office);
-        Task AddOfficeList(List<Office> offices);
-        Task UpdateOffice(Office office);
+        Task<Office> GetOfficeByIdAsync(int officeId);
+        Task<Office> GetOfficeByNameAsync(string name);
+        Task<IEnumerable<Office>> GetAllOfficesAsync();
     }
 }

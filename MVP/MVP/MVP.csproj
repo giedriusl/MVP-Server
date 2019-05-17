@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MVP.BusinessLogic\MVP.BusinessLogic.csproj" />
-    <ProjectReference Include="..\MVP.DataAccess\MVP.DataAccess.csproj" />
     <ProjectReference Include="..\MVP.Entities\MVP.Entities.csproj" />
   </ItemGroup>
 

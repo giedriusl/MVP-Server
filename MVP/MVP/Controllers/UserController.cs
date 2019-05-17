@@ -6,6 +6,7 @@ using MVP.Entities.Dtos;
 using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.Users;
 
 namespace MVP.Controllers
 {

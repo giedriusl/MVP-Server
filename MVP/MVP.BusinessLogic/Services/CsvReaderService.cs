@@ -30,7 +30,7 @@ namespace MVP.BusinessLogic.Services
                 var roomNumbers = new List<int>();
 
                 data.ForEach(l => roomNumbers.Add(Int32.Parse(l[2])));
-                var rooms = await _apartmentRepository.GetApartmentRoomsByNumber(apartmentId, roomNumbers);
+                var rooms = await _apartmentRepository.GetApartmentRoomsByNumberAsync(apartmentId, roomNumbers);
                 var calendars = new List<Calendar>();
 
                 if (rooms.Count == 0)

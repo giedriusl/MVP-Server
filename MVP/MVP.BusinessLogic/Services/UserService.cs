@@ -7,6 +7,7 @@ using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
 using System.Linq;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.Users;
 
 namespace MVP.BusinessLogic.Services
 {

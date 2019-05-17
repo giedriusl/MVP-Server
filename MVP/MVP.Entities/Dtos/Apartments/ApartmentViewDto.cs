@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using MVP.Entities.Dtos.Apartments.ApartmentRooms;
-using MVP.Entities.Dtos.Locations;
+﻿using MVP.Entities.Dtos.Locations;
 using MVP.Entities.Entities;
 
 namespace MVP.Entities.Dtos.Apartments

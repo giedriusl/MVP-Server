@@ -11,7 +11,5 @@ namespace MVP.Entities.Dtos.Apartments
 
         [Required]
         public int BedCount { get; set; }
-
-        //public Office Office { get; set; }
     }
 }

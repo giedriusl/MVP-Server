@@ -22,67 +22,66 @@ namespace MVP.BusinessLogic.Services
             _calendarRepository = calendarRepository;
         }
 
-        public async Task<CreateApartmentDto> CreateApartment(CreateApartmentDto createApartmentDto)
+        public async Task<CreateApartmentDto> CreateApartmentAsync(CreateApartmentDto createApartmentDto)
         {
             try
             {
                 var apartment = CreateApartmentDto.ToEntity(createApartmentDto);
 
-                var apartmentEntity = await _apartmentRepository.AddApartment(apartment);
+                var apartmentEntity = await _apartmentRepository.AddApartmentAsync(apartment);
 
                 return CreateApartmentDto.ToDto(apartmentEntity);
             }
             catch (Exception ex)
             {
-                throw new ApartmentException(ex.Message);
+                throw new BusinessLogicException(ex.Message);
             }
-
         }
-        public async Task<UpdateApartmentDto> UpdateApartment(UpdateApartmentDto apartment)
+        public async Task<UpdateApartmentDto> UpdateApartmentAsync(UpdateApartmentDto apartment)
         {
             try
             {
-                var existingApartment = await _apartmentRepository.GetApartmentWithRoomsById(apartment.Id);
+                var existingApartment = await _apartmentRepository.GetApartmentWithRoomsByIdAsync(apartment.Id);
 
                 if (existingApartment is null)
                 {
-                    throw new ApartmentException("Apartment was not found");
+                    throw new BusinessLogicException("Apartment was not found");
                 }
 
                 existingApartment.UpdateApartment(apartment.Title, apartment.BedCount);
 
-                await _apartmentRepository.UpdateApartment(existingApartment);
+                await _apartmentRepository.UpdateApartmentAsync(existingApartment);
                 return apartment;
             }
             catch (Exception ex)
             {
-                throw new ApartmentException(ex, "Failed to update apartment");
+                throw new BusinessLogicException(ex, "Failed to update apartment");
             }
         }
-        public async Task DeleteApartment(int apartmentId)
+        public async Task DeleteApartmentAsync(int apartmentId)
         {
             try
             {
-                var existingApartment = await _apartmentRepository.GetApartmentWithRoomsById(apartmentId);
+                var existingApartment = await _apartmentRepository.GetApartmentWithRoomsByIdAsync(apartmentId);
 
                 if (existingApartment is null)
                 {
-                    throw new ApartmentException("Apartment was not found");
+                    throw new BusinessLogicException("Apartment was not found");
                 }
 
-                await _apartmentRepository.DeleteApartment(existingApartment);
+                await _apartmentRepository.DeleteApartmentAsync(existingApartment);
             }
             catch (Exception ex)
             {
-                throw new ApartmentException(ex, "Failed to update apartment");
+                throw new BusinessLogicException(ex, "Failed to update apartment");
             }
         }
 
-        public async Task<IEnumerable<ApartmentViewDto>> GetAllApartments()
+        public async Task<IEnumerable<ApartmentViewDto>> GetAllApartmentsAsync()
         {
             try
             {
-                var apartments = await _apartmentRepository.GetAllApartments();
+                var apartments = await _apartmentRepository.GetAllApartmentsAsync();
 
                 var apartmentsDto = apartments.Select(ApartmentViewDto.ToDto).ToList();
 
@@ -90,38 +89,38 @@ namespace MVP.BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                throw new ApartmentException(ex, "Failed to get all apartments");
+                throw new BusinessLogicException(ex, "Failed to get all apartments");
             }
         }
 
-        public async Task<ApartmentViewDto> GetApartmentById(int apartmentId)
+        public async Task<ApartmentViewDto> GetApartmentByIdAsync(int apartmentId)
         {
             try
             {
-                var apartment = await _apartmentRepository.GetApartmentById(apartmentId);
+                var apartment = await _apartmentRepository.GetApartmentByIdAsync(apartmentId);
 
                 return ApartmentViewDto.ToDto(apartment);
             }
             catch (Exception ex)
             {
-                throw new ApartmentException(ex, $"Failed to get apartment {apartmentId}");
+                throw new BusinessLogicException(ex, $"Failed to get apartment {apartmentId}");
             }
         }
 
-        public async Task<IEnumerable<SubmitApartmentRoomDto>> GetRoomsByApartmentId(int apartmentId)
+        public async Task<IEnumerable<SubmitApartmentRoomDto>> GetRoomsByApartmentIdAsync(int apartmentId)
         {
             try
             {
-                var rooms = await _apartmentRepository.GetRoomsByApartmentId(apartmentId);
+                var rooms = await _apartmentRepository.GetRoomsByApartmentIdAsync(apartmentId);
                 return rooms.Select(SubmitApartmentRoomDto.ToDto).ToList();
             }
             catch (Exception ex)
             {
-                throw new ApartmentException(ex, $"Failed to get all rooms {apartmentId}");
+                throw new BusinessLogicException(ex, $"Failed to get all rooms {apartmentId}");
             }
         }
 
-        public async Task<IEnumerable<CalendarDto>> GetCalendarByRoomAndApartmentId(int apartmentId, int roomId)
+        public async Task<IEnumerable<CalendarDto>> GetCalendarByRoomAndApartmentIdAsync(int apartmentId, int roomId)
         {
             try
             {
@@ -131,7 +130,7 @@ namespace MVP.BusinessLogic.Services
             }
             catch (Exception ex)
             {
-                throw new ApartmentException(ex, $"Failed to get {apartmentId} room calendar. ");
+                throw new BusinessLogicException(ex, $"Failed to get {apartmentId} room calendar. ");
             }
         }
     }

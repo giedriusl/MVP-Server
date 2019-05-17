@@ -1,4 +1,4 @@
-﻿namespace MVP.Entities.Dtos
+﻿namespace MVP.Entities.Dtos.Users
 {
     public class UserLoginDto : UserDto
     {

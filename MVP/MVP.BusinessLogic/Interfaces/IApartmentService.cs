@@ -8,13 +8,13 @@ namespace MVP.BusinessLogic.Interfaces
 {
     public interface IApartmentService
     {
-        Task<CreateApartmentDto> CreateApartment(CreateApartmentDto createApartmentDto);
-        Task<UpdateApartmentDto> UpdateApartment(UpdateApartmentDto apartment);
-        Task DeleteApartment(int apartmentId);
+        Task<CreateApartmentDto> CreateApartmentAsync(CreateApartmentDto createApartmentDto);
+        Task<UpdateApartmentDto> UpdateApartmentAsync(UpdateApartmentDto apartment);
+        Task DeleteApartmentAsync(int apartmentId);
 
-        Task<IEnumerable<ApartmentViewDto>> GetAllApartments();
-        Task<ApartmentViewDto> GetApartmentById(int apartmentId);
-        Task<IEnumerable<SubmitApartmentRoomDto>> GetRoomsByApartmentId(int apartmentId);
-        Task<IEnumerable<CalendarDto>> GetCalendarByRoomAndApartmentId(int apartmentId, int roomId);
+        Task<IEnumerable<ApartmentViewDto>> GetAllApartmentsAsync();
+        Task<ApartmentViewDto> GetApartmentByIdAsync(int apartmentId);
+        Task<IEnumerable<SubmitApartmentRoomDto>> GetRoomsByApartmentIdAsync(int apartmentId);
+        Task<IEnumerable<CalendarDto>> GetCalendarByRoomAndApartmentIdAsync(int apartmentId, int roomId);
     }
 }

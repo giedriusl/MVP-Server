@@ -9,5 +9,10 @@ namespace MVP.Entities.Entities
         public int LocationId { get; set; }
         public virtual Location Location { get; set; }
         public virtual List<Apartment> Apartments { get; set; } = new List<Apartment>();
+
+        public void UpdateOffice(string name)
+        {
+            Name = name;
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MVP.Entities.Dtos
+namespace MVP.Entities.Dtos.Users
 {
     public class UserDto
     {

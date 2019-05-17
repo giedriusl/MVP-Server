@@ -35,10 +35,10 @@ namespace MVP.Controllers
                     return BadRequest("Model is not valid");
                 }
 
-                var response = await _apartmentService.CreateApartment(createApartmentDto);
+                var response = await _apartmentService.CreateApartmentAsync(createApartmentDto);
                 return Ok(response);
             }
-            catch(ApartmentException ex)
+            catch(BusinessLogicException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
@@ -60,10 +60,10 @@ namespace MVP.Controllers
                     return BadRequest("Model is not valid");
                 }
 
-                var response = await _apartmentService.UpdateApartment(updateApartmentDto);
+                var response = await _apartmentService.UpdateApartmentAsync(updateApartmentDto);
                 return Ok(response);
             }
-            catch(ApartmentException ex)
+            catch(BusinessLogicException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
@@ -106,11 +106,11 @@ namespace MVP.Controllers
         {
             try
             {
-                await _apartmentService.DeleteApartment(apartmentId);
+                await _apartmentService.DeleteApartmentAsync(apartmentId);
                 return Ok();
 
             }
-            catch (ApartmentException ex)
+            catch (BusinessLogicException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
@@ -127,11 +127,11 @@ namespace MVP.Controllers
         {
             try
             {
-                var apartments = await _apartmentService.GetAllApartments();
+                var apartments = await _apartmentService.GetAllApartmentsAsync();
                 return Ok(apartments);
 
             }
-            catch (ApartmentException ex)
+            catch (BusinessLogicException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment get request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
@@ -148,11 +148,11 @@ namespace MVP.Controllers
         {
             try
             {
-                var apartment = await _apartmentService.GetApartmentById(apartmentId);
+                var apartment = await _apartmentService.GetApartmentByIdAsync(apartmentId);
                 return Ok(apartment);
 
             }
-            catch (ApartmentException ex)
+            catch (BusinessLogicException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment get request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
@@ -169,11 +169,11 @@ namespace MVP.Controllers
         {
             try
             {
-                var rooms = await _apartmentService.GetRoomsByApartmentId(apartmentId);
+                var rooms = await _apartmentService.GetRoomsByApartmentIdAsync(apartmentId);
                 return Ok(rooms);
 
             }
-            catch (ApartmentException ex)
+            catch (BusinessLogicException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment rooms get request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
@@ -190,11 +190,11 @@ namespace MVP.Controllers
         {
             try
             {
-                var calendars = await _apartmentService.GetCalendarByRoomAndApartmentId(apartmentId, roomId);
+                var calendars = await _apartmentService.GetCalendarByRoomAndApartmentIdAsync(apartmentId, roomId);
                 return Ok(calendars);
 
             }
-            catch (ApartmentException ex)
+            catch (BusinessLogicException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment rooms get request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");

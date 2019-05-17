@@ -16,7 +16,7 @@ namespace MVP.DataAccess.Repositories
             _context = context;
         }
 
-        public async Task<Apartment> AddApartment(Apartment apartment)
+        public async Task<Apartment> AddApartmentAsync(Apartment apartment)
         {
             var apartmentEntity =  _context.Apartments.Add(apartment).Entity;
             await _context.SaveChangesAsync();
@@ -24,17 +24,17 @@ namespace MVP.DataAccess.Repositories
             return apartmentEntity;
         }
 
-        public async Task UpdateApartment(Apartment apartment)
+        public async Task UpdateApartmentAsync(Apartment apartment)
         {
              _context.Apartments.Update(apartment);
             await _context.SaveChangesAsync();
         }
-        public async Task DeleteApartment(Apartment apartment)
+        public async Task DeleteApartmentAsync(Apartment apartment)
         {
             _context.Apartments.Remove(apartment);
             await _context.SaveChangesAsync();
         }
-        public async Task<Apartment> GetApartmentById(int apartmentId)
+        public async Task<Apartment> GetApartmentByIdAsync(int apartmentId)
         {
             var apartment = await _context.Apartments
                 .Include(a => a.Location)
@@ -43,7 +43,7 @@ namespace MVP.DataAccess.Repositories
             return apartment;
         }
 
-        public async Task<Apartment> GetApartmentWithRoomsById(int apartmentId)
+        public async Task<Apartment> GetApartmentWithRoomsByIdAsync(int apartmentId)
         {
             var apartment = await _context.Apartments
                 .Include(a => a.Rooms)
@@ -52,7 +52,7 @@ namespace MVP.DataAccess.Repositories
             return apartment;
         }
 
-        public async Task<List<ApartmentRoom>> GetApartmentRoomsByNumber(int apartmentId, List<int> roomNumbers)
+        public async Task<List<ApartmentRoom>> GetApartmentRoomsByNumberAsync(int apartmentId, List<int> roomNumbers)
         {
             var apartment = await _context.Apartments
                 .Include(a => a.Rooms)
@@ -64,7 +64,7 @@ namespace MVP.DataAccess.Repositories
             return apartment;
         }
 
-        public async Task<IEnumerable<Apartment>> GetAllApartments()
+        public async Task<IEnumerable<Apartment>> GetAllApartmentsAsync()
         {
             var apartment = await _context.Apartments
                 .Include(a => a.Location)
@@ -72,7 +72,7 @@ namespace MVP.DataAccess.Repositories
 
             return apartment;
         }
-        public async Task<List<ApartmentRoom>> GetRoomsByApartmentId(int apartmentId)
+        public async Task<List<ApartmentRoom>> GetRoomsByApartmentIdAsync(int apartmentId)
         {
             var room = await _context.Apartments
                 .Where(a => a.Id == apartmentId)
