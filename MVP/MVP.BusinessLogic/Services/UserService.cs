@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using MVP.BusinessLogic.Helpers.TokenGenerator;
 using MVP.BusinessLogic.Helpers.UrlBuilder;
@@ -10,6 +12,8 @@ using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using MVP.DataAccess.Interfaces;
 using MVP.Entities.Dtos.Users;
 
 namespace MVP.BusinessLogic.Services
@@ -22,13 +26,17 @@ namespace MVP.BusinessLogic.Services
         private readonly IEmailManager _emailManager;
         private readonly IUrlBuilder _urlBuilder;
         private readonly IConfiguration _configuration;
+        private readonly ICalendarRepository _calendarRepository;
+        private readonly IFileReader _csvReaderService;
 
         public UserService(UserManager<User> userManager, 
             SignInManager<User> signInManager,
             ITokenGenerator tokenGenerator, 
             IEmailManager emailManager, 
             IUrlBuilder urlBuilder, 
-            IConfiguration configuration)
+            IConfiguration configuration,
+            ICalendarRepository calendarRepository,
+            IFileReader csvReaderService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -36,6 +44,8 @@ namespace MVP.BusinessLogic.Services
             _emailManager = emailManager;
             _urlBuilder = urlBuilder;
             _configuration = configuration;
+            _calendarRepository = calendarRepository;
+            _csvReaderService = csvReaderService;
         }
 
         public async Task SendResetPasswordLinkAsync(string email)
@@ -90,6 +100,12 @@ namespace MVP.BusinessLogic.Services
             {
                 throw new InvalidUserException("Password reset failed.");
             }
+        }
+
+        public async Task CreateUsersCalendarFromFileAsync(IFormFile file)
+        {
+            var calendars = await _csvReaderService.ReadUsersCalendarFile(file);
+            await _calendarRepository.AddCalendarListAsync(calendars);
         }
 
         private async Task SendResetPasswordLinkAsync(User user)

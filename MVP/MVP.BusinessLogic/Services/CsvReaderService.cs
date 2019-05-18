@@ -8,11 +8,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 
 namespace MVP.BusinessLogic.Services
 {
     public class CsvReaderService : IFileReader
     {
+        private const int StartDateTimePosition = 0;
+        private const int EndDateTimePosition = 1;
+        private const int UserIdPosition = 2;
+
         private readonly ICalendarRepository _calendarRepository;
         private readonly IApartmentRepository _apartmentRepository;
 
@@ -22,7 +27,7 @@ namespace MVP.BusinessLogic.Services
             _apartmentRepository = apartmentRepository;
         }
 
-        public async Task ReadCalendarFile(int apartmentId, IFormFile file)
+        public async Task ReadApartmentCalendarFile(int apartmentId, IFormFile file)
         {
             try
             {
@@ -46,8 +51,8 @@ namespace MVP.BusinessLogic.Services
                     {
                         calendars.Add(new Calendar
                         {
-                            Start = DateTimeOffset.Parse(line[0]),
-                            End = DateTimeOffset.Parse(line[1]),
+                            Start = DateTimeOffset.Parse(line[StartDateTimePosition]),
+                            End = DateTimeOffset.Parse(line[EndDateTimePosition]),
                             ApartmentRoomId = room.Id
                         });
                     }
@@ -55,7 +60,7 @@ namespace MVP.BusinessLogic.Services
 
                 if (calendars.Count > 0)
                 {
-                    await _calendarRepository.AddApartmentCalendar(calendars);
+                    await _calendarRepository.AddCalendarListAsync(calendars);
                 }
             }
             catch (Exception ex)
@@ -63,6 +68,31 @@ namespace MVP.BusinessLogic.Services
                 throw new FileReaderException(ex, $"Exception while reading {file.FileName} file");
             }
 
+        }
+
+        public async Task<List<Calendar>> ReadUsersCalendarFile(IFormFile file)
+        {
+            try
+            {
+                var data = await ReadData(file);
+                var calendars = new List<Calendar>();
+
+                foreach (var line in data)
+                {
+                    calendars.Add(new Calendar
+                    {
+                        Start = DateTimeOffset.Parse(line[StartDateTimePosition]),
+                        End = DateTimeOffset.Parse(line[EndDateTimePosition]),
+                        UserId = line[UserIdPosition]
+                    });
+                }
+
+                return calendars;
+            }
+            catch (Exception ex)
+            {
+                throw new FileReaderException(ex, $"Exception while reading {file.FileName} file");
+            }
         }
 
         private async Task<List<List<string>>> ReadData(IFormFile file)
