@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MVP.Controllers
 {
-    [Route("")]
+    [Route("api/[controller]")]
     [ApiController]
     public class OfficeController : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPost("api/[controller]")]
+        [HttpPost]
         public async Task<IActionResult> CreateOffice([FromBody] CreateOfficeDto createOfficeDto)
         {
             try
@@ -49,7 +49,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPut("api/[controller]")]
+        [HttpPut]
         public async Task<IActionResult> UpdateOffice([FromBody] UpdateOfficeDto updateOfficeDto)
         {
             try
@@ -75,7 +75,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpDelete("api/[controller]/{officeId}")]
+        [HttpDelete("/{officeId}")]
         public async Task<IActionResult> DeleteOffice(int officeId)
         {
             try
@@ -96,7 +96,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPut("api/[controller]/Apartment")]
+        [HttpPut("/Apartment")]
         public async Task<IActionResult> AddApartmentToOffice([FromBody] OfficeApartmentDto model)
         {
             try
@@ -122,7 +122,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("api/[controller]")]
+        [HttpGet]
         public async Task<IActionResult> GetAllOffices()
         {
             try
@@ -143,7 +143,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("api/[controller]/{officeId}")]
+        [HttpGet("/{officeId}")]
         public async Task<IActionResult> GetOfficeById(int officeId)
         {
             try
@@ -164,7 +164,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("api/[controller]/ByName/{officeName}")]
+        [HttpGet("/ByName/{officeName}")]
         public async Task<IActionResult> GetOfficeByName(string officeName)
         {
             try

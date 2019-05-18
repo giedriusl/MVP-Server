@@ -77,7 +77,7 @@ namespace MVP.BusinessLogic.Services
         {
             try
             {
-                var existingApartment = await _apartmentRepository.GetApartmentWithRoomsByIdAsync(apartmentId);
+                var existingApartment = await _apartmentRepository.GetApartmentByIdAsync(apartmentId);
 
                 if (existingApartment is null)
                 {
@@ -122,12 +122,12 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        public async Task<IEnumerable<SubmitApartmentRoomDto>> GetRoomsByApartmentIdAsync(int apartmentId)
+        public async Task<IEnumerable<CreateApartmentRoomDto>> GetRoomsByApartmentIdAsync(int apartmentId)
         {
             try
             {
                 var rooms = await _apartmentRepository.GetRoomsByApartmentIdAsync(apartmentId);
-                return rooms.Select(SubmitApartmentRoomDto.ToDto).ToList();
+                return rooms.Select(CreateApartmentRoomDto.ToDto).ToList();
             }
             catch (Exception ex)
             {

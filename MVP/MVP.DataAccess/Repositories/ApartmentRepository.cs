@@ -55,7 +55,6 @@ namespace MVP.DataAccess.Repositories
         public async Task<List<ApartmentRoom>> GetApartmentRoomsByNumberAsync(int apartmentId, List<int> roomNumbers)
         {
             var apartment = await _context.Apartments
-                .Include(a => a.Rooms)
                 .Where(a => a.Id == apartmentId)
                 .SelectMany(r => r.Rooms)
                 .Where(a => roomNumbers.Contains(a.RoomNumber))

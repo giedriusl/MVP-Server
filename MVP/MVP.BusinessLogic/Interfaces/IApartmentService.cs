@@ -14,7 +14,7 @@ namespace MVP.BusinessLogic.Interfaces
 
         Task<IEnumerable<ApartmentViewDto>> GetAllApartmentsAsync();
         Task<ApartmentViewDto> GetApartmentByIdAsync(int apartmentId);
-        Task<IEnumerable<SubmitApartmentRoomDto>> GetRoomsByApartmentIdAsync(int apartmentId);
+        Task<IEnumerable<CreateApartmentRoomDto>> GetRoomsByApartmentIdAsync(int apartmentId);
         Task<IEnumerable<CalendarDto>> GetCalendarByRoomAndApartmentIdAsync(int apartmentId, int roomId);
     }
 }

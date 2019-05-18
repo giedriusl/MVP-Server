@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MVP.Controllers
 {
-    [Route("")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ApartmentController : ControllerBase
     {
@@ -25,7 +25,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPost("api/[controller]")]
+        [HttpPost]
         public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentDto createApartmentDto)
         {
             try
@@ -51,7 +51,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPut("api/[controller]")]
+        [HttpPut]
         public async Task<IActionResult> UpdateApartment([FromBody] UpdateApartmentDto updateApartmentDto)
         {
             try
@@ -77,7 +77,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPost("api/[controller]/{apartmentId}/Calendar")]
+        [HttpPost("/{apartmentId}/Calendar")]
         public async Task<IActionResult> UploadCalendar(int apartmentId, IFormFile file)
         {
             try
@@ -104,7 +104,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpDelete("api/[controller]/{apartmentId}")]
+        [HttpDelete("/{apartmentId}")]
         public async Task<IActionResult> DeleteApartment(int apartmentId)
         {
             try
@@ -126,7 +126,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("api/[controller]")]
+        [HttpGet]
         public async Task<IActionResult> GetAllApartments()
         {
             try
@@ -148,7 +148,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("api/[controller]/{apartmentId}")]
+        [HttpGet("/{apartmentId}")]
         public async Task<IActionResult> GetApartmentById(int apartmentId)
         {
             try
@@ -170,7 +170,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("api/[controller]/{apartmentId}/Rooms")]
+        [HttpGet("/{apartmentId}/Rooms")]
         public async Task<IActionResult> GetRooms(int apartmentId)
         {
             try
@@ -192,7 +192,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("api/[controller]/{apartmentId}/Room/{roomId}/Calendar")]
+        [HttpGet("/{apartmentId}/Room/{roomId}/Calendar")]
         public async Task<IActionResult> GetRoomsCalendar(int apartmentId, int roomId)
         {
             try
