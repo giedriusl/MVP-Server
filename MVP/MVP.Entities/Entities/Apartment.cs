@@ -17,7 +17,7 @@ namespace MVP.Entities.Entities
             Id = id;
         }
 
-        public void UpdateApartment(string title, int bedCount)
+        public void UpdateApartment(string title)
         {
             Title = title;
         }

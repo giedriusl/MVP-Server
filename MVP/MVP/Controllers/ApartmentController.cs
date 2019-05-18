@@ -24,7 +24,7 @@ namespace MVP.Controllers
             _fileReader = fileReader;
         }
 
-        [Authorize(Policy = "RequireAdministratorRole")]
+        //[Authorize(Policy = "RequireAdministratorRole")]
         [HttpPost]
         public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentDto createApartmentDto)
         {
