@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MVP.Entities.Enums;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -20,6 +21,7 @@ namespace MVP.BusinessLogic.Services
         private const int NamePosition = 0;
         private const int SurnamePosition = 1;
         private const int EmailPosition = 2;
+        private const int RolePosition = 3;
 
 
         private readonly IApartmentRepository _apartmentRepository;
@@ -80,7 +82,8 @@ namespace MVP.BusinessLogic.Services
                     {
                         Name = line[NamePosition],
                         Surname = line[SurnamePosition],
-                        Email = line[EmailPosition]
+                        Email = line[EmailPosition],
+                        Role = (UserRoles)Enum.Parse(typeof(UserRoles), line[RolePosition])
                     });
                 }
 
