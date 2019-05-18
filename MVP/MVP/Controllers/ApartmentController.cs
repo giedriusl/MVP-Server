@@ -12,16 +12,15 @@ namespace MVP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ApartmentController : ControllerBase
     {
         private readonly IApartmentService _apartmentService;
-        private readonly IFileReader _fileReader;
         private readonly ILogger<ApartmentController> _logger;
-        public ApartmentController(IApartmentService apartmentService, ILogger<ApartmentController> logger, IFileReader fileReader)
+        public ApartmentController(IApartmentService apartmentService, ILogger<ApartmentController> logger)
         {
             _apartmentService = apartmentService;
             _logger = logger;
-            _fileReader = fileReader;
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
@@ -87,7 +86,7 @@ namespace MVP.Controllers
                     return BadRequest("Invalid file format");
                 }
 
-                await _fileReader.ReadCalendarFile(apartmentId, file);
+                await _apartmentService.UploadCalendarAsync(apartmentId, file);
 
                 return Ok();
             }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using MVP.BusinessLogic.Helpers.TokenGenerator;
 using MVP.BusinessLogic.Helpers.UrlBuilder;
@@ -10,6 +11,8 @@ using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using MVP.Entities.Dtos.Users;
 
 namespace MVP.BusinessLogic.Services
@@ -22,13 +25,14 @@ namespace MVP.BusinessLogic.Services
         private readonly IEmailManager _emailManager;
         private readonly IUrlBuilder _urlBuilder;
         private readonly IConfiguration _configuration;
+        private readonly IFileReader _fileReader;
 
         public UserService(UserManager<User> userManager, 
             SignInManager<User> signInManager,
             ITokenGenerator tokenGenerator, 
             IEmailManager emailManager, 
             IUrlBuilder urlBuilder, 
-            IConfiguration configuration)
+            IConfiguration configuration, IFileReader fileReader)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -36,6 +40,7 @@ namespace MVP.BusinessLogic.Services
             _emailManager = emailManager;
             _urlBuilder = urlBuilder;
             _configuration = configuration;
+            _fileReader = fileReader;
         }
 
         public async Task SendResetPasswordLinkAsync(string email)
@@ -49,6 +54,28 @@ namespace MVP.BusinessLogic.Services
             await SendResetPasswordLinkAsync(user);
         }
 
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            return users.Select(UserDto.ToDto);
+        }
+
+        public async Task<UserDto> GetUserByIdAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            return UserDto.ToDto(user);
+        }
+
+        public async Task UploadUsersAsync(IFormFile file)
+        {
+            var users = await _fileReader.ReadUsersFileAsync(file);
+
+            foreach (var user in users)
+            {
+                await CreateAsync(user);
+            }
+        }
+
         public async Task CreateAsync(CreateUserDto createUserDto)
         {
             var user = CreateUserDto.ToEntity(createUserDto);
@@ -57,15 +84,15 @@ namespace MVP.BusinessLogic.Services
 
             if (!identityResult.Succeeded)
             {
-                throw new InvalidUserException("User creation failed on CreateAsync.");
+                throw new InvalidUserException("User creation failed on CreateAsync.", identityResult.Errors.First().Code);
             }
 
-            await AssignUserToRole(user, createUserDto.Role);
+            await AssignUserToRoleAsync(user, createUserDto.Role);
 
             await SendResetPasswordLinkAsync(user);
         }
 
-        public async Task<string> LoginAsync(UserDto userDto)
+        public async Task<string> LoginAsync(UserLoginDto userDto)
         {
             var result = await _signInManager.PasswordSignInAsync(userDto.Email, userDto.Password, 
                 false, false);
@@ -99,7 +126,7 @@ namespace MVP.BusinessLogic.Services
             _emailManager.SendInvitationEmail(user.Email, url);
         }
 
-        private async Task AssignUserToRole(User user, UserRoles role)
+        private async Task AssignUserToRoleAsync(User user, UserRoles role)
         {
             var roleName = role.ToString();
             var identityResult = await _userManager.AddToRoleAsync(user, roleName);

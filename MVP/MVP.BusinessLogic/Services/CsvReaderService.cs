@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
+using MVP.Entities.Dtos.Users;
 using MVP.Entities.Entities;
 using MVP.Entities.Exceptions;
 using System;
@@ -13,24 +14,21 @@ namespace MVP.BusinessLogic.Services
 {
     public class CsvReaderService : IFileReader
     {
-        private readonly ICalendarRepository _calendarRepository;
         private readonly IApartmentRepository _apartmentRepository;
 
-        public CsvReaderService(ICalendarRepository calendarRepository, IApartmentRepository apartmentRepository)
+        public CsvReaderService(IApartmentRepository apartmentRepository)
         {
-            _calendarRepository = calendarRepository;
             _apartmentRepository = apartmentRepository;
         }
 
-        public async Task ReadCalendarFile(int apartmentId, IFormFile file)
+        public async Task<IEnumerable<Calendar>> ReadApartmentCalendarFileAsync(int apartmentId, IFormFile file)
         {
             try
             {
                 var data = await ReadData(file);
                 var roomNumbers = new List<int>();
-
-                data.ForEach(l => roomNumbers.Add(Int32.Parse(l[2])));
                 var rooms = await _apartmentRepository.GetApartmentRoomsByNumberAsync(apartmentId, roomNumbers);
+                data.ForEach(l => roomNumbers.Add(Int32.Parse(l[2])));
                 var calendars = new List<Calendar>();
 
                 if (rooms.Count == 0)
@@ -53,16 +51,37 @@ namespace MVP.BusinessLogic.Services
                     }
                 }
 
-                if (calendars.Count > 0)
-                {
-                    await _calendarRepository.AddApartmentCalendar(calendars);
-                }
+                return calendars;
             }
             catch (Exception ex)
             {
                 throw new FileReaderException(ex, $"Exception while reading {file.FileName} file");
             }
 
+        }
+
+        public async Task<IEnumerable<CreateUserDto>> ReadUsersFileAsync(IFormFile file)
+        {
+            try
+            {
+                var data = await ReadData(file);
+                var users = new List<CreateUserDto>();
+                foreach (var line in data)
+                {
+                    users.Add(new CreateUserDto
+                    {
+                        Name = line[0],
+                        Surname = line[1],
+                        Email = line[2]
+                    });
+                }
+
+                return users;
+            }
+            catch (Exception ex)
+            {
+                throw new FileReaderException(ex, $"Exception while reading {file.FileName} file");
+            }
         }
 
         private async Task<List<List<string>>> ReadData(IFormFile file)
