@@ -16,7 +16,9 @@ namespace MVP.BusinessLogic.Services
         private readonly ILocationRepository _locationRepository;
         private readonly IApartmentRepository _apartmentRepository;
 
-        public OfficeService(IOfficeRepository officeRepository, IApartmentRepository apartmentRepository, ILocationRepository locationRepository)
+        public OfficeService(IOfficeRepository officeRepository, 
+            IApartmentRepository apartmentRepository, 
+            ILocationRepository locationRepository)
         {
             _officeRepository = officeRepository;
             _apartmentRepository = apartmentRepository;
@@ -49,21 +51,21 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        public async Task<UpdateOfficeDto> UpdateOfficeAsync(UpdateOfficeDto office)
+        public async Task<UpdateOfficeDto> UpdateOfficeAsync(UpdateOfficeDto updateOfficeDto)
         {
             try
             {
-                var existingOffice = await _officeRepository.GetOfficeByIdAsync(office.Id);
+                var existingOffice = await _officeRepository.GetOfficeByIdAsync(updateOfficeDto.Id);
 
                 if (existingOffice is null)
                 {
                     throw new BusinessLogicException("Office was not found");
                 }
 
-                existingOffice.UpdateOffice(office.Name);
+                existingOffice.UpdateOffice(updateOfficeDto.Name);
 
                 await _officeRepository.UpdateOfficeAsync(existingOffice);
-                return office;
+                return updateOfficeDto;
             }
             catch (Exception ex)
             {

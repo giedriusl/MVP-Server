@@ -3,12 +3,12 @@ using MVP.DataAccess.Interfaces;
 using MVP.Entities.Dtos.Apartments;
 using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 using MVP.Entities.Dtos.Calendars;
+using MVP.Entities.Dtos.Locations;
 using MVP.Entities.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MVP.Entities.Dtos.Locations;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -52,21 +52,21 @@ namespace MVP.BusinessLogic.Services
                 throw new BusinessLogicException(ex.Message);
             }
         }
-        public async Task<UpdateApartmentDto> UpdateApartmentAsync(UpdateApartmentDto apartment)
+        public async Task<UpdateApartmentDto> UpdateApartmentAsync(UpdateApartmentDto updateApartmentDto)
         {
             try
             {
-                var existingApartment = await _apartmentRepository.GetApartmentByIdAsync(apartment.Id);
+                var apartment = await _apartmentRepository.GetApartmentByIdAsync(updateApartmentDto.Id);
 
-                if (existingApartment is null)
+                if (apartment is null)
                 {
                     throw new BusinessLogicException("Apartment was not found");
                 }
 
-                existingApartment.UpdateApartment(apartment.Title, apartment.BedCount);
+                apartment.UpdateApartment(updateApartmentDto.Title, updateApartmentDto.BedCount);
 
-                await _apartmentRepository.UpdateApartmentAsync(existingApartment);
-                return apartment;
+                await _apartmentRepository.UpdateApartmentAsync(apartment);
+                return updateApartmentDto;
             }
             catch (Exception ex)
             {
