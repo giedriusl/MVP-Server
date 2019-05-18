@@ -108,13 +108,13 @@ namespace MVP.BusinessLogic.Services
             var users = _userManager.Users;
             var validCalendars = new List<Calendar>();
 
-            foreach (var cal in calendars)
+            foreach (var calendar in calendars)
             {
-                var user = _userManager.Users.FirstOrDefault(u => u.Id == cal.UserId);
+                var user = _userManager.Users.FirstOrDefault(u => u.Id == calendar.UserId);
 
                 if (user != null)
                 {
-                    validCalendars.Add(cal);
+                    validCalendars.Add(calendar);
                 }
             }
 
