@@ -105,7 +105,20 @@ namespace MVP.BusinessLogic.Services
         public async Task UploadUsersCalendarAsync(IFormFile file)
         {
             var calendars = await _csvReaderService.ReadUsersCalendarFileAsync(file);
-            await _calendarRepository.AddCalendarsAsync(calendars.ToList());
+            var users = _userManager.Users;
+            var validCalendars = new List<Calendar>();
+
+            foreach (var cal in calendars)
+            {
+                var user = _userManager.Users.FirstOrDefault(u => u.Id == cal.UserId);
+
+                if (user != null)
+                {
+                    validCalendars.Add(cal);
+                }
+            }
+
+            await _calendarRepository.AddCalendarsAsync(validCalendars);
         }
 
         private async Task SendResetPasswordLinkAsync(User user)

@@ -45,7 +45,7 @@ namespace MVP.BusinessLogic.Services
 
                 foreach (var line in data)
                 {
-                    var room = rooms.FirstOrDefault(r => r.Id == Int32.Parse(line[2]));
+                    var room = rooms.FirstOrDefault(r => r.Id == Int32.Parse(line[UserIdPosition]));
 
                     if (room != null)
                     {
