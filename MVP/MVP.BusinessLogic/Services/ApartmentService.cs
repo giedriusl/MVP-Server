@@ -36,9 +36,9 @@ namespace MVP.BusinessLogic.Services
             {
                 var apartment = CreateApartmentDto.ToEntity(createApartmentDto);
 
-                if (createApartmentDto.OfficeId != 0)
+                if (createApartmentDto.OfficeId != null)
                 {
-                    var office = await _officeRepository.GetOfficeByIdAsync(createApartmentDto.OfficeId);
+                    var office = await _officeRepository.GetOfficeByIdAsync(createApartmentDto.OfficeId.Value);
                     apartment.Office = office ?? throw new BusinessLogicException("Office not found");
                 }
 
@@ -72,7 +72,7 @@ namespace MVP.BusinessLogic.Services
                     throw new BusinessLogicException("Apartment was not found");
                 }
 
-                apartment.UpdateApartment(updateApartmentDto.Title, updateApartmentDto.BedCount);
+                apartment.UpdateApartment(updateApartmentDto.Title);
 
                 await _apartmentRepository.UpdateApartmentAsync(apartment);
                 return updateApartmentDto;

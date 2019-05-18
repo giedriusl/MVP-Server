@@ -8,8 +8,5 @@ namespace MVP.Entities.Dtos.Apartments
         [StringLength(256)]
         public string Title { get; set; }
         public int? OfficeId { get; set; }
-
-        [Required]
-        public int BedCount { get; set; }
     }
 }
