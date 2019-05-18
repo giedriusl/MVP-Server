@@ -56,7 +56,7 @@ namespace MVP.BusinessLogic.Services
         {
             try
             {
-                var existingApartment = await _apartmentRepository.GetApartmentWithRoomsByIdAsync(apartment.Id);
+                var existingApartment = await _apartmentRepository.GetApartmentByIdAsync(apartment.Id);
 
                 if (existingApartment is null)
                 {
