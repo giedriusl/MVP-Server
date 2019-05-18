@@ -2,10 +2,9 @@
 
 namespace MVP.Entities.Dtos.Offices
 {
-    public class OfficeDto
+    public class UpdateOfficeDto : OfficeDto
     {
         [Required]
-        [StringLength(256)]
-        public string Name { get; set; }
+        public int Id { get; set; }
     }
 }

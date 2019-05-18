@@ -1,7 +1,7 @@
 ﻿using MVP.Entities.Entities;
 using MVP.Entities.Enums;
 
-namespace MVP.Entities.Dtos
+namespace MVP.Entities.Dtos.Users
 {
     public class CreateUserDto : UserDto
     {

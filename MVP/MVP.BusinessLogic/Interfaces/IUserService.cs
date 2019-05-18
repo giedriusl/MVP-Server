@@ -1,5 +1,6 @@
 ﻿using MVP.Entities.Dtos;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.Users;
 
 namespace MVP.BusinessLogic.Interfaces
 {

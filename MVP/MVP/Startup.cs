@@ -12,6 +12,8 @@ using MVP.BusinessLogic.Helpers.TokenGenerator;
 using MVP.BusinessLogic.Interfaces;
 using MVP.BusinessLogic.Services;
 using MVP.DataAccess;
+using MVP.DataAccess.Interfaces;
+using MVP.DataAccess.Repositories;
 using MVP.Entities.Entities;
 using MVP.Middlewares;
 using NLog.Extensions.Logging;
@@ -100,11 +102,22 @@ namespace MVP
             services.AddScoped<RoleManager<IdentityRole>>();
             services.AddScoped<UserManager<User>>();
             services.AddScoped<SignInManager<User>>();
-            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IEmailSender, EmailSender>();
             services.AddScoped<IEmailManager, EmailManager>();
             services.AddScoped<IUrlBuilder, UrlBuilder>();
+
+            //services
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IApartmentService, ApartmentService>();
+            services.AddScoped<IFileReader, CsvReaderService>();
+            services.AddScoped<IOfficeService, OfficeService>();
+
+            //repositories
+            services.AddScoped<IApartmentRepository, ApartmentRepository>();
+            services.AddScoped<ICalendarRepository, CalendarRepository>();
+            services.AddScoped<IOfficeRepository, OfficeRepository>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

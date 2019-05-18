@@ -1,8 +1,8 @@
-﻿using System.IO;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using MimeKit;
 using MVP.EmailService.Interfaces;
 using MVP.Entities.Dtos.Emails;
+using System.IO;
 
 namespace MVP.EmailService
 {
