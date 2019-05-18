@@ -21,6 +21,9 @@ using NLog.Web;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using MVP.BusinessLogic.Helpers.UrlBuilder;
+using MVP.EmailService;
+using MVP.EmailService.Interfaces;
 
 namespace MVP
 {
@@ -100,6 +103,9 @@ namespace MVP
             services.AddScoped<UserManager<User>>();
             services.AddScoped<SignInManager<User>>();
             services.AddScoped<ITokenGenerator, JwtTokenGenerator>();
+            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IEmailManager, EmailManager>();
+            services.AddScoped<IUrlBuilder, UrlBuilder>();
 
             //services
             services.AddScoped<IUserService, UserService>();
