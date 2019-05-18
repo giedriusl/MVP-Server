@@ -112,7 +112,6 @@ namespace MVP.DataAccess.Seed
                     var apartment = new Apartment
                     {
                         Title = DefaultApartment.Title,
-                        BedCount = DefaultApartment.BedCount,
                         LocationId = locationId
                     };
                     var room = new ApartmentRoom
