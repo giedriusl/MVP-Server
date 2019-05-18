@@ -7,6 +7,7 @@ using MVP.Entities.Dtos.Users;
 using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace MVP.Controllers
 {
@@ -97,6 +98,33 @@ namespace MVP.Controllers
             {
                 _logger.Log(LogLevel.Warning, $"Invalid user. {exception.Message}");
                 return BadRequest("user.notFound");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, $"Internal error occured. {exception.Message}");
+                return StatusCode(500);
+            }
+        }
+
+        [Authorize(Policy = "RequireAdministratorRole")]
+        [HttpPost("/User/Calendar")]
+        public async Task<IActionResult> UploadCalendar(IFormFile file)
+        {
+            try
+            {
+                if (file.ContentType != "text/csv")
+                {
+                    return BadRequest("Invalid file format");
+                }
+
+                await _userService.UploadUsersCalendarAsync(file);
+
+                return Ok();
+            }
+            catch (FileReaderException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", exception);
+                return BadRequest($"apartment.{exception.ErrorCode}");
             }
             catch (Exception exception)
             {

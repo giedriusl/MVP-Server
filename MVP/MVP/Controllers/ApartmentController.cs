@@ -87,7 +87,7 @@ namespace MVP.Controllers
                     return BadRequest("Invalid file format");
                 }
 
-                await _fileReader.ReadCalendarFile(apartmentId, file);
+                await _fileReader.ReadApartmentCalendarFile(apartmentId, file);
 
                 return Ok();
             }

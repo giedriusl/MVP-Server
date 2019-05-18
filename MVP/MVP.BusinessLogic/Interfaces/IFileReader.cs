@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using MVP.Entities.Entities;
 
 namespace MVP.BusinessLogic.Interfaces
 {
     public interface IFileReader
     {
-        Task ReadCalendarFile(int apartmentId, IFormFile file);
+        Task ReadApartmentCalendarFile(int apartmentId, IFormFile file);
+        Task<IEnumerable<Calendar>> ReadUsersCalendarFileAsync(IFormFile file);
     }
 }
