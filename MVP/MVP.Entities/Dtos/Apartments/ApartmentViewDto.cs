@@ -14,7 +14,6 @@ namespace MVP.Entities.Dtos.Apartments
             {
                 Id = apartment.Id,
                 Title = apartment.Title,
-                BedCount = apartment.BedCount,
                 Location = LocationDto.ToDto(apartment.Location)
             };
         }

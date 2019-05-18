@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Dtos;
+using MVP.Entities.Dtos.Users;
 using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
-using MVP.Entities.Dtos.Users;
 
 namespace MVP.Controllers
 {
