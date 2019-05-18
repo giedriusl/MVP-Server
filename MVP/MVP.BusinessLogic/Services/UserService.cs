@@ -102,10 +102,10 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        public async Task CreateUsersCalendarFromFileAsync(IFormFile file)
+        public async Task UploadUsersCalendarAsync(IFormFile file)
         {
-            var calendars = await _csvReaderService.ReadUsersCalendarFile(file);
-            await _calendarRepository.AddCalendarListAsync(calendars);
+            var calendars = await _csvReaderService.ReadUsersCalendarFileAsync(file);
+            await _calendarRepository.AddCalendarsAsync(calendars);
         }
 
         private async Task SendResetPasswordLinkAsync(User user)

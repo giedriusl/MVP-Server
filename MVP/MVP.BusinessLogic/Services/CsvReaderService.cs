@@ -60,7 +60,7 @@ namespace MVP.BusinessLogic.Services
 
                 if (calendars.Count > 0)
                 {
-                    await _calendarRepository.AddCalendarListAsync(calendars);
+                    await _calendarRepository.AddCalendarsAsync(calendars);
                 }
             }
             catch (Exception ex)
@@ -70,7 +70,7 @@ namespace MVP.BusinessLogic.Services
 
         }
 
-        public async Task<List<Calendar>> ReadUsersCalendarFile(IFormFile file)
+        public async Task<IEnumerable<Calendar>> ReadUsersCalendarFileAsync(IFormFile file)
         {
             try
             {

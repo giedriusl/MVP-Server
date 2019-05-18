@@ -16,7 +16,7 @@ namespace MVP.DataAccess.Repositories
             _context = context;
         }
 
-        public async Task AddCalendarListAsync(List<Calendar> calendars)
+        public async Task AddCalendarsAsync(IEnumerable<Calendar> calendars)
         {
             _context.Calendars.AddRange(calendars);
             await _context.SaveChangesAsync();

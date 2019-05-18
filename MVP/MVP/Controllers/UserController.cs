@@ -117,7 +117,7 @@ namespace MVP.Controllers
                     return BadRequest("Invalid file format");
                 }
 
-                await _userService.CreateUsersCalendarFromFileAsync(file);
+                await _userService.UploadUsersCalendarAsync(file);
 
                 return Ok();
             }

@@ -6,7 +6,7 @@ namespace MVP.DataAccess.Interfaces
 {
     public interface ICalendarRepository
     {
-        Task AddCalendarListAsync(List<Calendar> calendars);
+        Task AddCalendarsAsync(IEnumerable<Calendar> calendars);
         Task<List<Calendar>> GetCalendarByRoomAndApartmentId(int apartmentId, int roomId);
     }
 }

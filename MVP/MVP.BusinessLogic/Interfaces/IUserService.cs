@@ -13,6 +13,6 @@ namespace MVP.BusinessLogic.Interfaces
         Task<string> LoginAsync(UserDto userDto);
         Task ResetPasswordAsync(ResetPasswordDto resetPasswordDto);
         Task SendResetPasswordLinkAsync(string email);
-        Task CreateUsersCalendarFromFileAsync(IFormFile file);
+        Task UploadUsersCalendarAsync(IFormFile file);
     }
 }
