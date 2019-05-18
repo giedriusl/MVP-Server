@@ -23,7 +23,7 @@ namespace MVP.Controllers
             _logger = logger;
         }
 
-        //[Authorize(Policy = "RequireAdministratorRole")]
+        [Authorize(Policy = "RequireAdministratorRole")]
         [HttpPost]
         public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentDto createApartmentDto)
         {
