@@ -7,7 +7,6 @@ namespace MVP.Entities.Entities
         public int Id { get; private set; }
         public string Title { get; set; }
         public int? OfficeId { get; set; }
-        public int BedCount { get; set; }
         public int LocationId { get; set; }
         public virtual Office Office { get; set; }
         public Location Location { get; set; }
@@ -18,10 +17,9 @@ namespace MVP.Entities.Entities
             Id = id;
         }
 
-        public void UpdateApartment(string title, int bedCount)
+        public void UpdateApartment(string title)
         {
             Title = title;
-            BedCount = bedCount;
         }
     }
 }

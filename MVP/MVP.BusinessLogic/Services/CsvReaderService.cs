@@ -14,6 +14,14 @@ namespace MVP.BusinessLogic.Services
 {
     public class CsvReaderService : IFileReader
     {
+        private const int StartDateTimePosition = 0;
+        private const int EndDateTimePosition = 1;
+        private const int UserIdPosition = 2;
+        private const int NamePosition = 0;
+        private const int SurnamePosition = 1;
+        private const int EmailPosition = 2;
+
+
         private readonly IApartmentRepository _apartmentRepository;
 
         public CsvReaderService(IApartmentRepository apartmentRepository)
@@ -38,14 +46,14 @@ namespace MVP.BusinessLogic.Services
 
                 foreach (var line in data)
                 {
-                    var room = rooms.FirstOrDefault(r => r.Id == Int32.Parse(line[2]));
+                    var room = rooms.FirstOrDefault(r => r.Id == Int32.Parse(line[UserIdPosition]));
 
                     if (room != null)
                     {
                         calendars.Add(new Calendar
                         {
-                            Start = DateTimeOffset.Parse(line[0]),
-                            End = DateTimeOffset.Parse(line[1]),
+                            Start = DateTimeOffset.Parse(line[StartDateTimePosition]),
+                            End = DateTimeOffset.Parse(line[EndDateTimePosition]),
                             ApartmentRoomId = room.Id
                         });
                     }
@@ -70,13 +78,39 @@ namespace MVP.BusinessLogic.Services
                 {
                     users.Add(new CreateUserDto
                     {
-                        Name = line[0],
-                        Surname = line[1],
-                        Email = line[2]
+                        Name = line[NamePosition],
+                        Surname = line[SurnamePosition],
+                        Email = line[EmailPosition]
                     });
                 }
 
                 return users;
+            }
+            catch (Exception ex)
+            {
+                throw new FileReaderException(ex, $"Exception while reading {file.FileName} file");
+            }
+
+        }
+
+        public async Task<IEnumerable<Calendar>> ReadUsersCalendarFileAsync(IFormFile file)
+        {
+            try
+            {
+                var data = await ReadData(file);
+                var calendars = new List<Calendar>();
+
+                foreach (var line in data)
+                {
+                    calendars.Add(new Calendar
+                    {
+                        Start = DateTimeOffset.Parse(line[StartDateTimePosition]),
+                        End = DateTimeOffset.Parse(line[EndDateTimePosition]),
+                        UserId = line[UserIdPosition]
+                    });
+                }
+
+                return calendars;
             }
             catch (Exception ex)
             {

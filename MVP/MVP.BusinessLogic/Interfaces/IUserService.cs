@@ -1,6 +1,6 @@
-﻿using MVP.Entities.Dtos;
+﻿using System.Collections.Generic;
+using MVP.Entities.Dtos;
 using MVP.Entities.Dtos.Users;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -15,5 +15,6 @@ namespace MVP.BusinessLogic.Interfaces
         Task<IEnumerable<UserDto>> GetAllUsersAsync();
         Task<UserDto> GetUserByIdAsync(string userId);
         Task UploadUsersAsync(IFormFile file);
+        Task UploadUsersCalendarAsync(IFormFile file);
     }
 }

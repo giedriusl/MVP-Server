@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using MVP.Entities.Dtos.Apartments.ApartmentRooms;
+﻿using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 using MVP.Entities.Dtos.Locations;
 using MVP.Entities.Entities;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MVP.Entities.Dtos.Apartments
 {
@@ -16,7 +16,6 @@ namespace MVP.Entities.Dtos.Apartments
             return new Apartment
             {
                 Title = createApartment.Title,
-                BedCount = createApartment.BedCount,
                 Rooms = createApartment.Rooms.Select(CreateApartmentRoomDto.ToEntity).ToList()
             };
         }
@@ -27,7 +26,7 @@ namespace MVP.Entities.Dtos.Apartments
             {
                 Id = apartment.Id,
                 Title = apartment.Title,
-                BedCount = apartment.BedCount,
+                OfficeId = apartment.OfficeId,
                 Location = LocationDto.ToDto(apartment.Location),
                 Rooms = apartment.Rooms.Select(CreateApartmentRoomDto.ToDto).ToList()
             };

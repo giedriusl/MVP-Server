@@ -18,16 +18,19 @@ namespace MVP.BusinessLogic.Services
         private readonly IApartmentRepository _apartmentRepository;
         private readonly ICalendarRepository _calendarRepository;
         private readonly ILocationRepository _locationRepository;
+        private readonly IOfficeRepository _officeRepository;
         private readonly IFileReader _fileReader;
 
         public ApartmentService(IApartmentRepository apartmentRepository,
             ICalendarRepository calendarRepository,
             ILocationRepository locationRepository, 
+            IOfficeRepository officeRepository,
             IFileReader fileReader)
         {
             _apartmentRepository = apartmentRepository;
             _calendarRepository = calendarRepository;
             _locationRepository = locationRepository;
+            _officeRepository = officeRepository;
             _fileReader = fileReader;
         }
 
@@ -36,6 +39,12 @@ namespace MVP.BusinessLogic.Services
             try
             {
                 var apartment = CreateApartmentDto.ToEntity(createApartmentDto);
+
+                if (createApartmentDto.OfficeId != null)
+                {
+                    var office = await _officeRepository.GetOfficeByIdAsync(createApartmentDto.OfficeId.Value);
+                    apartment.Office = office ?? throw new BusinessLogicException("Office not found");
+                }
 
                 var location = await _locationRepository.GetLocationByCityAndCountryCodeAndAddress
                     (createApartmentDto.Location.City, createApartmentDto.Location.CountryCode, createApartmentDto.Location.Address);
@@ -67,7 +76,7 @@ namespace MVP.BusinessLogic.Services
                     throw new BusinessLogicException("Apartment was not found");
                 }
 
-                apartment.UpdateApartment(updateApartmentDto.Title, updateApartmentDto.BedCount);
+                apartment.UpdateApartment(updateApartmentDto.Title);
 
                 await _apartmentRepository.UpdateApartmentAsync(apartment);
                 return updateApartmentDto;
@@ -156,7 +165,7 @@ namespace MVP.BusinessLogic.Services
         public async Task UploadCalendarAsync(int apartmentId, IFormFile file)
         {
             var calendars = await _fileReader.ReadApartmentCalendarFileAsync(apartmentId, file);
-            await _calendarRepository.AddApartmentCalendar(calendars.ToList());
+            await _calendarRepository.AddCalendarsAsync(calendars.ToList());
         }
     }
 }

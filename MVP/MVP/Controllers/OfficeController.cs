@@ -96,32 +96,6 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPut("/Apartment")]
-        public async Task<IActionResult> AddApartmentToOffice([FromBody] OfficeApartmentDto model)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest("Model is not valid");
-                }
-
-                await _officeService.AddApartmentToOfficeId(model.OfficeId, model.ApartmentId);
-                return Ok();
-            }
-            catch (BusinessLogicException ex)
-            {
-                _logger.Log(LogLevel.Warning, "Invalid office creation request:", ex);
-                return BadRequest($"office.{ex.ErrorCode}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
-                return StatusCode(500, "common.internal");
-            }
-        }
-
         [Authorize(Policy = "AllowAllRoles")]
         [HttpGet]
         public async Task<IActionResult> GetAllOffices()

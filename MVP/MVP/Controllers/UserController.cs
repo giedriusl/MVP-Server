@@ -191,5 +191,32 @@ namespace MVP.Controllers
                 return StatusCode(500, "common.internal");
             }
         }
+
+        [HttpPost("api/[controller]/Calendar")]
+        [Authorize(Policy = "RequireAdministratorRole")]
+        public async Task<IActionResult> UploadCalendar(IFormFile file)
+        {
+            try
+            {
+                if (file.ContentType != "text/csv")
+                {
+                    return BadRequest("Invalid file format");
+                }
+
+                await _userService.UploadUsersCalendarAsync(file);
+
+                return Ok();
+            }
+            catch (FileReaderException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", exception);
+                return BadRequest($"apartment.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, $"Internal error occured. {exception.Message}");
+                return StatusCode(500);
+            }
+        }
     }
 }

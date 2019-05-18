@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using MVP.BusinessLogic.Helpers.TokenGenerator;
@@ -11,8 +12,9 @@ using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using MVP.DataAccess.Interfaces;
 using MVP.Entities.Dtos.Users;
 
 namespace MVP.BusinessLogic.Services
@@ -25,6 +27,7 @@ namespace MVP.BusinessLogic.Services
         private readonly IEmailManager _emailManager;
         private readonly IUrlBuilder _urlBuilder;
         private readonly IConfiguration _configuration;
+        private readonly ICalendarRepository _calendarRepository;
         private readonly IFileReader _fileReader;
 
         public UserService(UserManager<User> userManager, 
@@ -32,7 +35,9 @@ namespace MVP.BusinessLogic.Services
             ITokenGenerator tokenGenerator, 
             IEmailManager emailManager, 
             IUrlBuilder urlBuilder, 
-            IConfiguration configuration, IFileReader fileReader)
+            IConfiguration configuration,
+            ICalendarRepository calendarRepository,
+            IFileReader fileReader)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -40,6 +45,7 @@ namespace MVP.BusinessLogic.Services
             _emailManager = emailManager;
             _urlBuilder = urlBuilder;
             _configuration = configuration;
+            _calendarRepository = calendarRepository;
             _fileReader = fileReader;
         }
 
@@ -117,6 +123,25 @@ namespace MVP.BusinessLogic.Services
             {
                 throw new InvalidUserException("Password reset failed.");
             }
+        }
+
+        public async Task UploadUsersCalendarAsync(IFormFile file)
+        {
+            var calendars = await _fileReader.ReadUsersCalendarFileAsync(file);
+            var users = _userManager.Users;
+            var validCalendars = new List<Calendar>();
+
+            foreach (var calendar in calendars)
+            {
+                var user = _userManager.Users.FirstOrDefault(u => u.Id == calendar.UserId);
+
+                if (user != null)
+                {
+                    validCalendars.Add(calendar);
+                }
+            }
+
+            await _calendarRepository.AddCalendarsAsync(validCalendars);
         }
 
         private async Task SendResetPasswordLinkAsync(User user)
