@@ -17,14 +17,17 @@ namespace MVP.BusinessLogic.Services
         private readonly IApartmentRepository _apartmentRepository;
         private readonly ICalendarRepository _calendarRepository;
         private readonly ILocationRepository _locationRepository;
+        private readonly IOfficeRepository _officeRepository;
 
         public ApartmentService(IApartmentRepository apartmentRepository,
             ICalendarRepository calendarRepository,
-            ILocationRepository locationRepository)
+            ILocationRepository locationRepository, 
+            IOfficeRepository officeRepository)
         {
             _apartmentRepository = apartmentRepository;
             _calendarRepository = calendarRepository;
             _locationRepository = locationRepository;
+            _officeRepository = officeRepository;
         }
 
         public async Task<CreateApartmentDto> CreateApartmentAsync(CreateApartmentDto createApartmentDto)
@@ -32,6 +35,12 @@ namespace MVP.BusinessLogic.Services
             try
             {
                 var apartment = CreateApartmentDto.ToEntity(createApartmentDto);
+
+                if (createApartmentDto.OfficeId != null)
+                {
+                    var office = await _officeRepository.GetOfficeByIdAsync(createApartmentDto.OfficeId.Value);
+                    apartment.Office = office ?? throw new BusinessLogicException("Office not found");
+                }
 
                 var location = await _locationRepository.GetLocationByCityAndCountryCodeAndAddress
                     (createApartmentDto.Location.City, createApartmentDto.Location.CountryCode, createApartmentDto.Location.Address);
@@ -63,7 +72,7 @@ namespace MVP.BusinessLogic.Services
                     throw new BusinessLogicException("Apartment was not found");
                 }
 
-                apartment.UpdateApartment(updateApartmentDto.Title, updateApartmentDto.BedCount);
+                apartment.UpdateApartment(updateApartmentDto.Title);
 
                 await _apartmentRepository.UpdateApartmentAsync(apartment);
                 return updateApartmentDto;
