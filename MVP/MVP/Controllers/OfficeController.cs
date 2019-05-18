@@ -95,7 +95,7 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireAdministratorRole")]
+        /*[Authorize(Policy = "RequireAdministratorRole")]
         [HttpPut("/Apartment")]
         public async Task<IActionResult> AddApartmentToOffice([FromBody] OfficeApartmentDto model)
         {
@@ -119,7 +119,7 @@ namespace MVP.Controllers
                 _logger.Log(LogLevel.Error, "Internal error occured:", ex);
                 return StatusCode(500, "common.internal");
             }
-        }
+        }*/
 
         [Authorize(Policy = "AllowAllRoles")]
         [HttpGet]

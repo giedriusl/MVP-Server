@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using MVP.Entities.Dtos.Apartments.ApartmentRooms;
+﻿using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 using MVP.Entities.Dtos.Locations;
 using MVP.Entities.Entities;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MVP.Entities.Dtos.Apartments
 {
     public class CreateApartmentDto : ApartmentDto
     {
         public int Id { get; set; }
+        public int OfficeId { get; set; }
         public LocationDto Location { get; set; }
         public List<CreateApartmentRoomDto> Rooms { get; set; } = new List<CreateApartmentRoomDto>();
         public static Apartment ToEntity(CreateApartmentDto createApartment)
