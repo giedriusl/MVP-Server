@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
+using MVP.Entities.Dtos;
 using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using MVP.Entities.Dtos;
 
 namespace MVP.Controllers
 {
@@ -24,13 +24,13 @@ namespace MVP.Controllers
 
         [HttpPost]
         [Authorize(Policy = "RequireAdministratorRole")]
-        public async Task<ActionResult> CreateUser([FromBody] CreateUserDto newUserDto)
+        public async Task<ActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
         {
             try
             {
-                var token = await _userService.CreateAsync(newUserDto);
+                await _userService.CreateAsync(createUserDto);
 
-                return Ok(token);
+                return Ok();
             }
             catch (InvalidUserException exception)
             {
@@ -46,11 +46,11 @@ namespace MVP.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> Login([FromBody] UserLoginDto userLogin)
+        public async Task<ActionResult> Login([FromBody] UserDto userDto)
         {
             try
             {
-                var token = await _userService.LoginAsync(userLogin);
+                var token = await _userService.LoginAsync(userDto);
 
                 return Ok(token);
             }
@@ -63,6 +63,44 @@ namespace MVP.Controllers
             {
                 _logger.Log(LogLevel.Warning, $"Invalid user creation request: {exception.Message}");
                 return StatusCode(500, "common.internal");
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
+        {
+            try
+            {
+                await _userService.ResetPasswordAsync(resetPasswordDto);
+                return Ok();
+            }
+            catch (InvalidUserException exception)
+            {
+                _logger.Log(LogLevel.Error, $"Password reset failed. {exception.Message}");
+                return BadRequest("invalidPasswordReset");
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ActionResult> SendResetPasswordLink(string email)
+        {
+            try
+            {
+                await _userService.SendResetPasswordLinkAsync(email);
+
+                return Ok();
+            }
+            catch (InvalidUserException exception)
+            {
+                _logger.Log(LogLevel.Warning, $"Invalid user. {exception.Message}");
+                return BadRequest("user.notFound");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, $"Internal error occured. {exception.Message}");
+                return StatusCode(500);
             }
         }
     }

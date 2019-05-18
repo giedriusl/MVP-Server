@@ -19,6 +19,9 @@ using NLog.Web;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using MVP.BusinessLogic.Helpers.UrlBuilder;
+using MVP.EmailService;
+using MVP.EmailService.Interfaces;
 
 namespace MVP
 {
@@ -99,7 +102,9 @@ namespace MVP
             services.AddScoped<SignInManager<User>>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenGenerator, JwtTokenGenerator>();
-
+            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IEmailManager, EmailManager>();
+            services.AddScoped<IUrlBuilder, UrlBuilder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
