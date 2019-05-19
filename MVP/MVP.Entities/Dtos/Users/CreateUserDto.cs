@@ -19,5 +19,17 @@ namespace MVP.Entities.Dtos.Users
 
             return user;
         }
+
+        public new static CreateUserDto ToDto(User user)
+        {
+            var createUserDto = new CreateUserDto
+            {
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email
+            };
+
+            return createUserDto;
+        }
     }
 }
