@@ -36,9 +36,9 @@ namespace MVP.Controllers
                     return BadRequest("Model is not valid");
                 }
 
-                await _userService.CreateAsync(createUserDto);
+                var user = await _userService.CreateAsync(createUserDto);
 
-                return Ok();
+                return Ok(user);
             }
             catch (InvalidUserException exception)
             {

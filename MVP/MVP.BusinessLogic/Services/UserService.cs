@@ -82,7 +82,7 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        public async Task CreateAsync(CreateUserDto createUserDto)
+        public async Task<CreateUserDto> CreateAsync(CreateUserDto createUserDto)
         {
             var user = CreateUserDto.ToEntity(createUserDto);
             var temporaryPassword = _configuration["TemporaryPassword"];
@@ -96,6 +96,8 @@ namespace MVP.BusinessLogic.Services
             await AssignUserToRoleAsync(user, createUserDto.Role);
 
             await SendResetPasswordLinkAsync(user);
+
+            return createUserDto;
         }
 
         public async Task<string> LoginAsync(UserLoginDto userDto)

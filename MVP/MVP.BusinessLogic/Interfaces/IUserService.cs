@@ -8,7 +8,7 @@ namespace MVP.BusinessLogic.Interfaces
 {
     public interface IUserService
     {
-        Task CreateAsync(CreateUserDto createUserDto);
+        Task<CreateUserDto> CreateAsync(CreateUserDto createUserDto);
         Task<string> LoginAsync(UserLoginDto userDto);
         Task ResetPasswordAsync(ResetPasswordDto resetPasswordDto);
         Task SendResetPasswordLinkAsync(string email);
