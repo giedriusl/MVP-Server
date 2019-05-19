@@ -11,6 +11,8 @@ namespace MVP.Entities.Dtos.Apartments
         public int Id { get; set; }
         public LocationDto Location { get; set; }
         public List<CreateApartmentRoomDto> Rooms { get; set; } = new List<CreateApartmentRoomDto>();
+
+
         public static Apartment ToEntity(CreateApartmentDto createApartment)
         {
             return new Apartment

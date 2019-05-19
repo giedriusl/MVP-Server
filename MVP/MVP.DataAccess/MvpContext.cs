@@ -15,6 +15,8 @@ namespace MVP.DataAccess
         public DbSet<Location> Locations{ get; set; }
         public DbSet<Office> Offices{ get; set; }
         public DbSet<Trip> Trips{ get; set; }
+        public DbSet<UserTrip> UserTrips { get; set; }
+
         public MvpContext(DbContextOptions<MvpContext> options) : base(options)
         {
         }

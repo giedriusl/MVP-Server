@@ -10,6 +10,8 @@ namespace MVP.Entities.Dtos.Offices
 
         [Required]
         public LocationDto Location { get; set; }
+
+
         public static Office ToEntity(CreateOfficeDto newOfficeDto)
         {
             var office = new Office
@@ -20,13 +22,13 @@ namespace MVP.Entities.Dtos.Offices
             return office;
         }
 
-        public static CreateOfficeDto ToDto(Office entity)
+        public static CreateOfficeDto ToDto(Office office)
         {
             return new CreateOfficeDto
             {
-                Id = entity.Id,
-                Name = entity.Name,
-                Location = LocationDto.ToDto(entity.Location)
+                Id = office.Id,
+                Name = office.Name,
+                Location = LocationDto.ToDto(office.Location)
             };
         }
     }
