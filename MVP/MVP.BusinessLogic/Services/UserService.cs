@@ -93,6 +93,9 @@ namespace MVP.BusinessLogic.Services
                 throw new InvalidUserException("User creation failed on CreateAsync.", identityResult.Errors.First().Code);
             }
 
+            user = await _userManager.FindByEmailAsync(createUserDto.Email);
+            createUserDto.Id = user.Id;
+
             await AssignUserToRoleAsync(user, createUserDto.Role);
 
             await SendResetPasswordLinkAsync(user);
