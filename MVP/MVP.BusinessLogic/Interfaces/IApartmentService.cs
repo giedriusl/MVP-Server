@@ -3,6 +3,7 @@ using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 using MVP.Entities.Dtos.Calendars;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace MVP.BusinessLogic.Interfaces
 {
@@ -16,5 +17,6 @@ namespace MVP.BusinessLogic.Interfaces
         Task<ApartmentViewDto> GetApartmentByIdAsync(int apartmentId);
         Task<IEnumerable<CreateApartmentRoomDto>> GetRoomsByApartmentIdAsync(int apartmentId);
         Task<IEnumerable<CalendarDto>> GetCalendarByRoomAndApartmentIdAsync(int apartmentId, int roomId);
+        Task UploadCalendarAsync(int apartmentId, IFormFile file);
     }
 }

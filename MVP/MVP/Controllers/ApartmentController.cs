@@ -12,6 +12,7 @@ namespace MVP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ApartmentController : ControllerBase
     {
         private readonly IApartmentService _apartmentService;
@@ -89,7 +90,7 @@ namespace MVP.Controllers
                     return BadRequest("Invalid file format");
                 }
 
-                await _fileReader.ReadApartmentCalendarFile(apartmentId, file);
+                await _apartmentService.UploadCalendarAsync(apartmentId, file);
 
                 return Ok();
             }

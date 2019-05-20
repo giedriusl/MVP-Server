@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -18,16 +19,19 @@ namespace MVP.BusinessLogic.Services
         private readonly ICalendarRepository _calendarRepository;
         private readonly ILocationRepository _locationRepository;
         private readonly IOfficeRepository _officeRepository;
+        private readonly IFileReader _fileReader;
 
         public ApartmentService(IApartmentRepository apartmentRepository,
             ICalendarRepository calendarRepository,
             ILocationRepository locationRepository, 
-            IOfficeRepository officeRepository)
+            IOfficeRepository officeRepository,
+            IFileReader fileReader)
         {
             _apartmentRepository = apartmentRepository;
             _calendarRepository = calendarRepository;
             _locationRepository = locationRepository;
             _officeRepository = officeRepository;
+            _fileReader = fileReader;
         }
 
         public async Task<CreateApartmentDto> CreateApartmentAsync(CreateApartmentDto createApartmentDto)
@@ -156,6 +160,12 @@ namespace MVP.BusinessLogic.Services
             {
                 throw new BusinessLogicException(ex, $"Failed to get {apartmentId} room calendar. ");
             }
+        }
+
+        public async Task UploadCalendarAsync(int apartmentId, IFormFile file)
+        {
+            var calendars = await _fileReader.ReadApartmentCalendarFileAsync(apartmentId, file);
+            await _calendarRepository.AddCalendarsAsync(calendars.ToList());
         }
     }
 }
