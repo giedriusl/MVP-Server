@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using MVP.Entities.Dtos.FlightsInformation;
+﻿using MVP.Entities.Dtos.FlightsInformation;
 using MVP.Entities.Dtos.Offices;
 using MVP.Entities.Dtos.RentalCarsInformation;
 using MVP.Entities.Dtos.Users;
 using MVP.Entities.Entities;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace MVP.Entities.Dtos.Trips
 {
@@ -32,8 +30,8 @@ namespace MVP.Entities.Dtos.Trips
                 TripStatus = trip.TripStatus,
                 FromOffice = OfficeViewDto.ToDto(trip.FromOffice),
                 ToOffice = OfficeViewDto.ToDto(trip.ToOffice),
-                FlightsInformation = trip.FlightInformations.Select(FlightInformationDto.ToDto).ToList(),
-                RentalCarsInformation = trip.RentalCarInformations.Select(RentalCarInformationDto.ToDto).ToList(),
+                FlightInformations = trip.FlightInformations.Select(FlightInformationDto.ToDto).ToList(),
+                RentalCarInformations = trip.RentalCarInformations.Select(RentalCarInformationDto.ToDto).ToList(),
                 Users = trip.UserTrips.Select(userTrip => userTrip.User).Select(UserDto.ToDto).ToList()
             };
         }

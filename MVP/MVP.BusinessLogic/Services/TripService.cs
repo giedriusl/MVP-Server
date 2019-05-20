@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Dtos.Trips;
+using MVP.Entities.Dtos.Users;
 using MVP.Entities.Entities;
 using MVP.Entities.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -144,5 +145,33 @@ namespace MVP.BusinessLogic.Services
                 throw new BusinessLogicException(exception, "Failed to get trips");
             }
         }
+
+        public async Task<MergedTripDto> MergeTripsAsync(int baseTripId, int additionalTripId)
+        {
+            try
+            {
+                var baseTrip = await _tripRepository.GetTripByIdAsync(baseTripId);
+                var additionalTrip = await _tripRepository.GetTripByIdAsync(additionalTripId);
+
+                if (baseTrip is null || additionalTrip is null)
+                {
+                    throw new BusinessLogicException("Trip was not found");
+                }
+
+                baseTrip.FlightInformations.AddRange(additionalTrip.FlightInformations);
+                baseTrip.RentalCarInformations.AddRange(additionalTrip.RentalCarInformations);
+
+                var mergedTrip = MergedTripDto.ToDto(baseTrip);
+                var users = (await _tripRepository.GetUsersByTripIdAsync(additionalTripId)).Select(UserDto.ToDto);
+                mergedTrip.Users.AddRange(users);
+
+                return mergedTrip;
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to merge trips");
+            }
+        }
+
     }
 }

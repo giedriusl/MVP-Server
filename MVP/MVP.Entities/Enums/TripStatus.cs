@@ -2,10 +2,9 @@
 {
     public enum TripStatus
     {
-        Preparation = 1,
-        WaitingForApproval = 2,
-        Approved = 3,
-        InProgress = 4,
-        Completed = 5
+        WaitingForApproval = 1,
+        Approved = 2,
+        InProgress = 3,
+        Completed = 4
     }
 }

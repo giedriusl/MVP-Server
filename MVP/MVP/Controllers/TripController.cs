@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Dtos.Trips;
 using MVP.Entities.Exceptions;
+using System;
+using System.Threading.Tasks;
 
 namespace MVP.Controllers
 {
@@ -126,6 +123,28 @@ namespace MVP.Controllers
                 var trips = await _tripService.GetTripsByUserIdAsync(userId);
 
                 return Ok(trips);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid trips get request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpPost("/ByUserId/{userId}")]
+        public async Task<IActionResult> GetMergeTripsData(int baseTrip, int additionalTrip)
+        {
+            try
+            {
+                var mergedTrips = await _tripService.MergeTripsAsync(baseTrip, additionalTrip);
+
+                return Ok(mergedTrips);
             }
             catch (BusinessLogicException exception)
             {
