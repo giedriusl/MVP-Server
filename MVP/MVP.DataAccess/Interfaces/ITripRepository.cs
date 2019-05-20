@@ -8,10 +8,11 @@ namespace MVP.DataAccess.Interfaces
     {
         Task<Trip> AddTripAsync(Trip trip);
         Task<Trip> UpdateTripAsync(Trip trip);
+        Task DeleteTripAsync(Trip trip);
 
         Task<IEnumerable<Trip>> GetAllTripsAsync();
         Task<Trip> GetTripByIdAsync(int tripId);
-        Task<IEnumerable<Trip>> GetTripsByUserId(string userId);
-        Task<IEnumerable<User>> GetUsersByTripId(int tripId);
+        Task<IEnumerable<Trip>> GetTripsByUserIdAsync(string userId);
+        Task<IEnumerable<User>> GetUsersByTripIdAsync(int tripId);
     }
 }

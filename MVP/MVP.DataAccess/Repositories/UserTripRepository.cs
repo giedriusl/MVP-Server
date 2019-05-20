@@ -7,7 +7,7 @@ using MVP.Entities.Entities;
 
 namespace MVP.DataAccess.Repositories
 {
-    class UserTripRepository :IUserTripRepository
+    public class UserTripRepository :IUserTripRepository
     {
         private readonly MvpContext _context;
 

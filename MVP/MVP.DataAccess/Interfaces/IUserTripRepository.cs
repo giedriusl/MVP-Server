@@ -6,7 +6,7 @@ using MVP.Entities.Entities;
 
 namespace MVP.DataAccess.Interfaces
 {
-    interface IUserTripRepository
+    public interface IUserTripRepository
     {
         Task<UserTrip> AddUserTripAsync(UserTrip userTrip);
         Task AddUserTripsAsync(List<UserTrip> userTrips);

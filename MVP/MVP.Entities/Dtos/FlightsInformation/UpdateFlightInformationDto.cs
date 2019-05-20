@@ -5,6 +5,6 @@ namespace MVP.Entities.Dtos.FlightsInformation
     public class UpdateFlightInformationDto : FlightInformationDto
     {
         [Required]
-        public int Id { get; set; }
+        public override int Id { get; set; }
     }
 }

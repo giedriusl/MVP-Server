@@ -15,7 +15,7 @@ namespace MVP.Entities.Dtos.Trips
 
         [Required]
         public int ToOfficeId;
-
+        public List<string> UserIds { get; set; }
 
         public static Trip ToEntity(CreateTripDto createTripDto)
         {
@@ -42,7 +42,8 @@ namespace MVP.Entities.Dtos.Trips
                 FlightsInformation = trip.FlightInformations.Select(FlightInformationDto.ToDto).ToList(),
                 RentalCarsInformation = trip.RentalCarInformations.Select(RentalCarInformationDto.ToDto).ToList(),
                 FromOfficeId = trip.FromOfficeId,
-                ToOfficeId = trip.ToOfficeId
+                ToOfficeId = trip.ToOfficeId,
+                UserIds = trip.UserTrips.Select(userTrip => userTrip.UserId).ToList()
             };
         }
     }

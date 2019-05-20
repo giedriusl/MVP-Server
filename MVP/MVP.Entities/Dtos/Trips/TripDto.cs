@@ -23,9 +23,7 @@ namespace MVP.Entities.Dtos.Trips
 
         [Required]
         public TripStatus TripStatus { get; set; }
-
         public List<FlightInformationDto> FlightsInformation { get; set; } = new List<FlightInformationDto>();
         public List<RentalCarInformationDto> RentalCarsInformation { get; set; } = new List<RentalCarInformationDto>();
-
     }
 }

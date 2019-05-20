@@ -9,7 +9,7 @@ using MVP.Entities.Entities;
 
 namespace MVP.DataAccess.Repositories
 {
-    class TripRepository : ITripRepository
+    public class TripRepository : ITripRepository
     {
         private readonly MvpContext _context;
 
@@ -66,7 +66,7 @@ namespace MVP.DataAccess.Repositories
             return trips;
         }
 
-        public async Task<IEnumerable<Trip>> GetTripsByUserId(string userId)
+        public async Task<IEnumerable<Trip>> GetTripsByUserIdAsync(string userId)
         {
             var lists = await _context.Trips
                 .Where(trip => trip.UserTrips.Any(userTrip => userTrip.UserId == userId))
@@ -87,7 +87,7 @@ namespace MVP.DataAccess.Repositories
             return lists;
         }
 
-        public async Task<IEnumerable<User>> GetUsersByTripId(int tripId)
+        public async Task<IEnumerable<User>> GetUsersByTripIdAsync(int tripId)
         {
             var users = await _context.Users.Where(user => user.UserTrips.Any(userTrip => userTrip.TripId == tripId))
                 .Include(user => user.Calendars)
@@ -102,6 +102,12 @@ namespace MVP.DataAccess.Repositories
             await _context.SaveChangesAsync();
 
             return tripEntity;
+        }
+
+        public async Task DeleteTripAsync(Trip trip)
+        {
+            _context.Trips.Remove(trip);
+            await _context.SaveChangesAsync();
         }
     }
 }
