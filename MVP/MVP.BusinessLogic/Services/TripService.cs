@@ -143,9 +143,7 @@ namespace MVP.BusinessLogic.Services
                 throw new BusinessLogicException("Office from and office to cannot be the same!");
             }
 
-            var users = _userManager.Users.Where(user => createTripDto.UserIds.Contains(user.Id)).ToList();
-
-            if (!users.Any())
+            if (!_userManager.Users.Any(user => createTripDto.UserIds.Contains(user.Id)))
             {
                 throw new BusinessLogicException("Trip should contain at least one user!");
             }
