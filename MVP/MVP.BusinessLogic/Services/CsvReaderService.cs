@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
+using MVP.Entities.Dtos.Users;
 using MVP.Entities.Entities;
 using MVP.Entities.Exceptions;
 using System;
@@ -8,7 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
+using MVP.Entities.Enums;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -17,25 +18,27 @@ namespace MVP.BusinessLogic.Services
         private const int StartDateTimePosition = 0;
         private const int EndDateTimePosition = 1;
         private const int UserIdPosition = 2;
+        private const int NamePosition = 0;
+        private const int SurnamePosition = 1;
+        private const int EmailPosition = 2;
+        private const int RolePosition = 3;
 
-        private readonly ICalendarRepository _calendarRepository;
+
         private readonly IApartmentRepository _apartmentRepository;
 
-        public CsvReaderService(ICalendarRepository calendarRepository, IApartmentRepository apartmentRepository)
+        public CsvReaderService(IApartmentRepository apartmentRepository)
         {
-            _calendarRepository = calendarRepository;
             _apartmentRepository = apartmentRepository;
         }
 
-        public async Task ReadApartmentCalendarFile(int apartmentId, IFormFile file)
+        public async Task<IEnumerable<Calendar>> ReadApartmentCalendarFileAsync(int apartmentId, IFormFile file)
         {
             try
             {
                 var data = await ReadData(file);
                 var roomNumbers = new List<int>();
-
-                data.ForEach(l => roomNumbers.Add(Int32.Parse(l[2])));
                 var rooms = await _apartmentRepository.GetApartmentRoomsByNumberAsync(apartmentId, roomNumbers);
+                data.ForEach(l => roomNumbers.Add(Int32.Parse(l[2])));
                 var calendars = new List<Calendar>();
 
                 if (rooms.Count == 0)
@@ -58,10 +61,33 @@ namespace MVP.BusinessLogic.Services
                     }
                 }
 
-                if (calendars.Count > 0)
+                return calendars;
+            }
+            catch (Exception ex)
+            {
+                throw new FileReaderException(ex, $"Exception while reading {file.FileName} file");
+            }
+
+        }
+
+        public async Task<IEnumerable<CreateUserDto>> ReadUsersFileAsync(IFormFile file)
+        {
+            try
+            {
+                var data = await ReadData(file);
+                var users = new List<CreateUserDto>();
+                foreach (var line in data)
                 {
-                    await _calendarRepository.AddCalendarsAsync(calendars);
+                    users.Add(new CreateUserDto
+                    {
+                        Name = line[NamePosition],
+                        Surname = line[SurnamePosition],
+                        Email = line[EmailPosition],
+                        Role = (UserRoles)Enum.Parse(typeof(UserRoles), line[RolePosition])
+                    });
                 }
+
+                return users;
             }
             catch (Exception ex)
             {

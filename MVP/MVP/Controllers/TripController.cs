@@ -34,9 +34,9 @@ namespace MVP.Controllers
                     return BadRequest("Model is not valid");
                 }
 
-                var response = await _tripService.CreateTripAsync(createTripDto);
+                var trip = await _tripService.CreateTripAsync(createTripDto);
 
-                return Ok(response);
+                return Ok(trip);
             }
             catch (BusinessLogicException exception)
             {
@@ -51,7 +51,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpDelete("{tripId}")]
+        [HttpDelete("/{tripId}")]
         public async Task<IActionResult> DeleteTrip(int tripId)
         {
             try
@@ -94,6 +94,8 @@ namespace MVP.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpGet]
         public async Task<IActionResult> GetTripById(int tripId)
         {
             try

@@ -143,10 +143,7 @@ namespace MVP
             env.ConfigureNLog("nlog.config");
             loggerFactory.AddNLog();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvc();
         }
     }
 }

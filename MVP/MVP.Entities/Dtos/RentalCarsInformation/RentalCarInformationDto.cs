@@ -8,20 +8,9 @@ namespace MVP.Entities.Dtos.RentalCarsInformation
     public class RentalCarInformationDto
     {
         public virtual int Id { get; set; }
-
-        [Required]
-        public int TripId { get; set; }
-
-        [Required]
         public double Cost { get; set; }
-
-        [Required]
         public DateTimeOffset Start { get; set; }
-
-        [Required]
         public DateTimeOffset End { get; set; }
-
-        [Required]
         public RentalCarStatus Status { get; set; }
 
 
@@ -33,8 +22,7 @@ namespace MVP.Entities.Dtos.RentalCarsInformation
                 Cost = rentalCarInformation.Cost,
                 End = rentalCarInformation.End,
                 Start = rentalCarInformation.Start,
-                Status = rentalCarInformation.Status,
-                TripId = rentalCarInformation.TripId
+                Status = rentalCarInformation.Status
             };
         }
 
@@ -45,8 +33,7 @@ namespace MVP.Entities.Dtos.RentalCarsInformation
                 Cost = rentalCarInformationDto.Cost,
                 End = rentalCarInformationDto.End,
                 Start = rentalCarInformationDto.Start,
-                Status = rentalCarInformationDto.Status,
-                TripId = rentalCarInformationDto.TripId
+                Status = rentalCarInformationDto.Status
             };
         }
     }

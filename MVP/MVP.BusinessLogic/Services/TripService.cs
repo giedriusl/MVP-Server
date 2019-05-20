@@ -19,6 +19,7 @@ namespace MVP.BusinessLogic.Services
         private readonly IUserTripRepository _userTripRepository;
         private readonly UserManager<User> _userManager;
 
+
         public TripService(ITripRepository tripRepository, IOfficeRepository officeRepository, UserManager<User> userManager, IUserTripRepository userTripRepository)
         {
             _tripRepository = tripRepository;
@@ -31,6 +32,8 @@ namespace MVP.BusinessLogic.Services
         {
             try
             {
+                ValidateCreateTrip(createTripDto);
+
                 var userTrips = new List<UserTrip>();
                 var trip = CreateTripDto.ToEntity(createTripDto);
                 var fromOffice = await _officeRepository.GetOfficeByIdAsync(createTripDto.FromOfficeId);
@@ -50,30 +53,18 @@ namespace MVP.BusinessLogic.Services
                 trip.FromOffice = fromOffice;
                 trip.ToOffice = toOffice;
 
-                foreach (var userId in createTripDto.UserIds)
-                {
-                    var userEntity = _userManager.Users.FirstOrDefault(user => user.Id == userId);
-
-                    if (userEntity != null)
-                    {
-                        userTrips.Add(new UserTrip
-                        {
-                            Trip = trip,
-                            User = userEntity
-                        });
-                    }
-                }
-
+                var usersInTrip = _userManager.Users.Where(user => createTripDto.UserIds.Contains(user.Id)).ToList();
+                usersInTrip.ForEach(user => userTrips.Add(new UserTrip{Trip = trip, User = user}));
                 trip.UserTrips = userTrips;
+
                 await _userTripRepository.AddUserTripsAsync(userTrips);
                 var tripEntity = await _tripRepository.AddTripAsync(trip);
 
                 return CreateTripDto.ToDto(tripEntity);
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.WriteLine(e);
-                throw;
+                throw new BusinessLogicException(exception,"Failed to create trip");
             }
 
         }
@@ -173,5 +164,18 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
+
+        private void ValidateCreateTrip(CreateTripDto createTripDto)
+        {
+            if (createTripDto.FromOfficeId == createTripDto.ToOfficeId)
+            {
+                throw new BusinessLogicException("Office from and office to cannot be the same!");
+            }
+
+            if (!_userManager.Users.Any(user => createTripDto.UserIds.Contains(user.Id)))
+            {
+                throw new BusinessLogicException("Trip should contain at least one user!");
+            }
+        }
     }
 }
