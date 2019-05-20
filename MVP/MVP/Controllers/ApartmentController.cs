@@ -16,11 +16,15 @@ namespace MVP.Controllers
     public class ApartmentController : ControllerBase
     {
         private readonly IApartmentService _apartmentService;
+        private readonly IFileReader _fileReader;
         private readonly ILogger<ApartmentController> _logger;
-        public ApartmentController(IApartmentService apartmentService, ILogger<ApartmentController> logger)
+
+
+        public ApartmentController(IApartmentService apartmentService, ILogger<ApartmentController> logger, IFileReader fileReader)
         {
             _apartmentService = apartmentService;
             _logger = logger;
+            _fileReader = fileReader;
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]

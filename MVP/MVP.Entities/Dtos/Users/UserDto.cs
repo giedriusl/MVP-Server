@@ -20,6 +20,13 @@ namespace MVP.Entities.Dtos.Users
         [MaxLength(256)]
         public string Email { get; set; }
 
+
+        [Required]
+        [DataType(DataType.Password)]
+        [MaxLength(256)]
+        public string Password { get; set; }
+
+
         public static UserDto ToDto(User user)
         {
             var userDto = new UserDto

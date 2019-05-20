@@ -86,7 +86,7 @@ namespace MVP.Controllers
             }
             catch (BusinessLogicException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid office creation request:", ex);
+                _logger.Log(LogLevel.Warning, "Invalid office deletion request:", ex);
                 return BadRequest($"office.{ex.ErrorCode}");
             }
             catch (Exception ex)
