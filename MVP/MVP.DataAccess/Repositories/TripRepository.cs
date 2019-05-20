@@ -28,20 +28,7 @@ namespace MVP.DataAccess.Repositories
 
         public async Task<IEnumerable<Trip>> GetAllTripsAsync()
         {
-            var trips = await _context.Trips
-                .Include(trip => trip.FlightInformations)
-                .Include(trip => trip.RentalCarInformations)
-                .Include(trip => trip.FromOffice)
-                    .ThenInclude(fromOffice => fromOffice.Location)
-                .Include(trip => trip.FromOffice)
-                    .ThenInclude(fromOffice => fromOffice.Apartments)
-                .Include(trip => trip.ToOffice)
-                    .ThenInclude(toOffice => toOffice.Location)
-                .Include(trip => trip.ToOffice)
-                    .ThenInclude(toOffice => toOffice.Apartments)
-                .Include(trip => trip.UserTrips)
-                    .ThenInclude(userTrips => userTrips.User)
-                .ToListAsync();
+            var trips = await _context.Trips.ToListAsync();
 
             return trips;
         }
@@ -70,18 +57,6 @@ namespace MVP.DataAccess.Repositories
         {
             var lists = await _context.Trips
                 .Where(trip => trip.UserTrips.Any(userTrip => userTrip.UserId == userId))
-                .Include(trip => trip.FlightInformations)
-                .Include(trip => trip.RentalCarInformations)
-                .Include(trip => trip.FromOffice)
-                    .ThenInclude(fromOffice => fromOffice.Location)
-                .Include(trip => trip.FromOffice)
-                    .ThenInclude(fromOffice => fromOffice.Apartments)
-                .Include(trip => trip.ToOffice)
-                    .ThenInclude(toOffice => toOffice.Location)
-                .Include(trip => trip.ToOffice)
-                    .ThenInclude(toOffice => toOffice.Apartments)
-                .Include(trip => trip.UserTrips)
-                    .ThenInclude(userTrip => userTrip.User)
                 .ToListAsync();
 
             return lists;

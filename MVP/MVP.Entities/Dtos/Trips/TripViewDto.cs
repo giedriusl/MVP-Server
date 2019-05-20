@@ -32,8 +32,8 @@ namespace MVP.Entities.Dtos.Trips
                 TripStatus = trip.TripStatus,
                 FromOffice = OfficeViewDto.ToDto(trip.FromOffice),
                 ToOffice = OfficeViewDto.ToDto(trip.ToOffice),
-                FlightsInformation = trip.FlightInformations.Select(FlightInformationDto.ToDto).ToList(),
-                RentalCarsInformation = trip.RentalCarInformations.Select(RentalCarInformationDto.ToDto).ToList(),
+                FlightInformations = trip.FlightInformations.Select(FlightInformationDto.ToDto).ToList(),
+                RentalCarInformations = trip.RentalCarInformations.Select(RentalCarInformationDto.ToDto).ToList(),
                 Users = trip.UserTrips.Select(userTrip => userTrip.User).Select(UserDto.ToDto).ToList()
             };
         }
