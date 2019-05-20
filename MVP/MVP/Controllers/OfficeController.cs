@@ -11,6 +11,7 @@ namespace MVP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OfficeController : ControllerBase
     {
         private readonly IOfficeService _officeService;

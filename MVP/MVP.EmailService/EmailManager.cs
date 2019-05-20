@@ -11,7 +11,7 @@ namespace MVP.EmailService
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IEmailSender _emailSender;
 
-        private const string CreateAccountPasswordPath = "CreateAccountPassword.html";
+        private const string CreateAccountPasswordPath = "EmailTemplates\\CreateAccountPassword.html";
         public const string CreateAccountPasswordSubject = "Create Password";
 
         public EmailManager(IEmailSender emailSender, IHostingEnvironment hostingEnvironment)

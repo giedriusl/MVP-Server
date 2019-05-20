@@ -12,6 +12,7 @@ using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Dtos.Users;
@@ -27,7 +28,7 @@ namespace MVP.BusinessLogic.Services
         private readonly IUrlBuilder _urlBuilder;
         private readonly IConfiguration _configuration;
         private readonly ICalendarRepository _calendarRepository;
-        private readonly IFileReader _csvReaderService;
+        private readonly IFileReader _fileReader;
 
         public UserService(UserManager<User> userManager, 
             SignInManager<User> signInManager,
@@ -36,7 +37,7 @@ namespace MVP.BusinessLogic.Services
             IUrlBuilder urlBuilder, 
             IConfiguration configuration,
             ICalendarRepository calendarRepository,
-            IFileReader csvReaderService)
+            IFileReader fileReader)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -45,7 +46,7 @@ namespace MVP.BusinessLogic.Services
             _urlBuilder = urlBuilder;
             _configuration = configuration;
             _calendarRepository = calendarRepository;
-            _csvReaderService = csvReaderService;
+            _fileReader = fileReader;
         }
 
         public async Task SendResetPasswordLinkAsync(string email)
@@ -59,7 +60,29 @@ namespace MVP.BusinessLogic.Services
             await SendResetPasswordLinkAsync(user);
         }
 
-        public async Task CreateAsync(CreateUserDto createUserDto)
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            return users.Select(UserDto.ToDto);
+        }
+
+        public async Task<UserDto> GetUserByIdAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            return UserDto.ToDto(user);
+        }
+
+        public async Task UploadUsersAsync(IFormFile file)
+        {
+            var users = await _fileReader.ReadUsersFileAsync(file);
+
+            foreach (var user in users)
+            {
+                await CreateAsync(user);
+            }
+        }
+
+        public async Task<CreateUserDto> CreateAsync(CreateUserDto createUserDto)
         {
             var user = CreateUserDto.ToEntity(createUserDto);
             var temporaryPassword = _configuration["TemporaryPassword"];
@@ -67,15 +90,20 @@ namespace MVP.BusinessLogic.Services
 
             if (!identityResult.Succeeded)
             {
-                throw new InvalidUserException("User creation failed on CreateAsync.");
+                throw new InvalidUserException("User creation failed on CreateAsync.", identityResult.Errors.First().Code);
             }
 
-            await AssignUserToRole(user, createUserDto.Role);
+            user = await _userManager.FindByEmailAsync(createUserDto.Email);
+            createUserDto.Id = user.Id;
+
+            await AssignUserToRoleAsync(user, createUserDto.Role);
 
             await SendResetPasswordLinkAsync(user);
+
+            return createUserDto;
         }
 
-        public async Task<string> LoginAsync(UserDto userDto)
+        public async Task<string> LoginAsync(UserLoginDto userDto)
         {
             var result = await _signInManager.PasswordSignInAsync(userDto.Email, userDto.Password, 
                 false, false);
@@ -104,7 +132,7 @@ namespace MVP.BusinessLogic.Services
 
         public async Task UploadUsersCalendarAsync(IFormFile file)
         {
-            var calendars = await _csvReaderService.ReadUsersCalendarFileAsync(file);
+            var calendars = await _fileReader.ReadUsersCalendarFileAsync(file);
             var users = _userManager.Users;
             var validCalendars = new List<Calendar>();
 
@@ -128,7 +156,7 @@ namespace MVP.BusinessLogic.Services
             _emailManager.SendInvitationEmail(user.Email, url);
         }
 
-        private async Task AssignUserToRole(User user, UserRoles role)
+        private async Task AssignUserToRoleAsync(User user, UserRoles role)
         {
             var roleName = role.ToString();
             var identityResult = await _userManager.AddToRoleAsync(user, roleName);

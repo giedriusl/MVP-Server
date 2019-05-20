@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Dtos;
@@ -8,9 +7,11 @@ using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MVP.Controllers
 {
+    [ApiController]
     [Authorize]
     public class UserController : ControllerBase
     {
@@ -24,15 +25,20 @@ namespace MVP.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
+        [HttpPost("api/[controller]/CreateUser")]
         [Authorize(Policy = "RequireAdministratorRole")]
         public async Task<ActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
         {
             try
             {
-                await _userService.CreateAsync(createUserDto);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
 
-                return Ok();
+                var user = await _userService.CreateAsync(createUserDto);
+
+                return Ok(user);
             }
             catch (InvalidUserException exception)
             {
@@ -46,13 +52,18 @@ namespace MVP.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("api/[controller]/Login")]
         [AllowAnonymous]
-        public async Task<ActionResult> Login([FromBody] UserDto userDto)
+        public async Task<ActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
             try
             {
-                var token = await _userService.LoginAsync(userDto);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
+                var token = await _userService.LoginAsync(userLoginDto);
 
                 return Ok(token);
             }
@@ -68,12 +79,17 @@ namespace MVP.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("api/[controller]/ResetPassword")]
         [AllowAnonymous]
         public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
                 await _userService.ResetPasswordAsync(resetPasswordDto);
                 return Ok();
             }
@@ -84,12 +100,17 @@ namespace MVP.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("api/[controller]/SendResetPasswordLink")]
         [AllowAnonymous]
         public async Task<ActionResult> SendResetPasswordLink(string email)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
                 await _userService.SendResetPasswordLinkAsync(email);
 
                 return Ok();
@@ -106,8 +127,73 @@ namespace MVP.Controllers
             }
         }
 
+        [HttpGet("api/[controller]")]
+        [Authorize(Policy = "RequireOrganizerRole")]
+        public async Task<ActionResult> GetAllUsers()
+        {
+            try
+            {
+                var users = await _userService.GetAllUsersAsync();
+                return Ok(users);
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, $"Internal error occured. {exception.Message}");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("api/[controller]/{userId}")]
+        [Authorize(Policy = "RequireOrganizerRole")]
+        public async Task<ActionResult> GetUserById(string userId)
+        {
+            try
+            {
+                var users = await _userService.GetUserByIdAsync(userId);
+                return Ok(users);
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, $"Internal error occured. {exception.Message}");
+                return StatusCode(500);
+            }
+        }
+
+
+        [HttpPost("api/[controller]/UploadUsers")]
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPost("/User/Calendar")]
+        public async Task<ActionResult> UploadUsers(IFormFile file)
+        {
+            try
+            {
+                if (file.ContentType != "text/csv")
+                {
+                    return BadRequest("Invalid file format");
+                }
+
+                await _userService.UploadUsersAsync(file);
+
+                return Ok();
+            }
+            catch (FileReaderException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (InvalidUserException exception)
+            {
+                _logger.Log(LogLevel.Warning, $"Invalid user creation request: {exception.Message}");
+                return BadRequest($"user.{exception.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [HttpPost("api/[controller]/Calendar")]
+        [Authorize(Policy = "RequireAdministratorRole")]
         public async Task<IActionResult> UploadCalendar(IFormFile file)
         {
             try
