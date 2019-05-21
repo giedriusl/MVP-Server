@@ -55,12 +55,13 @@ namespace MVP.BusinessLogic.Services
                 trip.FromOffice = fromOffice;
                 trip.ToOffice = toOffice;
 
+                var tripEntity = await _tripRepository.AddTripAsync(trip);
+
                 var usersInTrip = _userManager.Users.Where(user => createTripDto.UserIds.Contains(user.Id)).ToList();
-                usersInTrip.ForEach(user => userTrips.Add(new UserTrip { Trip = trip, User = user }));
+                usersInTrip.ForEach(user => userTrips.Add(new UserTrip { TripId = tripEntity.Id, UserId = user.Id }));
                 trip.UserTrips = userTrips;
 
                 await _userTripRepository.AddUserTripsAsync(userTrips);
-                var tripEntity = await _tripRepository.AddTripAsync(trip);
 
                 return CreateTripDto.ToDto(tripEntity);
             }
