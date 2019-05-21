@@ -8,6 +8,7 @@ namespace MVP.DataAccess.EntityTypeConfigurations
     {
         public void Configure(EntityTypeBuilder<UserTrip> builder)
         {
+            builder.ToTable(nameof(UserTrip));
             builder.HasKey(ut => new { ut.UserId, ut.TripId });
 
             builder
