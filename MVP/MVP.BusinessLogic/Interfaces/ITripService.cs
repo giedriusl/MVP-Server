@@ -11,9 +11,9 @@ namespace MVP.BusinessLogic.Interfaces
         Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto);
         Task DeleteTripAsync(int tripId);
 
-        Task<IEnumerable<TripViewDto>> GetAllTripsAsync();
+        Task<IEnumerable<TripDto>> GetAllTripsAsync();
         Task<TripViewDto> GetTripByIdAsync(int tripId);
-        Task<IEnumerable<TripViewDto>> GetTripsByUserIdAsync(string userId);
+        Task<IEnumerable<TripDto>> GetTripsByUserIdAsync(string userId);
 
         IEnumerable<TripStatusDto> GetTripStatuses();
         IEnumerable<RentalCarStatusDto> GetRentalCarStatuses();
