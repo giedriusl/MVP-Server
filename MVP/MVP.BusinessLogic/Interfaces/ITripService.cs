@@ -13,7 +13,7 @@ namespace MVP.BusinessLogic.Interfaces
 
         Task<IEnumerable<TripDto>> GetAllTripsAsync();
         Task<TripViewDto> GetTripByIdAsync(int tripId);
-        Task<IEnumerable<TripViewDto>> GetTripsByUserIdAsync(string userId);
+        Task<IEnumerable<TripDto>> GetTripsByUserIdAsync(string userId);
         Task<MergedTripDto> GetMergedTripsDataAsync(int baseTripId, int additionalTripId);
         Task<CreateTripDto> MergeTripsAsync(MergedTripDto mergedTripDto);
         Task<IEnumerable<TripViewDto>> GetSimilarTripsAsync(int tripId);

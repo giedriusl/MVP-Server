@@ -28,17 +28,15 @@ namespace MVP.Entities.Dtos.Trips
         public List<FlightInformationDto> FlightInformations { get; set; } = new List<FlightInformationDto>();
         public List<RentalCarInformationDto> RentalCarInformations { get; set; } = new List<RentalCarInformationDto>();
 
+
         public static TripDto ToDto(Trip trip)
         {
             return new TripDto
             {
-                Id = trip.Id,
                 Title = trip.Title,
-                End = trip.End,
                 Start = trip.Start,
-                TripStatus = trip.TripStatus,
-                FlightInformations = trip.FlightInformations.Select(FlightInformationDto.ToDto).ToList(),
-                RentalCarInformations = trip.RentalCarInformations.Select(RentalCarInformationDto.ToDto).ToList(),
+                End = trip.End,
+                TripStatus = trip.TripStatus
             };
         }
     }

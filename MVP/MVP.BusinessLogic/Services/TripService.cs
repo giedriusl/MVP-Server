@@ -129,14 +129,14 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        public async Task<IEnumerable<TripViewDto>> GetTripsByUserIdAsync(string userId)
+        public async Task<IEnumerable<TripDto>> GetTripsByUserIdAsync(string userId)
         {
             try
             {
                 var trips = await _tripRepository.GetTripsByUserIdAsync(userId);
-                var tripsViewDto = trips.Select(TripViewDto.ToDto).ToList();
+                var tripsDto = trips.Select(TripDto.ToDto).ToList();
 
-                return tripsViewDto;
+                return tripsDto;
             }
             catch (Exception exception)
             {
