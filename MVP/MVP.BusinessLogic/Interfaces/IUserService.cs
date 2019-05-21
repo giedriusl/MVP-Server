@@ -17,5 +17,7 @@ namespace MVP.BusinessLogic.Interfaces
         Task UploadUsersAsync(IFormFile file);
         Task UploadUsersCalendarAsync(IFormFile file);
         Task<UserDto> GetUserByEmail(string email);
+
+        IEnumerable<UserRolesDto> GetUserRoles();
     }
 }

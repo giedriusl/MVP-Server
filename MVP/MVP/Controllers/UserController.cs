@@ -47,7 +47,7 @@ namespace MVP.Controllers
             }
             catch (Exception exception)
             {
-                _logger.Log(LogLevel.Error,$"Internal error occured: {exception.Message}");
+                _logger.Log(LogLevel.Error, $"Internal error occured: {exception.Message}");
                 return StatusCode(500, "common.internal");
             }
         }
@@ -235,6 +235,15 @@ namespace MVP.Controllers
                 _logger.Log(LogLevel.Warning, $"Invalid user creation request: {exception.Message}");
                 return BadRequest($"user.{exception.ErrorCode}");
             }
+        }
+
+        [HttpGet("api/[controller]/Roles")]
+        [Authorize(Policy = "RequireOrganizerRole")]
+        public IActionResult GetUserRoles()
+        {
+            var roles = _userService.GetUserRoles();
+
+            return Ok(roles);
         }
     }
 }

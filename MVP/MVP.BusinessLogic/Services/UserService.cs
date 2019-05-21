@@ -1,21 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MVP.BusinessLogic.Helpers.TokenGenerator;
 using MVP.BusinessLogic.Helpers.UrlBuilder;
 using MVP.BusinessLogic.Interfaces;
+using MVP.DataAccess.Interfaces;
 using MVP.EmailService.Interfaces;
 using MVP.Entities.Dtos;
+using MVP.Entities.Dtos.Users;
 using MVP.Entities.Entities;
 using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using MVP.DataAccess.Interfaces;
-using MVP.Entities.Dtos.Users;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -159,6 +159,13 @@ namespace MVP.BusinessLogic.Services
             }
 
             return CreateUserDto.ToDto(user);
+        }
+
+        public IEnumerable<UserRolesDto> GetUserRoles()
+        {
+            var roles = Enum.GetValues(typeof(UserRoles)).Cast<UserRoles>();
+
+            return roles.Select(UserRolesDto.ToDto).ToList();
         }
 
         private async Task SendResetPasswordLinkAsync(User user)

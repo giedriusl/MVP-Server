@@ -11,6 +11,6 @@ namespace MVP.Entities.Entities
         public double Cost { get; set; }
         public DateTimeOffset Start{ get; set; }
         public DateTimeOffset End { get; set; }
-        public FlightInfomationStatus Status{ get ; set; }
+        public FlightInformationStatus Status{ get ; set; }
     }
 }

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MVP.Entities.Dtos.FlightsInformation;
+using MVP.Entities.Dtos.RentalCarsInformation;
 using MVP.Entities.Dtos.Trips;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MVP.BusinessLogic.Interfaces
 {
@@ -14,5 +14,9 @@ namespace MVP.BusinessLogic.Interfaces
         Task<IEnumerable<TripViewDto>> GetAllTripsAsync();
         Task<TripViewDto> GetTripByIdAsync(int tripId);
         Task<IEnumerable<TripViewDto>> GetTripsByUserIdAsync(string userId);
+
+        IEnumerable<TripStatusDto> GetTripStatuses();
+        IEnumerable<RentalCarStatusDto> GetRentalCarStatuses();
+        IEnumerable<FlightInformationStatusDto> GetFlightInformationStatuses();
     }
 }

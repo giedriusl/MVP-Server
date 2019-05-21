@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Dtos.Trips;
 using MVP.Entities.Exceptions;
+using System;
+using System.Threading.Tasks;
 
 namespace MVP.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("")]
     [ApiController]
     public class TripController : ControllerBase
     {
@@ -27,7 +24,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpPost("/CreateTrip")]
+        [HttpPost("api/[controller]/CreateTrip")]
         public async Task<IActionResult> CreateTrip([FromBody] CreateTripDto createTripDto)
         {
             try
@@ -54,7 +51,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpDelete("/{tripId}")]
+        [HttpDelete("api/[controller]/{tripId}")]
         public async Task<IActionResult> DeleteTrip(int tripId)
         {
             try
@@ -76,7 +73,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpGet]
+        [HttpGet("api/[controller]")]
         public async Task<IActionResult> GetAllTrips()
         {
             try
@@ -98,7 +95,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpGet]
+        [HttpGet("api/[controller]/{tripId}")]
         public async Task<IActionResult> GetTripById(int tripId)
         {
             try
@@ -120,7 +117,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("/ByUserId/{userId}")]
+        [HttpGet("api/[controller]/ByUserId/{userId}")]
         public async Task<IActionResult> GetTripsByUserId(string userId)
         {
             try
@@ -139,6 +136,34 @@ namespace MVP.Controllers
                 _logger.Log(LogLevel.Error, "internal error occured: ", exception);
                 return StatusCode(500, "common.internal");
             }
+        }
+
+        [HttpGet("api/[controller]/TripStatus")]
+        [Authorize(Policy = "AllowAllRoles")]
+        public IActionResult GetTripStatus()
+        {
+            var statuses = _tripService.GetTripStatuses();
+
+            return Ok(statuses);
+        }
+
+        [HttpGet("api/[controller]/RentalCarInformationStatus")]
+        [Authorize(Policy = "AllowAllRoles")]
+        public IActionResult GetRentalCarStatus()
+        {
+            var statuses = _tripService.GetRentalCarStatuses();
+
+            return Ok(statuses);
+        }
+
+
+        [HttpGet("api/[controller]/FlightInformationStatus")]
+        [Authorize(Policy = "AllowAllRoles")]
+        public IActionResult GetFlightInformationStatus()
+        {
+            var statuses = _tripService.GetFlightInformationStatuses();
+
+            return Ok(statuses);
         }
     }
 }
