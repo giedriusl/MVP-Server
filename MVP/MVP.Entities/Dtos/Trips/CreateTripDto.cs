@@ -30,7 +30,7 @@ namespace MVP.Entities.Dtos.Trips
             };
         }
 
-        public static CreateTripDto ToDto(Trip trip)
+        public new static CreateTripDto ToDto(Trip trip)
         {
             return new CreateTripDto
             {
