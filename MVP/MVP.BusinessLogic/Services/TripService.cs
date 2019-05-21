@@ -161,6 +161,29 @@ namespace MVP.BusinessLogic.Services
             return statuses.Select(FlightInformationStatusDto.ToDto).ToList();
         }
 
+        public async Task<UpdateTripDto> AddFlightInformationToTripAsync(int tripId,
+            FlightInformationDto flightInformationDto)
+        {
+            try
+            {
+                var trip = await _tripRepository.GetTripByIdAsync(tripId);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip was not found");
+                }
+
+                trip.FlightInformations.Add(FlightInformationDto.ToEntity(flightInformationDto));
+                trip = await _tripRepository.UpdateTripAsync(trip);
+
+                return UpdateTripDto.ToDto(trip);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception,"Failed to add flight information to trip");
+            }
+        }
+
         private void ValidateCreateTrip(CreateTripDto createTripDto)
         {
             if (createTripDto.FromOfficeId == createTripDto.ToOfficeId)

@@ -21,7 +21,7 @@ namespace MVP.Entities.Dtos.Trips
         public List<UserDto> Users { get; set; }
 
 
-        public static UpdateTripDto ToDto(Trip trip)
+        public new static UpdateTripDto ToDto(Trip trip)
         {
             return new UpdateTripDto
             {
