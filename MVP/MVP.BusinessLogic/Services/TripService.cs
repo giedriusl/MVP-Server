@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MVP.Entities.Enums;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -88,14 +89,14 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        public async Task<IEnumerable<TripViewDto>> GetAllTripsAsync()
+        public async Task<IEnumerable<TripDto>> GetAllTripsAsync()
         {
             try
             {
                 var trips = await _tripRepository.GetAllTripsAsync();
-                var tripsViewDto = trips.Select(TripViewDto.ToDto).ToList();
+                var tripsDto = trips.Select(TripDto.ToDto).ToList();
 
-                return tripsViewDto;
+                return tripsDto;
             }
             catch (Exception exception)
             {
@@ -137,26 +138,52 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        public async Task<MergedTripDto> MergeTripsAsync(int baseTripId, int additionalTripId)
+        public async Task<MergedTripDto> GetMergedTripsDataAsync(int baseTripId, int additionalTripId)
         {
             try
             {
                 var baseTrip = await _tripRepository.GetTripByIdAsync(baseTripId);
                 var additionalTrip = await _tripRepository.GetTripByIdAsync(additionalTripId);
 
-                if (baseTrip is null || additionalTrip is null)
-                {
-                    throw new BusinessLogicException("Trip was not found");
-                }
+                ValidateTripsForMerge(baseTrip,additionalTrip);
 
                 baseTrip.FlightInformations.AddRange(additionalTrip.FlightInformations);
                 baseTrip.RentalCarInformations.AddRange(additionalTrip.RentalCarInformations);
 
                 var mergedTrip = MergedTripDto.ToDto(baseTrip);
-                var users = (await _tripRepository.GetUsersByTripIdAsync(additionalTripId)).Select(UserDto.ToDto);
+                var users = (await _tripRepository.GetUsersByTripIdAsync(additionalTripId)).Select(UserDto.ToDto).ToList();
+                RemoveDuplicateUsers(mergedTrip, users);
                 mergedTrip.Users.AddRange(users);
 
                 return mergedTrip;
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to get merge trips data");
+            }
+        }
+
+        public async Task<CreateTripDto> MergeTripsAsync(MergedTripDto mergedTripDto)
+        {
+            try
+            {
+                var baseTrip = await _tripRepository.GetTripByIdAsync(mergedTripDto.BaseTripId);
+
+                if (baseTrip is null)
+                {
+                    throw new BusinessLogicException("Base trip was not found.");
+                }
+
+                var toOffice = baseTrip.ToOffice;
+                var fromOffice = baseTrip.FromOffice;
+
+                var createTripDto = MergedTripDto.ToCreateTripDto(mergedTripDto, toOffice.Id, fromOffice.Id);
+                var createdTrip = await CreateTripAsync(createTripDto);
+
+                await _tripRepository.DeleteTripAsync(baseTrip);
+                await DeleteTripAsync(mergedTripDto.AdditionalTripId);
+
+                return createdTrip;
             }
             catch (Exception exception)
             {
@@ -164,6 +191,55 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
+        public async Task<IEnumerable<TripViewDto>> GetSimilarTripsAsync(int tripId)
+        {
+            try
+            {
+                var trip = await _tripRepository.GetTripByIdAsync(tripId);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip is not found");
+                }
+
+                var similarTrips = await _tripRepository.GetSimilarTripsByStartAndEndDate(trip.Start, trip.End);
+
+                return similarTrips.Select(TripViewDto.ToDto);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to get similar trips");
+            }
+        }
+
+        private void RemoveDuplicateUsers(MergedTripDto mergedTrip, List<UserDto> users)
+        {
+            var duplicateUsers = users.Where(user => mergedTrip.Users.Select(u => u.Email).Contains(user.Email)).ToList();
+
+            foreach (var duplicateUser in duplicateUsers)
+            {
+                users.Remove(duplicateUser);
+            }
+        }
+
+        private static void ValidateTripsForMerge(Trip baseTrip, Trip additionalTrip)
+        {
+            if (baseTrip is null || additionalTrip is null)
+            {
+                throw new BusinessLogicException("Trip was not found");
+            }
+
+            ValidateTripStatus(baseTrip);
+            ValidateTripStatus(additionalTrip);
+        }
+
+        private static void ValidateTripStatus(Trip trip)
+        {
+            if (trip.TripStatus == TripStatus.InProgress || trip.TripStatus == TripStatus.Completed)
+            {
+                throw new BusinessLogicException($"One of the trips is in {trip.TripStatus} status so it cannot be merged.");
+            }
+        }
 
         private void ValidateCreateTrip(CreateTripDto createTripDto)
         {

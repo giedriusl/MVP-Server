@@ -9,6 +9,9 @@ namespace MVP.Entities.Dtos.Trips
 {
     public class MergedTripDto : TripDto
     {
+        public int BaseTripId { get; set; }
+        public int AdditionalTripId { get; set; }
+
         public List<UserDto> Users { get; set; } = new List<UserDto>();
 
         public static MergedTripDto ToDto(Trip trip)
@@ -26,6 +29,22 @@ namespace MVP.Entities.Dtos.Trips
             };
 
             return mergedTrip;
+        }
+
+        public static CreateTripDto ToCreateTripDto(MergedTripDto mergedTripDto, int toOfficeId, int fromOfficeId)
+        {
+            return new CreateTripDto
+            {
+                Title = mergedTripDto.Title,
+                End = mergedTripDto.End,
+                Start = mergedTripDto.Start,
+                TripStatus = mergedTripDto.TripStatus,
+                FromOfficeId = fromOfficeId,
+                ToOfficeId = toOfficeId,
+                FlightInformations = mergedTripDto.FlightInformations,
+                RentalCarInformations = mergedTripDto.RentalCarInformations,
+                UserIds = mergedTripDto.Users.Select(user => user.Id).ToList()
+            };
         }
     }
 }

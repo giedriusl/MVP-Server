@@ -1,4 +1,5 @@
-﻿using MVP.Entities.Entities;
+﻿using System;
+using MVP.Entities.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,6 +14,7 @@ namespace MVP.DataAccess.Interfaces
         Task<IEnumerable<Trip>> GetAllTripsAsync();
         Task<Trip> GetTripByIdAsync(int tripId);
         Task<IEnumerable<Trip>> GetTripsByUserIdAsync(string userId);
+        Task<IEnumerable<Trip>> GetSimilarTripsByStartAndEndDate(DateTimeOffset start, DateTimeOffset end);
         Task<IEnumerable<User>> GetUsersByTripIdAsync(int tripId);
     }
 }

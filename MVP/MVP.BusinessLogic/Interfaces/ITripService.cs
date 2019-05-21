@@ -1,8 +1,6 @@
-﻿using System;
+﻿using MVP.Entities.Dtos.Trips;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using MVP.Entities.Dtos.Trips;
 
 namespace MVP.BusinessLogic.Interfaces
 {
@@ -11,9 +9,11 @@ namespace MVP.BusinessLogic.Interfaces
         Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto);
         Task DeleteTripAsync(int tripId);
 
-        Task<IEnumerable<TripViewDto>> GetAllTripsAsync();
+        Task<IEnumerable<TripDto>> GetAllTripsAsync();
         Task<TripViewDto> GetTripByIdAsync(int tripId);
         Task<IEnumerable<TripViewDto>> GetTripsByUserIdAsync(string userId);
-        Task<MergedTripDto> MergeTripsAsync(int baseTripId, int additionalTripId);
+        Task<MergedTripDto> GetMergedTripsDataAsync(int baseTripId, int additionalTripId);
+        Task<CreateTripDto> MergeTripsAsync(MergedTripDto mergedTripDto);
+        Task<IEnumerable<TripViewDto>> GetSimilarTripsAsync(int tripId);
     }
 }

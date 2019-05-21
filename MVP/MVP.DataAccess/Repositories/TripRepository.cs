@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Entities;
 using System.Collections.Generic;
@@ -53,11 +54,23 @@ namespace MVP.DataAccess.Repositories
 
         public async Task<IEnumerable<Trip>> GetTripsByUserIdAsync(string userId)
         {
-            var lists = await _context.Trips
+            var trips = await _context.Trips
                 .Where(trip => trip.UserTrips.Any(userTrip => userTrip.UserId == userId))
                 .ToListAsync();
 
-            return lists;
+            return trips;
+        }
+
+        public async Task<IEnumerable<Trip>> GetSimilarTripsByStartAndEndDate(DateTimeOffset start, DateTimeOffset end)
+        {
+            var trips = await _context.Trips
+                .Where(trip => trip.Start > start.AddDays(1)
+                               || trip.Start < start.AddDays(-1)
+                               || trip.End > end.AddDays(1)
+                               || trip.End < end.AddDays(-1))
+                .ToListAsync();
+
+            return trips;
         }
 
         public async Task<IEnumerable<User>> GetUsersByTripIdAsync(int tripId)
