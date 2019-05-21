@@ -141,44 +141,23 @@ namespace MVP.BusinessLogic.Services
 
         public IEnumerable<TripStatusDto> GetTripStatuses()
         {
-            try
-            {
-                var statuses = Enum.GetValues(typeof(TripStatus)).Cast<TripStatus>();
+            var statuses = Enum.GetValues(typeof(TripStatus)).Cast<TripStatus>();
 
-                return statuses.Select(TripStatusDto.ToDto).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException(ex, "Failed to get trip statuses");
-            }
+            return statuses.Select(TripStatusDto.ToDto).ToList();
         }
 
         public IEnumerable<RentalCarStatusDto> GetRentalCarStatuses()
         {
-            try
-            {
-                var statuses = Enum.GetValues(typeof(RentalCarStatus)).Cast<RentalCarStatus>();
+            var statuses = Enum.GetValues(typeof(RentalCarStatus)).Cast<RentalCarStatus>();
 
-                return statuses.Select(RentalCarStatusDto.ToDto).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException(ex, "Failed to get rental car statuses");
-            }
+            return statuses.Select(RentalCarStatusDto.ToDto).ToList();
         }
 
         public IEnumerable<FlightInformationStatusDto> GetFlightInformationStatuses()
         {
-            try
-            {
-                var statuses = Enum.GetValues(typeof(FlightInfomationStatus)).Cast<FlightInfomationStatus>();
+            var statuses = Enum.GetValues(typeof(FlightInformationStatus)).Cast<FlightInformationStatus>();
 
-                return statuses.Select(FlightInformationStatusDto.ToDto).ToList();
-            }
-            catch(Exception ex)
-            {
-                throw new BusinessLogicException(ex, "Failed to get flight information statuses");
-            }
+            return statuses.Select(FlightInformationStatusDto.ToDto).ToList();
         }
 
         private void ValidateCreateTrip(CreateTripDto createTripDto)

@@ -142,44 +142,18 @@ namespace MVP.Controllers
         [Authorize(Policy = "AllowAllRoles")]
         public IActionResult GetTripStatus()
         {
-            try
-            {
-                var statuses = _tripService.GetTripStatuses();
+            var statuses = _tripService.GetTripStatuses();
 
-                return Ok(statuses);
-            }
-            catch (BusinessLogicException exception)
-            {
-                _logger.Log(LogLevel.Warning, "Invalid trips get request: ", exception);
-                return BadRequest($"trip.{exception.ErrorCode}");
-            }
-            catch (Exception exception)
-            {
-                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
-                return StatusCode(500, "common.internal");
-            }
+            return Ok(statuses);
         }
 
         [HttpGet("api/[controller]/RentalCarInformationStatus")]
         [Authorize(Policy = "AllowAllRoles")]
         public IActionResult GetRentalCarStatus()
         {
-            try
-            {
-                var statuses = _tripService.GetRentalCarStatuses();
+            var statuses = _tripService.GetRentalCarStatuses();
 
-                return Ok(statuses);
-            }
-            catch (BusinessLogicException exception)
-            {
-                _logger.Log(LogLevel.Warning, "Invalid trips get request: ", exception);
-                return BadRequest($"trip.{exception.ErrorCode}");
-            }
-            catch (Exception exception)
-            {
-                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
-                return StatusCode(500, "common.internal");
-            }
+            return Ok(statuses);
         }
 
 
@@ -187,22 +161,9 @@ namespace MVP.Controllers
         [Authorize(Policy = "AllowAllRoles")]
         public IActionResult GetFlightInformationStatus()
         {
-            try
-            {
-                var statuses = _tripService.GetFlightInformationStatuses();
+            var statuses = _tripService.GetFlightInformationStatuses();
 
-                return Ok(statuses);
-            }
-            catch (BusinessLogicException exception)
-            {
-                _logger.Log(LogLevel.Warning, "Invalid trips get request: ", exception);
-                return BadRequest($"trip.{exception.ErrorCode}");
-            }
-            catch (Exception exception)
-            {
-                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
-                return StatusCode(500, "common.internal");
-            }
+            return Ok(statuses);
         }
     }
 }

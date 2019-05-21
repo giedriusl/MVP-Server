@@ -163,16 +163,9 @@ namespace MVP.BusinessLogic.Services
 
         public IEnumerable<UserRolesDto> GetUserRoles()
         {
-            try
-            {
-                var roles = Enum.GetValues(typeof(UserRoles)).Cast<UserRoles>();
+            var roles = Enum.GetValues(typeof(UserRoles)).Cast<UserRoles>();
 
-                return roles.Select(UserRolesDto.ToDto).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new BusinessLogicException(ex, "Failed to get trip statuses");
-            }
+            return roles.Select(UserRolesDto.ToDto).ToList();
         }
 
         private async Task SendResetPasswordLinkAsync(User user)

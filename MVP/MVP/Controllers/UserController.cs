@@ -47,7 +47,7 @@ namespace MVP.Controllers
             }
             catch (Exception exception)
             {
-                _logger.Log(LogLevel.Error,$"Internal error occured: {exception.Message}");
+                _logger.Log(LogLevel.Error, $"Internal error occured: {exception.Message}");
                 return StatusCode(500, "common.internal");
             }
         }
@@ -241,22 +241,9 @@ namespace MVP.Controllers
         [Authorize(Policy = "RequireOrganizerRole")]
         public IActionResult GetUserRoles()
         {
-            try
-            {
-                var roles = _userService.GetUserRoles();
+            var roles = _userService.GetUserRoles();
 
-                return Ok(roles);
-            }
-            catch (BusinessLogicException exception)
-            {
-                _logger.Log(LogLevel.Warning, "Invalid user get request: ", exception);
-                return BadRequest($"user.{exception.ErrorCode}");
-            }
-            catch (Exception exception)
-            {
-                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
-                return StatusCode(500, "common.internal");
-            }
+            return Ok(roles);
         }
     }
 }

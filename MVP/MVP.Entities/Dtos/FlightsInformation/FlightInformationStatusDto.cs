@@ -7,7 +7,7 @@ namespace MVP.Entities.Dtos.FlightsInformation
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public static FlightInformationStatusDto ToDto(FlightInfomationStatus status)
+        public static FlightInformationStatusDto ToDto(FlightInformationStatus status)
         {
             return new FlightInformationStatusDto
             {
