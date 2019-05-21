@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Dtos.Trips;
 using MVP.Entities.Entities;
 using MVP.Entities.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MVP.Entities.Dtos.FlightsInformation;
+using MVP.Entities.Dtos.RentalCarsInformation;
+using MVP.Entities.Enums;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -53,7 +56,7 @@ namespace MVP.BusinessLogic.Services
                 trip.ToOffice = toOffice;
 
                 var usersInTrip = _userManager.Users.Where(user => createTripDto.UserIds.Contains(user.Id)).ToList();
-                usersInTrip.ForEach(user => userTrips.Add(new UserTrip{Trip = trip, User = user}));
+                usersInTrip.ForEach(user => userTrips.Add(new UserTrip { Trip = trip, User = user }));
                 trip.UserTrips = userTrips;
 
                 await _userTripRepository.AddUserTripsAsync(userTrips);
@@ -63,7 +66,7 @@ namespace MVP.BusinessLogic.Services
             }
             catch (Exception exception)
             {
-                throw new BusinessLogicException(exception,"Failed to create trip");
+                throw new BusinessLogicException(exception, "Failed to create trip");
             }
 
         }
@@ -133,6 +136,48 @@ namespace MVP.BusinessLogic.Services
             catch (Exception exception)
             {
                 throw new BusinessLogicException(exception, "Failed to get trips");
+            }
+        }
+
+        public IEnumerable<TripStatusDto> GetTripStatuses()
+        {
+            try
+            {
+                var statuses = Enum.GetValues(typeof(TripStatus)).Cast<TripStatus>();
+
+                return statuses.Select(TripStatusDto.ToDto).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException(ex, "Failed to get trip statuses");
+            }
+        }
+
+        public IEnumerable<RentalCarStatusDto> GetRentalCarStatuses()
+        {
+            try
+            {
+                var statuses = Enum.GetValues(typeof(RentalCarStatus)).Cast<RentalCarStatus>();
+
+                return statuses.Select(RentalCarStatusDto.ToDto).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException(ex, "Failed to get rental car statuses");
+            }
+        }
+
+        public IEnumerable<FlightInformationStatusDto> GetFlightInformationStatuses()
+        {
+            try
+            {
+                var statuses = Enum.GetValues(typeof(FlightInfomationStatus)).Cast<FlightInfomationStatus>();
+
+                return statuses.Select(FlightInformationStatusDto.ToDto).ToList();
+            }
+            catch(Exception ex)
+            {
+                throw new BusinessLogicException(ex, "Failed to get flight information statuses");
             }
         }
 
