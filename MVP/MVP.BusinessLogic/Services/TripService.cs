@@ -245,10 +245,7 @@ namespace MVP.BusinessLogic.Services
         {
             var duplicateUsers = users.Where(user => mergedTrip.Users.Select(u => u.Email).Contains(user.Email)).ToList();
 
-            foreach (var duplicateUser in duplicateUsers)
-            {
-                users.Remove(duplicateUser);
-            }
+            duplicateUsers.ForEach(duplicateUser => users.Remove(duplicateUser));
         }
 
         private static void ValidateTripsForMerge(Trip baseTrip, Trip additionalTrip)
