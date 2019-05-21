@@ -30,11 +30,11 @@ namespace MVP.BusinessLogic.Services
         private readonly ICalendarRepository _calendarRepository;
         private readonly IFileReader _fileReader;
 
-        public UserService(UserManager<User> userManager, 
+        public UserService(UserManager<User> userManager,
             SignInManager<User> signInManager,
-            ITokenGenerator tokenGenerator, 
-            IEmailManager emailManager, 
-            IUrlBuilder urlBuilder, 
+            ITokenGenerator tokenGenerator,
+            IEmailManager emailManager,
+            IUrlBuilder urlBuilder,
             IConfiguration configuration,
             ICalendarRepository calendarRepository,
             IFileReader fileReader)
@@ -105,7 +105,7 @@ namespace MVP.BusinessLogic.Services
 
         public async Task<string> LoginAsync(UserLoginDto userDto)
         {
-            var result = await _signInManager.PasswordSignInAsync(userDto.Email, userDto.Password, 
+            var result = await _signInManager.PasswordSignInAsync(userDto.Email, userDto.Password,
                 false, false);
 
             if (!result.Succeeded)
@@ -147,6 +147,18 @@ namespace MVP.BusinessLogic.Services
             }
 
             await _calendarRepository.AddCalendarsAsync(validCalendars);
+        }
+
+        public async Task<UserDto> GetUserByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is null)
+            {
+                throw new InvalidUserException("There are no user with this email", "noUser");
+            }
+
+            return CreateUserDto.ToDto(user);
         }
 
         private async Task SendResetPasswordLinkAsync(User user)
