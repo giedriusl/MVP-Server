@@ -18,7 +18,7 @@ namespace MVP.Entities.Dtos.Trips
         {
             var mergedTrip = new MergedTripDto
             {
-                Id = trip.Id,
+                BaseTripId = trip.Id,
                 Title = trip.Title,
                 End = trip.End,
                 Start = trip.Start,

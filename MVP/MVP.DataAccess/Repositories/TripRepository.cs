@@ -61,13 +61,16 @@ namespace MVP.DataAccess.Repositories
             return trips;
         }
 
-        public async Task<IEnumerable<Trip>> GetSimilarTripsByStartAndEndDate(DateTimeOffset start, DateTimeOffset end)
+        public async Task<IEnumerable<Trip>> GetSimilarTrips(Trip trip)
         {
             var trips = await _context.Trips
-                .Where(trip => trip.Start > start.AddDays(1)
-                               || trip.Start < start.AddDays(-1)
-                               || trip.End > end.AddDays(1)
-                               || trip.End < end.AddDays(-1))
+                .Where(t => t.ToOfficeId == trip.ToOfficeId 
+                                && t.FromOfficeId == trip.FromOfficeId
+                                && t.Start <= trip.Start.AddDays(1)
+                                && t.Start >= trip.Start.AddDays(-1)
+                                && t.End <= trip.End.AddDays(1)
+                                && t.End >= trip.End.AddDays(-1)
+                                && t.Id != trip.Id)
                 .ToListAsync();
 
             return trips;

@@ -168,7 +168,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpGet("/GetMergedTripsData/{baseTrip}/{additionalTrip}")]
+        [HttpGet("api/[controller]/GetMergedTripsData/{baseTrip}/{additionalTrip}")]
         public async Task<IActionResult> GetMergedTripsData(int baseTrip, int additionalTrip)
         {
             try
@@ -190,7 +190,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpPost("/MergeTrips")]
+        [HttpPost("api/[controller]/MergeTrips")]
         public async Task<IActionResult> MergeTrips([FromBody] MergedTripDto mergedTripDto)
         {
             try
@@ -212,7 +212,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpGet("/GetSimilarTrips/{tripId}")]
+        [HttpGet("api/[controller]/GetSimilarTrips/{tripId}")]
         public async Task<IActionResult> GetSimilarTrips(int tripId)
         {
             try

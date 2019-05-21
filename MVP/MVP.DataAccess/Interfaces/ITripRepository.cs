@@ -14,7 +14,7 @@ namespace MVP.DataAccess.Interfaces
         Task<IEnumerable<Trip>> GetAllTripsAsync();
         Task<Trip> GetTripByIdAsync(int tripId);
         Task<IEnumerable<Trip>> GetTripsByUserIdAsync(string userId);
-        Task<IEnumerable<Trip>> GetSimilarTripsByStartAndEndDate(DateTimeOffset start, DateTimeOffset end);
+        Task<IEnumerable<Trip>> GetSimilarTrips(Trip trip);
         Task<IEnumerable<User>> GetUsersByTripIdAsync(int tripId);
     }
 }

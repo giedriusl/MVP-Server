@@ -178,6 +178,8 @@ namespace MVP.BusinessLogic.Services
                 baseTrip.RentalCarInformations.AddRange(additionalTrip.RentalCarInformations);
 
                 var mergedTrip = MergedTripDto.ToDto(baseTrip);
+                mergedTrip.AdditionalTripId = additionalTripId;
+
                 var users = (await _tripRepository.GetUsersByTripIdAsync(additionalTripId)).Select(UserDto.ToDto).ToList();
                 RemoveDuplicateUsers(mergedTrip, users);
                 mergedTrip.Users.AddRange(users);
@@ -229,7 +231,7 @@ namespace MVP.BusinessLogic.Services
                     throw new BusinessLogicException("Trip is not found");
                 }
 
-                var similarTrips = await _tripRepository.GetSimilarTripsByStartAndEndDate(trip.Start, trip.End);
+                var similarTrips = await _tripRepository.GetSimilarTrips(trip);
 
                 return similarTrips.Select(TripViewDto.ToDto);
             }
