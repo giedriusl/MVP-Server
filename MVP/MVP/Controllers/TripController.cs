@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace MVP.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("")]
     [ApiController]
+    [Authorize]
     public class TripController : ControllerBase
     {
         private readonly ITripService _tripService;
@@ -24,7 +25,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpPost("/CreateTrip")]
+        [HttpPost("api/[controller]/CreateTrip")]
         public async Task<IActionResult> CreateTrip([FromBody] CreateTripDto createTripDto)
         {
             try

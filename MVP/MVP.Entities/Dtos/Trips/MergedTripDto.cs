@@ -14,7 +14,7 @@ namespace MVP.Entities.Dtos.Trips
 
         public List<UserDto> Users { get; set; } = new List<UserDto>();
 
-        public static MergedTripDto ToDto(Trip trip)
+        public new static MergedTripDto ToDto(Trip trip)
         {
             var mergedTrip = new MergedTripDto
             {

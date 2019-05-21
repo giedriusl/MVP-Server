@@ -21,7 +21,10 @@ namespace MVP.BusinessLogic.Services
         private readonly UserManager<User> _userManager;
 
 
-        public TripService(ITripRepository tripRepository, IOfficeRepository officeRepository, UserManager<User> userManager, IUserTripRepository userTripRepository)
+        public TripService(ITripRepository tripRepository, 
+            IOfficeRepository officeRepository, 
+            UserManager<User> userManager, 
+            IUserTripRepository userTripRepository)
         {
             _tripRepository = tripRepository;
             _officeRepository = officeRepository;
@@ -212,7 +215,7 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        private void RemoveDuplicateUsers(MergedTripDto mergedTrip, List<UserDto> users)
+        private static void RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
         {
             var duplicateUsers = users.Where(user => mergedTrip.Users.Select(u => u.Email).Contains(user.Email)).ToList();
 
