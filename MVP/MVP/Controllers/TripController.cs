@@ -145,9 +145,9 @@ namespace MVP.Controllers
         {
             try
             {
-                var trip = await _tripService.AddFlightInformationToTripAsync(tripId, flightInformationDto);
+                await _tripService.AddFlightInformationToTripAsync(tripId, flightInformationDto);
 
-                return Ok(trip);
+                return Ok();
             }
             catch (BusinessLogicException exception)
             {

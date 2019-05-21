@@ -35,7 +35,7 @@ namespace MVP.DataAccess.Repositories
 
         public async Task<Trip> GetTripByIdAsync(int tripId)
         {
-            var trips = await _context.Trips
+            var tripEntity = await _context.Trips
                 .Include(trip => trip.FlightInformations)
                 .Include(trip => trip.RentalCarInformations)
                 .Include(trip => trip.FromOffice)
@@ -50,7 +50,16 @@ namespace MVP.DataAccess.Repositories
                     .ThenInclude(userTrips => userTrips.User)
                 .FirstOrDefaultAsync(trip => trip.Id == tripId);
             
-            return trips;
+            return tripEntity;
+        }
+
+        public async Task<Trip> GetTripByIdWithFlightInformationAsync(int tripId)
+        {
+            var tripEntity = await _context.Trips
+                .Include(trip => trip.FlightInformations)
+                .FirstOrDefaultAsync(trip => trip.Id == tripId);
+
+            return tripEntity;
         }
 
         public async Task<IEnumerable<Trip>> GetTripsByUserIdAsync(string userId)
