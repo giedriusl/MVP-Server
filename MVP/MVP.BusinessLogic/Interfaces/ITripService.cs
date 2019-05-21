@@ -1,4 +1,6 @@
-﻿using MVP.Entities.Dtos.Trips;
+﻿using MVP.Entities.Dtos.FlightsInformation;
+using MVP.Entities.Dtos.RentalCarsInformation;
+using MVP.Entities.Dtos.Trips;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,5 +17,9 @@ namespace MVP.BusinessLogic.Interfaces
         Task<MergedTripDto> GetMergedTripsDataAsync(int baseTripId, int additionalTripId);
         Task<CreateTripDto> MergeTripsAsync(MergedTripDto mergedTripDto);
         Task<IEnumerable<TripViewDto>> GetSimilarTripsAsync(int tripId);
+
+        IEnumerable<TripStatusDto> GetTripStatuses();
+        IEnumerable<RentalCarStatusDto> GetRentalCarStatuses();
+        IEnumerable<FlightInformationStatusDto> GetFlightInformationStatuses();
     }
 }

@@ -52,7 +52,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpDelete("/{tripId}")]
+        [HttpDelete("api/[controller]/{tripId}")]
         public async Task<IActionResult> DeleteTrip(int tripId)
         {
             try
@@ -74,7 +74,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpGet]
+        [HttpGet("api/[controller]")]
         public async Task<IActionResult> GetAllTrips()
         {
             try
@@ -96,7 +96,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpGet("{tripId}")]
+        [HttpGet("api/[controller]/{tripId}")]
         public async Task<IActionResult> GetTripById(int tripId)
         {
             try
@@ -118,7 +118,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("/ByUserId/{userId}")]
+        [HttpGet("api/[controller]/ByUserId/{userId}")]
         public async Task<IActionResult> GetTripsByUserId(string userId)
         {
             try
@@ -137,6 +137,34 @@ namespace MVP.Controllers
                 _logger.Log(LogLevel.Error, "internal error occured: ", exception);
                 return StatusCode(500, "common.internal");
             }
+        }
+
+        [HttpGet("api/[controller]/TripStatus")]
+        [Authorize(Policy = "AllowAllRoles")]
+        public IActionResult GetTripStatus()
+        {
+            var statuses = _tripService.GetTripStatuses();
+
+            return Ok(statuses);
+        }
+
+        [HttpGet("api/[controller]/RentalCarInformationStatus")]
+        [Authorize(Policy = "AllowAllRoles")]
+        public IActionResult GetRentalCarStatus()
+        {
+            var statuses = _tripService.GetRentalCarStatuses();
+
+            return Ok(statuses);
+        }
+
+
+        [HttpGet("api/[controller]/FlightInformationStatus")]
+        [Authorize(Policy = "AllowAllRoles")]
+        public IActionResult GetFlightInformationStatus()
+        {
+            var statuses = _tripService.GetFlightInformationStatuses();
+
+            return Ok(statuses);
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]

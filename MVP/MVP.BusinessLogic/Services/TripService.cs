@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.FlightsInformation;
+using MVP.Entities.Dtos.RentalCarsInformation;
 using MVP.Entities.Enums;
 
 namespace MVP.BusinessLogic.Services
@@ -58,7 +60,7 @@ namespace MVP.BusinessLogic.Services
                 trip.ToOffice = toOffice;
 
                 var usersInTrip = _userManager.Users.Where(user => createTripDto.UserIds.Contains(user.Id)).ToList();
-                usersInTrip.ForEach(user => userTrips.Add(new UserTrip{Trip = trip, User = user}));
+                usersInTrip.ForEach(user => userTrips.Add(new UserTrip { Trip = trip, User = user }));
                 trip.UserTrips = userTrips;
 
                 await _userTripRepository.AddUserTripsAsync(userTrips);
@@ -68,7 +70,7 @@ namespace MVP.BusinessLogic.Services
             }
             catch (Exception exception)
             {
-                throw new BusinessLogicException(exception,"Failed to create trip");
+                throw new BusinessLogicException(exception, "Failed to create trip");
             }
 
         }
@@ -139,6 +141,27 @@ namespace MVP.BusinessLogic.Services
             {
                 throw new BusinessLogicException(exception, "Failed to get trips");
             }
+        }
+
+        public IEnumerable<TripStatusDto> GetTripStatuses()
+        {
+            var statuses = Enum.GetValues(typeof(TripStatus)).Cast<TripStatus>();
+
+            return statuses.Select(TripStatusDto.ToDto).ToList();
+        }
+
+        public IEnumerable<RentalCarStatusDto> GetRentalCarStatuses()
+        {
+            var statuses = Enum.GetValues(typeof(RentalCarStatus)).Cast<RentalCarStatus>();
+
+            return statuses.Select(RentalCarStatusDto.ToDto).ToList();
+        }
+
+        public IEnumerable<FlightInformationStatusDto> GetFlightInformationStatuses()
+        {
+            var statuses = Enum.GetValues(typeof(FlightInformationStatus)).Cast<FlightInformationStatus>();
+
+            return statuses.Select(FlightInformationStatusDto.ToDto).ToList();
         }
 
         public async Task<MergedTripDto> GetMergedTripsDataAsync(int baseTripId, int additionalTripId)

@@ -1,6 +1,6 @@
 ﻿namespace MVP.Entities.Enums
 {
-    public enum FlightInfomationStatus
+    public enum FlightInformationStatus
     {
         NotRequired = 0,
         Required = 1,
