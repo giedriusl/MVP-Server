@@ -4,31 +4,31 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Dtos.Apartments;
+using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 using MVP.Entities.Exceptions;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace MVP.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("")]
     [ApiController]
     [Authorize]
     public class ApartmentController : ControllerBase
     {
         private readonly IApartmentService _apartmentService;
-        private readonly IFileReader _fileReader;
         private readonly ILogger<ApartmentController> _logger;
 
 
-        public ApartmentController(IApartmentService apartmentService, ILogger<ApartmentController> logger, IFileReader fileReader)
+        public ApartmentController(IApartmentService apartmentService, ILogger<ApartmentController> logger)
         {
             _apartmentService = apartmentService;
             _logger = logger;
-            _fileReader = fileReader;
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPost]
+        [HttpPost("api/[controller]")]
         public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentDto createApartmentDto)
         {
             try
@@ -54,7 +54,33 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPut]
+        [HttpPost("api/[controller]/{apartmentId}/AddRoom")]
+        public async Task<IActionResult> AddRoomToApartment([Required]int apartmentId, [FromBody] CreateApartmentRoomDto createRoomDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
+                await _apartmentService.AddRoomToApartmentAsync(apartmentId, createRoomDto);
+                return Ok();
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireAdministratorRole")]
+        [HttpPut("api/[controller]")]
         public async Task<IActionResult> UpdateApartment([FromBody] UpdateApartmentDto updateApartmentDto)
         {
             try
@@ -80,11 +106,16 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPost("/{apartmentId}/Calendar")]
-        public async Task<IActionResult> UploadCalendar(int apartmentId, IFormFile file)
+        [HttpPost("api/[controller]/{apartmentId}/Calendar")]
+        public async Task<IActionResult> UploadCalendar([Required]int apartmentId, IFormFile file)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
                 if (file.ContentType != "text/csv")
                 {
                     return BadRequest("Invalid file format");
@@ -107,11 +138,16 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpDelete("/{apartmentId}")]
-        public async Task<IActionResult> DeleteApartment(int apartmentId)
+        [HttpDelete("api/[controller]/{apartmentId}")]
+        public async Task<IActionResult> DeleteApartment([Required]int apartmentId)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
                 await _apartmentService.DeleteApartmentAsync(apartmentId);
                 return Ok();
 
@@ -129,7 +165,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet]
+        [HttpGet("api/[controller]")]
         public async Task<IActionResult> GetAllApartments()
         {
             try
@@ -151,11 +187,16 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("/{apartmentId}")]
-        public async Task<IActionResult> GetApartmentById(int apartmentId)
+        [HttpGet("api/[controller]/{apartmentId}")]
+        public async Task<IActionResult> GetApartmentById([Required]int apartmentId)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
                 var apartment = await _apartmentService.GetApartmentByIdAsync(apartmentId);
                 return Ok(apartment);
 
@@ -173,11 +214,16 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("/{apartmentId}/Rooms")]
-        public async Task<IActionResult> GetRooms(int apartmentId)
+        [HttpGet("api/[controller]/{apartmentId}/Rooms")]
+        public async Task<IActionResult> GetRooms([Required]int apartmentId)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
                 var rooms = await _apartmentService.GetRoomsByApartmentIdAsync(apartmentId);
                 return Ok(rooms);
 
@@ -195,11 +241,16 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("/{apartmentId}/Room/{roomId}/Calendar")]
-        public async Task<IActionResult> GetRoomsCalendar(int apartmentId, int roomId)
+        [HttpGet("api/[controller]/{apartmentId}/Room/{roomId}/Calendar")]
+        public async Task<IActionResult> GetRoomsCalendar([Required]int apartmentId, [Required]int roomId)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
                 var calendars = await _apartmentService.GetCalendarByRoomAndApartmentIdAsync(apartmentId, roomId);
                 return Ok(calendars);
 

@@ -65,6 +65,30 @@ namespace MVP.BusinessLogic.Services
                 throw new BusinessLogicException(ex.Message);
             }
         }
+
+        public async Task AddRoomToApartmentAsync(int apartmentId, CreateApartmentRoomDto apartmentRoomDto)
+        {
+            try
+            {
+                var apartment = await _apartmentRepository.GetApartmentWithRoomsByIdAsync(apartmentId);
+
+                if (apartment is null)
+                {
+                    throw new BusinessLogicException("Apartment does not exist");
+                }
+
+                var apartmentRoom = CreateApartmentRoomDto.ToEntity(apartmentRoomDto);
+
+                apartment.Rooms.Add(apartmentRoom);
+
+                await _apartmentRepository.UpdateApartmentAsync(apartment);
+            }
+            catch (Exception ex)
+            {
+                throw new BusinessLogicException(ex.Message);
+            }
+        }
+
         public async Task<UpdateApartmentDto> UpdateApartmentAsync(UpdateApartmentDto updateApartmentDto)
         {
             try
