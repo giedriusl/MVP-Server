@@ -12,6 +12,7 @@ namespace MVP.BusinessLogic.Interfaces
         Task<CreateApartmentDto> CreateApartmentAsync(CreateApartmentDto createApartmentDto);
         Task<UpdateApartmentDto> UpdateApartmentAsync(UpdateApartmentDto apartment);
         Task DeleteApartmentAsync(int apartmentId);
+        Task AddRoomToApartmentAsync(int apartmentId, CreateApartmentRoomDto apartmentRoomDto);
 
         Task<IEnumerable<ApartmentViewDto>> GetAllApartmentsAsync();
         Task<ApartmentViewDto> GetApartmentByIdAsync(int apartmentId);
