@@ -7,7 +7,6 @@ using MVP.Entities.Dtos.Apartments;
 using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 using MVP.Entities.Exceptions;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace MVP.Controllers
@@ -55,7 +54,7 @@ namespace MVP.Controllers
 
         [Authorize(Policy = "RequireAdministratorRole")]
         [HttpPost("api/[controller]/{apartmentId}/AddRoom")]
-        public async Task<IActionResult> AddRoomToApartment([Required]int apartmentId, [FromBody] CreateApartmentRoomDto createRoomDto)
+        public async Task<IActionResult> AddRoomToApartment(int apartmentId, [FromBody] CreateApartmentRoomDto createRoomDto)
         {
             try
             {
@@ -107,7 +106,7 @@ namespace MVP.Controllers
 
         [Authorize(Policy = "RequireAdministratorRole")]
         [HttpPost("api/[controller]/{apartmentId}/Calendar")]
-        public async Task<IActionResult> UploadCalendar([Required]int apartmentId, IFormFile file)
+        public async Task<IActionResult> UploadCalendar(int apartmentId, IFormFile file)
         {
             try
             {
@@ -139,7 +138,7 @@ namespace MVP.Controllers
 
         [Authorize(Policy = "RequireAdministratorRole")]
         [HttpDelete("api/[controller]/{apartmentId}")]
-        public async Task<IActionResult> DeleteApartment([Required]int apartmentId)
+        public async Task<IActionResult> DeleteApartment(int apartmentId)
         {
             try
             {
@@ -188,7 +187,7 @@ namespace MVP.Controllers
 
         [Authorize(Policy = "AllowAllRoles")]
         [HttpGet("api/[controller]/{apartmentId}")]
-        public async Task<IActionResult> GetApartmentById([Required]int apartmentId)
+        public async Task<IActionResult> GetApartmentById(int apartmentId)
         {
             try
             {
@@ -215,7 +214,7 @@ namespace MVP.Controllers
 
         [Authorize(Policy = "AllowAllRoles")]
         [HttpGet("api/[controller]/{apartmentId}/Rooms")]
-        public async Task<IActionResult> GetRooms([Required]int apartmentId)
+        public async Task<IActionResult> GetRooms(int apartmentId)
         {
             try
             {
@@ -242,7 +241,7 @@ namespace MVP.Controllers
 
         [Authorize(Policy = "AllowAllRoles")]
         [HttpGet("api/[controller]/{apartmentId}/Room/{roomId}/Calendar")]
-        public async Task<IActionResult> GetRoomsCalendar([Required]int apartmentId, [Required]int roomId)
+        public async Task<IActionResult> GetRoomsCalendar(int apartmentId, int roomId)
         {
             try
             {
