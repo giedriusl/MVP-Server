@@ -181,8 +181,9 @@ namespace MVP.BusinessLogic.Services
                 mergedTrip.AdditionalTripId = additionalTripId;
 
                 var users = (await _tripRepository.GetUsersByTripIdAsync(additionalTripId)).Select(UserDto.ToDto).ToList();
-                RemoveDuplicateUsers(mergedTrip, users);
-                mergedTrip.Users.AddRange(users);
+                var uniqueUsers = RemoveDuplicateUsers(mergedTrip, users);
+
+                mergedTrip.Users.AddRange(uniqueUsers);
 
                 return mergedTrip;
             }
@@ -241,11 +242,13 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        private static void RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
+        private static IEnumerable<UserDto> RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
         {
             var duplicateUsers = users.Where(user => mergedTrip.Users.Select(u => u.Email).Contains(user.Email)).ToList();
 
             duplicateUsers.ForEach(duplicateUser => users.Remove(duplicateUser));
+
+            return users;
         }
 
         private static void ValidateTripsForMerge(Trip baseTrip, Trip additionalTrip)
