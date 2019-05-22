@@ -8,6 +8,7 @@ using MVP.Entities.Dtos.Users;
 using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
+using MVP.Filters;
 
 namespace MVP.Controllers
 {
@@ -27,7 +28,8 @@ namespace MVP.Controllers
 
         [HttpPost("api/[controller]/CreateUser")]
         [Authorize(Policy = "RequireAdministratorRole")]
-        public async Task<ActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
+        [LoggerFilter]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
         {
             try
             {
@@ -54,7 +56,7 @@ namespace MVP.Controllers
 
         [HttpPost("api/[controller]/Login")]
         [AllowAnonymous]
-        public async Task<ActionResult> Login([FromBody] UserLoginDto userLoginDto)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
             try
             {
@@ -81,7 +83,7 @@ namespace MVP.Controllers
 
         [HttpPost("api/[controller]/ResetPassword")]
         [AllowAnonymous]
-        public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPasswordDto)
         {
             try
             {
@@ -102,7 +104,7 @@ namespace MVP.Controllers
 
         [HttpPost("api/[controller]/SendResetPasswordLink")]
         [AllowAnonymous]
-        public async Task<ActionResult> SendResetPasswordLink(string email)
+        public async Task<IActionResult> SendResetPasswordLink(string email)
         {
             try
             {
@@ -129,7 +131,7 @@ namespace MVP.Controllers
 
         [HttpGet("api/[controller]")]
         [Authorize(Policy = "RequireOrganizerRole")]
-        public async Task<ActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers()
         {
             try
             {
@@ -145,7 +147,7 @@ namespace MVP.Controllers
 
         [HttpGet("api/[controller]/{userId}")]
         [Authorize(Policy = "RequireOrganizerRole")]
-        public async Task<ActionResult> GetUserById(string userId)
+        public async Task<IActionResult> GetUserById(string userId)
         {
             try
             {
@@ -162,7 +164,7 @@ namespace MVP.Controllers
 
         [HttpPost("api/[controller]/UploadUsers")]
         [Authorize(Policy = "RequireAdministratorRole")]
-        public async Task<ActionResult> UploadUsers(IFormFile file)
+        public async Task<IActionResult> UploadUsers(IFormFile file)
         {
             try
             {
