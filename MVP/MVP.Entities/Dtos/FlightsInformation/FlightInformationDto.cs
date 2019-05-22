@@ -8,9 +8,17 @@ namespace MVP.Entities.Dtos.FlightsInformation
     public class FlightInformationDto
     {
         public virtual int Id { get; set; }
+
+        [Required]
         public double Cost { get; set; }
+
+        [Required]
         public DateTimeOffset Start { get; set; }
+
+        [Required]
         public DateTimeOffset End { get; set; }
+
+        [Required]
         public FlightInformationStatus Status { get; set; }
 
 
