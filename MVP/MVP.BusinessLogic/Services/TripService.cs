@@ -291,6 +291,27 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
+        public async Task AddRentalCarInformationToTripAsync(int tripId,
+            RentalCarInformationDto rentalCarInformationDto)
+        {
+            try
+            {
+                var trip = await _tripRepository.GetTripByIdWithRentalCarInformationAsync(tripId);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip was not found");
+                }
+
+                trip.RentalCarInformations.Add(RentalCarInformationDto.ToEntity(rentalCarInformationDto));
+                await _tripRepository.UpdateTripAsync(trip);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to add rental car information to trip");
+            }
+        }
+
         private void ValidateCreateTrip(CreateTripDto createTripDto)
         {
             if (createTripDto.FromOfficeId == createTripDto.ToOfficeId)

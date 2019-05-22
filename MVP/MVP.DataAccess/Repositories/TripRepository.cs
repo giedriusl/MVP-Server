@@ -60,6 +60,15 @@ namespace MVP.DataAccess.Repositories
             return tripEntity;
         }
 
+        public async Task<Trip> GetTripByIdWithRentalCarInformationAsync(int tripId)
+        {
+            var tripEntity = await _context.Trips
+                .Include(trip => trip.RentalCarInformations)
+                .FirstOrDefaultAsync(trip => trip.Id == tripId);
+
+            return tripEntity;
+        }
+
         public async Task<IEnumerable<Trip>> GetTripsByUserIdAsync(string userId)
         {
             var trips = await _context.Trips
