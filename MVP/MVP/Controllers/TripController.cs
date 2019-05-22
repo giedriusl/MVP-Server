@@ -12,6 +12,7 @@ namespace MVP.Controllers
 {
     [Route("")]
     [ApiController]
+    [Authorize]
     public class TripController : ControllerBase
     {
         private readonly ITripService _tripService;
@@ -187,6 +188,72 @@ namespace MVP.Controllers
             var statuses = _tripService.GetFlightInformationStatuses();
 
             return Ok(statuses);
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpGet("api/[controller]/GetMergedTripsData/{baseTrip}/{additionalTrip}")]
+        public async Task<IActionResult> GetMergedTripsData(int baseTrip, int additionalTrip)
+        {
+            try
+            {
+                var mergedTrips = await _tripService.GetMergedTripsDataAsync(baseTrip, additionalTrip);
+
+                return Ok(mergedTrips);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid get merge data request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpPost("api/[controller]/MergeTrips")]
+        public async Task<IActionResult> MergeTrips([FromBody] MergedTripDto mergedTripDto)
+        {
+            try
+            {
+                var mergedTrip = await _tripService.MergeTripsAsync(mergedTripDto);
+
+                return Ok(mergedTrip);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid trips merge request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpGet("api/[controller]/GetSimilarTrips/{tripId}")]
+        public async Task<IActionResult> GetSimilarTrips(int tripId)
+        {
+            try
+            {
+                var trips = await _tripService.GetSimilarTripsAsync(tripId);
+
+                return Ok(trips);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid trips merge request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
         }
     }
 }

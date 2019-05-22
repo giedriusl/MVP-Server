@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using MVP.Entities.Dtos.FlightsInformation;
+﻿using MVP.Entities.Dtos.FlightsInformation;
 using MVP.Entities.Dtos.Offices;
 using MVP.Entities.Dtos.RentalCarsInformation;
 using MVP.Entities.Dtos.Users;
 using MVP.Entities.Entities;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace MVP.Entities.Dtos.Trips
 {

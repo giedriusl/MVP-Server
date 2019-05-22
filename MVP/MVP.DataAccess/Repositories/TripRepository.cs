@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MVP.DataAccess.Repositories
 {
@@ -64,11 +62,26 @@ namespace MVP.DataAccess.Repositories
 
         public async Task<IEnumerable<Trip>> GetTripsByUserIdAsync(string userId)
         {
-            var lists = await _context.Trips
+            var trips = await _context.Trips
                 .Where(trip => trip.UserTrips.Any(userTrip => userTrip.UserId == userId))
                 .ToListAsync();
 
-            return lists;
+            return trips;
+        }
+
+        public async Task<IEnumerable<Trip>> GetSimilarTrips(Trip trip)
+        {
+            var trips = await _context.Trips
+                .Where(t => t.ToOfficeId == trip.ToOfficeId 
+                                && t.FromOfficeId == trip.FromOfficeId
+                                && t.Start <= trip.Start.AddDays(1)
+                                && t.Start >= trip.Start.AddDays(-1)
+                                && t.End <= trip.End.AddDays(1)
+                                && t.End >= trip.End.AddDays(-1)
+                                && t.Id != trip.Id)
+                .ToListAsync();
+
+            return trips;
         }
 
         public async Task<IEnumerable<User>> GetUsersByTripIdAsync(int tripId)

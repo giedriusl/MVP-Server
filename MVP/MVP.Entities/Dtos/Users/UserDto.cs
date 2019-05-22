@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MVP.Entities.Entities;
+﻿using MVP.Entities.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace MVP.Entities.Dtos.Users
 {
@@ -19,13 +19,6 @@ namespace MVP.Entities.Dtos.Users
         [EmailAddress]
         [MaxLength(256)]
         public string Email { get; set; }
-
-
-        [Required]
-        [DataType(DataType.Password)]
-        [MaxLength(256)]
-        public string Password { get; set; }
-
 
         public static UserDto ToDto(User user)
         {
