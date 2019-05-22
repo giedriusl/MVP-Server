@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MVP.Entities.Entities;
+﻿using MVP.Entities.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace MVP.Entities.Dtos.Users
 {

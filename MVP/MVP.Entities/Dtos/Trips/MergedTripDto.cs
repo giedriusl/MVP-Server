@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using MVP.Entities.Dtos.FlightsInformation;
+﻿using MVP.Entities.Dtos.FlightsInformation;
 using MVP.Entities.Dtos.RentalCarsInformation;
-using MVP.Entities.Entities;
-using System.Linq;
 using MVP.Entities.Dtos.Users;
+using MVP.Entities.Entities;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MVP.Entities.Dtos.Trips
 {

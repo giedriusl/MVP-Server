@@ -1,11 +1,10 @@
-﻿using MVP.Entities.Enums;
+﻿using MVP.Entities.Dtos.FlightsInformation;
+using MVP.Entities.Dtos.RentalCarsInformation;
+using MVP.Entities.Entities;
+using MVP.Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using MVP.Entities.Dtos.FlightsInformation;
-using MVP.Entities.Dtos.RentalCarsInformation;
-using MVP.Entities.Entities;
 
 namespace MVP.Entities.Dtos.Trips
 {

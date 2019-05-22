@@ -1,17 +1,17 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
+using MVP.Entities.Dtos.FlightsInformation;
+using MVP.Entities.Dtos.RentalCarsInformation;
 using MVP.Entities.Dtos.Trips;
 using MVP.Entities.Dtos.Users;
 using MVP.Entities.Entities;
+using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MVP.Entities.Dtos.FlightsInformation;
-using MVP.Entities.Dtos.RentalCarsInformation;
-using MVP.Entities.Enums;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -264,6 +264,27 @@ namespace MVP.BusinessLogic.Services
             if (trip.TripStatus == TripStatus.InProgress || trip.TripStatus == TripStatus.Completed)
             {
                 throw new BusinessLogicException($"One of the trips is in {trip.TripStatus} status so it cannot be merged.");
+            }
+        }
+
+        public async Task AddFlightInformationToTripAsync(int tripId,
+            FlightInformationDto flightInformationDto)
+        {
+            try
+            {
+                var trip = await _tripRepository.GetTripByIdWithFlightInformationAsync(tripId);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip was not found");
+                }
+
+                trip.FlightInformations.Add(FlightInformationDto.ToEntity(flightInformationDto));
+                await _tripRepository.UpdateTripAsync(trip);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception,"Failed to add flight information to trip");
             }
         }
 

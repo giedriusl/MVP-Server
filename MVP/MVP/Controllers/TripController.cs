@@ -6,6 +6,7 @@ using MVP.Entities.Dtos.Trips;
 using MVP.Entities.Exceptions;
 using System;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.FlightsInformation;
 
 namespace MVP.Controllers
 {
@@ -130,6 +131,28 @@ namespace MVP.Controllers
             catch (BusinessLogicException exception)
             {
                 _logger.Log(LogLevel.Warning, "Invalid trips get request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [HttpPut("api/[controller]/{tripId}/AddFlight")]
+        [Authorize(Policy = "RequireOrganizerRole")]
+        public async Task<IActionResult> AddFlightInformationToTrip(int tripId, [FromBody] FlightInformationDto flightInformationDto)
+        {
+            try
+            {
+                await _tripService.AddFlightInformationToTripAsync(tripId, flightInformationDto);
+
+                return Ok();
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid add flight information to trip request: ", exception);
                 return BadRequest($"trip.{exception.ErrorCode}");
             }
             catch (Exception exception)

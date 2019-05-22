@@ -1,5 +1,4 @@
-﻿using System;
-using MVP.Entities.Entities;
+﻿using MVP.Entities.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,6 +12,7 @@ namespace MVP.DataAccess.Interfaces
 
         Task<IEnumerable<Trip>> GetAllTripsAsync();
         Task<Trip> GetTripByIdAsync(int tripId);
+        Task<Trip> GetTripByIdWithFlightInformationAsync(int tripId);
         Task<IEnumerable<Trip>> GetTripsByUserIdAsync(string userId);
         Task<IEnumerable<Trip>> GetSimilarTrips(Trip trip);
         Task<IEnumerable<User>> GetUsersByTripIdAsync(int tripId);
