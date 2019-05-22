@@ -8,14 +8,8 @@ namespace MVP.Entities.Dtos.RentalCarsInformation
     public class RentalCarInformationDto
     {
         public virtual int Id { get; set; }
-
-        [Required]
         public double Cost { get; set; }
-
-        [Required]
         public DateTimeOffset Start { get; set; }
-
-        [Required]
         public DateTimeOffset End { get; set; }
 
         [Required]
