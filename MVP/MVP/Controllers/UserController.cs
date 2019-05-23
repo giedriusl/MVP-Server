@@ -247,5 +247,21 @@ namespace MVP.Controllers
 
             return Ok(roles);
         }
+
+        [HttpPost("api/[controller]/ValidateResetPasswordToken")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ValidateResetPasswordToken([FromBody] TokenValidationDto tokenValidation)
+        {
+            try
+            {
+                await _userService.ValidateResetPasswordToken(tokenValidation.Email, tokenValidation.Token);
+                return Ok();
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, $"Could not verify token. {exception.Message}");
+                return Unauthorized();
+            }
+        }
     }
 }
