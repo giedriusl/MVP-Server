@@ -1,7 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using MVP.Entities.Entities;
+﻿using MVP.Entities.Entities;
 using MVP.Entities.Enums;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace MVP.Entities.Dtos.RentalCarsInformation
 {
@@ -11,6 +11,8 @@ namespace MVP.Entities.Dtos.RentalCarsInformation
         public double Cost { get; set; }
         public DateTimeOffset Start { get; set; }
         public DateTimeOffset End { get; set; }
+
+        [Required]
         public RentalCarStatus Status { get; set; }
 
 

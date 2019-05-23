@@ -11,6 +11,8 @@ namespace MVP.Entities.Dtos.FlightsInformation
         public double Cost { get; set; }
         public DateTimeOffset Start { get; set; }
         public DateTimeOffset End { get; set; }
+
+        [Required]
         public FlightInformationStatus Status { get; set; }
 
 
