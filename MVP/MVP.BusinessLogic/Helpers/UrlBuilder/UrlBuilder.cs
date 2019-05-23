@@ -14,7 +14,7 @@ namespace MVP.BusinessLogic.Helpers.UrlBuilder
         public string BuildPasswordResetLink(string token, string email)
         {
             var invitationUrl = _configuration["Urls:PasswordResetUrl"];
-            var urlWithToken = invitationUrl + $"?token={token}&email={email}";
+            var urlWithToken = invitationUrl + $"/{email}/token/{token}";
 
             return urlWithToken;
         }
