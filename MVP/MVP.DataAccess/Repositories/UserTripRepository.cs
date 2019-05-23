@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Entities;
 
@@ -34,6 +36,21 @@ namespace MVP.DataAccess.Repositories
         {
             _context.UserTrips.Remove(userTrip);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteUserTripsAsync(List<UserTrip> userTrips)
+        {
+            _context.UserTrips.RemoveRange(userTrips);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<UserTrip>> GetUserTripsByTripIdAsync(int tripId)
+        {
+            var userTrips = await _context.UserTrips
+                .Where(userTrip => userTrip.TripId == tripId)
+                .ToListAsync();
+
+            return userTrips;
         }
 
         public async Task UpdateUserTripAsync(UserTrip userTrip)

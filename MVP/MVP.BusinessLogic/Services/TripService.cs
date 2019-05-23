@@ -11,6 +11,7 @@ using MVP.Entities.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MVP.BusinessLogic.Helpers.UrlBuilder;
 using MVP.EmailService.Interfaces;
@@ -330,6 +331,47 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
+        public async Task UpdateTripAsync(UpdateTripDto updateTripDto)
+        {
+            try
+            {
+                ValidateCreateTrip((CreateTripDto)updateTripDto);
+                var trip = await _tripRepository.GetTripByIdAsync(updateTripDto.Id);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip was not found");
+                }
+
+                var originalUsers = trip.UserTrips.Select(userTrip => userTrip.UserId).ToList();
+                var updateUsers = updateTripDto.UserIds;
+                var areAllEqual = originalUsers.All(updateUsers.Contains) && originalUsers.Count == updateUsers.Count;
+
+                if (!areAllEqual)
+                {
+                    var userTripsToAdd = new List<UserTrip>();
+                    var userTrips = await _userTripRepository.GetUserTripsByTripIdAsync(trip.Id);
+
+                    var usersToDelete = originalUsers.Where(original => updateUsers.All(update => update != original)).ToList();
+                    var usersToAdd = updateUsers.Where(update => originalUsers.All(orig => orig != update)).ToList();
+
+                    var userTripsToDelete = userTrips.Where(userTrip => usersToDelete.Contains(userTrip.UserId)).ToList();
+                    usersToAdd.ForEach(add => userTripsToAdd.Add(new UserTrip{ TripId = trip.Id, UserId = add}));
+
+                    await _userTripRepository.DeleteUserTripsAsync(userTripsToDelete);
+                    await _userTripRepository.AddUserTripsAsync(userTripsToAdd);
+                }
+
+                trip.UpdateTrip(updateTripDto);
+
+                await _tripRepository.UpdateTripAsync(trip);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to update trip");
+            }
+        }
+
         private static IEnumerable<UserDto> RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
         {
             var duplicateUsers = users.Where(user => mergedTrip.Users.Select(u => u.Email).Contains(user.Email)).ToList();
@@ -368,6 +410,27 @@ namespace MVP.BusinessLogic.Services
             if (!_userManager.Users.Any(user => createTripDto.UserIds.Contains(user.Id)))
             {
                 throw new BusinessLogicException("Trip should contain at least one user!");
+            }
+
+            if (createTripDto.End < createTripDto.Start)
+            {
+                throw new BusinessLogicException("Trip start date cannot be later than trip end date!");
+            }
+
+            foreach (var flightInformation in createTripDto.FlightInformations)
+            {
+                if (flightInformation.End < flightInformation.Start)
+                {
+                    throw new BusinessLogicException($"Flight {flightInformation.Id} start date cannot be later than end date!");
+                }
+            }
+
+            foreach (var rentalCarInformation in createTripDto.RentalCarInformations)
+            {
+                if (rentalCarInformation.End < rentalCarInformation.Start)
+                {
+                    throw new BusinessLogicException($"Rental car {rentalCarInformation.Id} start date cannot be later than end date!");
+                }
             }
         }
 

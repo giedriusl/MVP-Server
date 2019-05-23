@@ -11,6 +11,8 @@ namespace MVP.DataAccess.Interfaces
         Task<UserTrip> AddUserTripAsync(UserTrip userTrip);
         Task AddUserTripsAsync(List<UserTrip> userTrips);
         Task DeleteUserTripAsync(UserTrip userTrip);
+        Task DeleteUserTripsAsync(List<UserTrip> userTrips);
+        Task<List<UserTrip>> GetUserTripsByTripIdAsync(int tripId);
         Task UpdateUserTripAsync(UserTrip userTrip);
     }
 }
