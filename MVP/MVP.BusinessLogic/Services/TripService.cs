@@ -325,17 +325,17 @@ namespace MVP.BusinessLogic.Services
                     throw new BusinessLogicException("Trip was not found");
                 }
 
-                var origUsers = trip.UserTrips.Select(userTrip => userTrip.UserId).ToList();
+                var originalUsers = trip.UserTrips.Select(userTrip => userTrip.UserId).ToList();
                 var updateUsers = updateTripDto.UserIds;
-                var areEquAll = origUsers.All(updateUsers.Contains) && origUsers.Count == updateUsers.Count;
+                var areAllEqual = originalUsers.All(updateUsers.Contains) && originalUsers.Count == updateUsers.Count;
 
-                if (!areEquAll)
+                if (!areAllEqual)
                 {
                     var userTripsToAdd = new List<UserTrip>();
                     var userTrips = await _userTripRepository.GetUserTripsByTripIdAsync(trip.Id);
 
-                    var usersToDelete = origUsers.Where(orig => updateUsers.All(update => update != orig)).ToList();
-                    var usersToAdd = updateUsers.Where(update => origUsers.All(orig => orig != update)).ToList();
+                    var usersToDelete = originalUsers.Where(original => updateUsers.All(update => update != original)).ToList();
+                    var usersToAdd = updateUsers.Where(update => originalUsers.All(orig => orig != update)).ToList();
 
                     var userTripsToDelete = userTrips.Where(userTrip => usersToDelete.Contains(userTrip.UserId)).ToList();
                     usersToAdd.ForEach(add => userTripsToAdd.Add(new UserTrip{ TripId = trip.Id, UserId = add}));
