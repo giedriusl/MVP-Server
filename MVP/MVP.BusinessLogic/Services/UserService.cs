@@ -170,7 +170,8 @@ namespace MVP.BusinessLogic.Services
         private async Task SendResetPasswordLinkAsync(User user)
         {
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var url = _urlBuilder.BuildPasswordResetLink(token, user.Email);
+            var email = user.Email.Replace(".", "[dot]");
+            var url = _urlBuilder.BuildPasswordResetLink(token, email);
             _emailManager.SendInvitationEmail(user.Email, url);
         }
 
