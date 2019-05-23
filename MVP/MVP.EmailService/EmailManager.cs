@@ -12,7 +12,10 @@ namespace MVP.EmailService
         private readonly IEmailSender _emailSender;
 
         private const string CreateAccountPasswordPath = "EmailTemplates\\CreateAccountPassword.html";
+        private const string TripConfirmationPath = "EmailTemplates\\TripConfirmation.html";
         public const string CreateAccountPasswordSubject = "Create Password";
+        public const string TripConfirmationSubject = "Please confirm the trip";
+
 
         public EmailManager(IEmailSender emailSender, IHostingEnvironment hostingEnvironment)
         {
@@ -30,6 +33,23 @@ namespace MVP.EmailService
             {
                 ToAddress = email,
                 Subject = CreateAccountPasswordSubject,
+                Body = messageBody
+            };
+
+            _emailSender.SendEmail(emailMessage);
+        }
+
+        public void SendTripConfirmationEmail(string email, string url)
+        {
+            var path = Path.Combine(_hostingEnvironment.WebRootPath, TripConfirmationPath);
+            var body = BuildBody(path);
+
+            var messageBody = string.Format(body.HtmlBody, url);
+
+            var emailMessage = new EmailMessageDto
+            {
+                ToAddress = email,
+                Subject = TripConfirmationSubject,
                 Body = messageBody
             };
 

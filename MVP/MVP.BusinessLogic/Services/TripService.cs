@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MVP.BusinessLogic.Helpers.UrlBuilder;
+using MVP.EmailService.Interfaces;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -21,17 +23,23 @@ namespace MVP.BusinessLogic.Services
         private readonly IOfficeRepository _officeRepository;
         private readonly IUserTripRepository _userTripRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IEmailManager _emailManager;
+        private readonly IUrlBuilder _urlBuilder;
 
 
         public TripService(ITripRepository tripRepository, 
             IOfficeRepository officeRepository, 
             UserManager<User> userManager, 
-            IUserTripRepository userTripRepository)
+            IUserTripRepository userTripRepository, 
+            IEmailManager emailManager, 
+            IUrlBuilder urlBuilder)
         {
             _tripRepository = tripRepository;
             _officeRepository = officeRepository;
             _userManager = userManager;
             _userTripRepository = userTripRepository;
+            _emailManager = emailManager;
+            _urlBuilder = urlBuilder;
         }
 
         public async Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto)
@@ -61,8 +69,21 @@ namespace MVP.BusinessLogic.Services
 
                 var tripEntity = await _tripRepository.AddTripAsync(trip);
 
-                var usersInTrip = _userManager.Users.Where(user => createTripDto.UserIds.Contains(user.Id)).ToList();
-                usersInTrip.ForEach(user => userTrips.Add(new UserTrip { TripId = tripEntity.Id, UserId = user.Id }));
+                var usersInTrip = _userManager.Users
+                    .Where(user => createTripDto.UserIds.Contains(user.Id))
+                    .Select(u => new { u.Id, u.Email })
+                    .ToList();
+
+                foreach (var user in usersInTrip)
+                {
+                    userTrips.Add(new UserTrip
+                    {
+                        TripId = tripEntity.Id, UserId = user.Id
+                    });
+
+                    SendConfirmationEmail(user.Email, tripEntity.Id);
+                }
+
                 trip.UserTrips = userTrips;
 
                 await _userTripRepository.AddUserTripsAsync(userTrips);
@@ -242,34 +263,6 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        private static IEnumerable<UserDto> RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
-        {
-            var duplicateUsers = users.Where(user => mergedTrip.Users.Select(u => u.Email).Contains(user.Email)).ToList();
-
-            duplicateUsers.ForEach(duplicateUser => users.Remove(duplicateUser));
-
-            return users;
-        }
-
-        private static void ValidateTripsForMerge(Trip baseTrip, Trip additionalTrip)
-        {
-            if (baseTrip is null || additionalTrip is null)
-            {
-                throw new BusinessLogicException("Trip was not found");
-            }
-
-            ValidateTripStatus(baseTrip);
-            ValidateTripStatus(additionalTrip);
-        }
-
-        private static void ValidateTripStatus(Trip trip)
-        {
-            if (trip.TripStatus == TripStatus.InProgress || trip.TripStatus == TripStatus.Completed)
-            {
-                throw new BusinessLogicException($"One of the trips is in {trip.TripStatus} status so it cannot be merged.");
-            }
-        }
-
         public async Task AddFlightInformationToTripAsync(int tripId,
             FlightInformationDto flightInformationDto)
         {
@@ -312,6 +305,34 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
+        private static IEnumerable<UserDto> RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
+        {
+            var duplicateUsers = users.Where(user => mergedTrip.Users.Select(u => u.Email).Contains(user.Email)).ToList();
+
+            duplicateUsers.ForEach(duplicateUser => users.Remove(duplicateUser));
+
+            return users;
+        }
+
+        private static void ValidateTripsForMerge(Trip baseTrip, Trip additionalTrip)
+        {
+            if (baseTrip is null || additionalTrip is null)
+            {
+                throw new BusinessLogicException("Trip was not found");
+            }
+
+            ValidateTripStatus(baseTrip);
+            ValidateTripStatus(additionalTrip);
+        }
+
+        private static void ValidateTripStatus(Trip trip)
+        {
+            if (trip.TripStatus == TripStatus.InProgress || trip.TripStatus == TripStatus.Completed)
+            {
+                throw new BusinessLogicException($"One of the trips is in {trip.TripStatus} status so it cannot be merged.");
+            }
+        }
+
         private void ValidateCreateTrip(CreateTripDto createTripDto)
         {
             if (createTripDto.FromOfficeId == createTripDto.ToOfficeId)
@@ -323,6 +344,12 @@ namespace MVP.BusinessLogic.Services
             {
                 throw new BusinessLogicException("Trip should contain at least one user!");
             }
+        }
+
+        private void SendConfirmationEmail(string email, int tripId)
+        {
+            var url = _urlBuilder.BuildTripConfirmationLink(tripId);
+            _emailManager.SendTripConfirmationEmail(email, url);
         }
     }
 }
