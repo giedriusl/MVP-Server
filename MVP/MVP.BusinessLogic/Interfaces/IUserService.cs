@@ -19,5 +19,6 @@ namespace MVP.BusinessLogic.Interfaces
         Task<UserDto> GetUserByEmail(string email);
 
         IEnumerable<UserRolesDto> GetUserRoles();
+        Task ValidateResetPasswordToken(string email, string token);
     }
 }
