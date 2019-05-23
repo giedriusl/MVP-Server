@@ -35,5 +35,11 @@ namespace MVP.DataAccess.Repositories
             _context.UserTrips.Remove(userTrip);
             await _context.SaveChangesAsync();
         }
+
+        public async Task DeleteUserTripsAsync(List<UserTrip> userTrips)
+        {
+            _context.UserTrips.RemoveRange(userTrips);
+            await _context.SaveChangesAsync();
+        }
     }
 }

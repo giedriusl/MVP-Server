@@ -11,6 +11,7 @@ using MVP.Entities.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MVP.BusinessLogic.Services
@@ -312,6 +313,36 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
+        public async Task UpdateTripAsync(UpdateTripDto updateTripDto)
+        {
+            try
+            {
+                ValidateCreateTrip((CreateTripDto)updateTripDto);
+
+                var userTrips = new List<UserTrip>();
+                var trip = await _tripRepository.GetTripByIdAsync(updateTripDto.Id);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip was not found");
+                }
+
+                trip.UpdateTrip(updateTripDto);
+                await _userTripRepository.DeleteUserTripsAsync(trip.UserTrips.ToList());
+
+                var usersInTrip = _userManager.Users.Where(user => updateTripDto.UserIds.Contains(user.Id)).ToList();
+                usersInTrip.ForEach(user => userTrips.Add(new UserTrip { TripId = trip.Id, UserId = user.Id }));
+
+                trip.UserTrips = userTrips;
+                await _userTripRepository.AddUserTripsAsync(trip.UserTrips.ToList());
+                await _tripRepository.UpdateTripAsync(trip);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to update trip");
+            }
+        }
+
         private void ValidateCreateTrip(CreateTripDto createTripDto)
         {
             if (createTripDto.FromOfficeId == createTripDto.ToOfficeId)
@@ -322,6 +353,27 @@ namespace MVP.BusinessLogic.Services
             if (!_userManager.Users.Any(user => createTripDto.UserIds.Contains(user.Id)))
             {
                 throw new BusinessLogicException("Trip should contain at least one user!");
+            }
+
+            if (createTripDto.End < createTripDto.Start)
+            {
+                throw new BusinessLogicException("Trip start date cannot be later than trip end date!");
+            }
+
+            foreach (var flightInformation in createTripDto.FlightInformations)
+            {
+                if (flightInformation.End < flightInformation.Start)
+                {
+                    throw new BusinessLogicException($"Flight {flightInformation.Id} start date cannot be later than end date!");
+                }
+            }
+
+            foreach (var rentalCarInformation in createTripDto.RentalCarInformations)
+            {
+                if (rentalCarInformation.End < rentalCarInformation.Start)
+                {
+                    throw new BusinessLogicException($"Rental car {rentalCarInformation.Id} start date cannot be later than end date!");
+                }
             }
         }
     }
