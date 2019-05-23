@@ -215,11 +215,45 @@ namespace MVP.DataAccess.Seed
                     firstUser = await userManager.FindByEmailAsync("mvpteamas@gmail.com");
                 }
 
+                var nextUser = await userManager.Users.FirstOrDefaultAsync(u => u.Email == "pawlikas77@gmail.com");
+
+                if (nextUser is null)
+                {
+                    var user = new User
+                    {
+                        Email = "pawlikas77@gmail.com",
+                        Name = "Deimis",
+                        Surname = "Gedis",
+                        UserName = "pawlikas77@gmail.com",
+                        SecurityStamp = Guid.NewGuid().ToString()
+                    };
+
+                    await userManager.CreateAsync(user, "Psk@team123");
+                    await userManager.AddToRoleAsync(user, UserRoles.Administrator.ToString());
+                }
+
+                nextUser = await userManager.Users.FirstOrDefaultAsync(u => u.Email == "gedgaudasdei@gmail.com");
+
+                if (nextUser is null)
+                {
+                    var user = new User
+                    {
+                        Email = "gedgaudasdei@gmail.com",
+                        Name = "Tuomis",
+                        Surname = "Cash",
+                        UserName = "gedgaudasdei@gmail.com",
+                        SecurityStamp = Guid.NewGuid().ToString()
+                    };
+
+                    await userManager.CreateAsync(user, "Psk@team123");
+                    await userManager.AddToRoleAsync(user, UserRoles.Administrator.ToString());
+                }
+
                 return firstUser;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to seed default Calendar");
+                logger.LogError(ex, "Failed to seed default users");
                 throw;
             }
         }

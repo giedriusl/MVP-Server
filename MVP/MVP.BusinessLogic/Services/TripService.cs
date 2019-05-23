@@ -318,8 +318,6 @@ namespace MVP.BusinessLogic.Services
             try
             {
                 ValidateCreateTrip((CreateTripDto)updateTripDto);
-
-                var userTrips = new List<UserTrip>();
                 var trip = await _tripRepository.GetTripByIdAsync(updateTripDto.Id);
 
                 if (trip is null)
@@ -327,14 +325,27 @@ namespace MVP.BusinessLogic.Services
                     throw new BusinessLogicException("Trip was not found");
                 }
 
+                var origUsers = trip.UserTrips.Select(userTrip => userTrip.UserId).ToList();
+                var updateUsers = updateTripDto.UserIds;
+                var areEquAll = origUsers.All(updateUsers.Contains) && origUsers.Count == updateUsers.Count;
+
+                if (!areEquAll)
+                {
+                    var userTripsToAdd = new List<UserTrip>();
+                    var userTrips = await _userTripRepository.GetUserTripsByTripIdAsync(trip.Id);
+
+                    var usersToDelete = origUsers.Where(orig => updateUsers.All(update => update != orig)).ToList();
+                    var usersToAdd = updateUsers.Where(update => origUsers.All(orig => orig != update)).ToList();
+
+                    var userTripsToDelete = userTrips.Where(userTrip => usersToDelete.Contains(userTrip.UserId)).ToList();
+                    usersToAdd.ForEach(add => userTripsToAdd.Add(new UserTrip{ TripId = trip.Id, UserId = add}));
+
+                    await _userTripRepository.DeleteUserTripsAsync(userTripsToDelete);
+                    await _userTripRepository.AddUserTripsAsync(userTripsToAdd);
+                }
+
                 trip.UpdateTrip(updateTripDto);
-                await _userTripRepository.DeleteUserTripsAsync(trip.UserTrips.ToList());
 
-                var usersInTrip = _userManager.Users.Where(user => updateTripDto.UserIds.Contains(user.Id)).ToList();
-                usersInTrip.ForEach(user => userTrips.Add(new UserTrip { TripId = trip.Id, UserId = user.Id }));
-
-                trip.UserTrips = userTrips;
-                await _userTripRepository.AddUserTripsAsync(trip.UserTrips.ToList());
                 await _tripRepository.UpdateTripAsync(trip);
             }
             catch (Exception exception)
