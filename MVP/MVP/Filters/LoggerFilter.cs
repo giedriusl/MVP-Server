@@ -1,7 +1,10 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using MVP.BusinessLogic.Helpers.TokenGenerator;
 
 namespace MVP.Filters
 {
@@ -11,7 +14,7 @@ namespace MVP.Filters
         {
         }
 
-        private class LoggerFilterImplementation : IResultFilter
+        private class LoggerFilterImplementation : IActionFilter
         {
             private readonly ILogger _logger;
 
@@ -20,16 +23,31 @@ namespace MVP.Filters
                 _logger = loggerFactory.CreateLogger<LoggerFilter>();
             }
 
-            public void OnResultExecuting(ResultExecutingContext context)
+            public void OnActionExecuting(ActionExecutingContext context)
             {
+                var role = string.Empty;
+                var time = DateTimeOffset.Now;
                 var user = context.HttpContext.User.Identity;
-                _logger.Log(LogLevel.Information, $"Methods...{user.Name}");
+                string authHeader = context.HttpContext.Request.Headers["Authorization"];
+                if (authHeader != null && authHeader.StartsWith("Bearer"))
+                {
+                    var token = authHeader.Substring("Bearer ".Length).Trim();
+                    var parsedToken = JwtTokenGenerator.ParseToken(token);
+                    var claims = parsedToken.Claims;
+                    role = claims.First(claim => claim.Type == ClaimTypes.Role).Value;
+                }
+
+                var actionName = context.ActionDescriptor.DisplayName;
+
+                var logMessage = $"User name: {user.Name}; Role: {role}; Method name: {actionName}; Time: {time}";
+
+                _logger.Log(LogLevel.Information, logMessage);
             }
 
-            public void OnResultExecuted(ResultExecutedContext context)
+            public void OnActionExecuted(ActionExecutedContext context)
             {
             }
         }
     }
-    
+
 }

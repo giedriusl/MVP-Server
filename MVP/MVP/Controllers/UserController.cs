@@ -6,14 +6,15 @@ using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Dtos;
 using MVP.Entities.Dtos.Users;
 using MVP.Entities.Exceptions;
+using MVP.Filters;
 using System;
 using System.Threading.Tasks;
-using MVP.Filters;
 
 namespace MVP.Controllers
 {
     [ApiController]
     [Authorize]
+    [LoggerFilter]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -28,7 +29,6 @@ namespace MVP.Controllers
 
         [HttpPost("api/[controller]/CreateUser")]
         [Authorize(Policy = "RequireAdministratorRole")]
-        [LoggerFilter]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDto createUserDto)
         {
             try

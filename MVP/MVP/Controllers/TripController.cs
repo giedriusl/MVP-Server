@@ -2,18 +2,20 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
-using MVP.Entities.Dtos.Trips;
-using MVP.Entities.Exceptions;
-using System;
-using System.Threading.Tasks;
 using MVP.Entities.Dtos.FlightsInformation;
 using MVP.Entities.Dtos.RentalCarsInformation;
+using MVP.Entities.Dtos.Trips;
+using MVP.Entities.Exceptions;
+using MVP.Filters;
+using System;
+using System.Threading.Tasks;
 
 namespace MVP.Controllers
 {
     [Route("")]
     [ApiController]
     [Authorize]
+    [LoggerFilter]
     public class TripController : ControllerBase
     {
         private readonly ITripService _tripService;

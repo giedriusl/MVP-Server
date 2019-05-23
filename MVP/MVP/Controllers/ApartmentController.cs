@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Dtos.Apartments;
 using MVP.Entities.Exceptions;
+using MVP.Filters;
 using System;
 using System.Threading.Tasks;
 
@@ -13,18 +14,17 @@ namespace MVP.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [LoggerFilter]
     public class ApartmentController : ControllerBase
     {
         private readonly IApartmentService _apartmentService;
-        private readonly IFileReader _fileReader;
         private readonly ILogger<ApartmentController> _logger;
 
 
-        public ApartmentController(IApartmentService apartmentService, ILogger<ApartmentController> logger, IFileReader fileReader)
+        public ApartmentController(IApartmentService apartmentService, ILogger<ApartmentController> logger)
         {
             _apartmentService = apartmentService;
             _logger = logger;
-            _fileReader = fileReader;
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
