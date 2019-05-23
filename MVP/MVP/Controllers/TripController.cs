@@ -280,5 +280,27 @@ namespace MVP.Controllers
                 return StatusCode(500, "common.internal");
             }
         }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpPut("api/[controller]/UpdateTrip")]
+        public async Task<IActionResult> UpdateTrip([FromBody] UpdateTripDto updateTripDto)
+        {
+            try
+            {
+                await _tripService.UpdateTripAsync(updateTripDto);
+
+                return Ok();
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid trip update request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
     }
 }
