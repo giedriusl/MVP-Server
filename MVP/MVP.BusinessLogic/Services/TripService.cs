@@ -186,6 +186,31 @@ namespace MVP.BusinessLogic.Services
             return statuses.Select(FlightInformationStatusDto.ToDto).ToList();
         }
 
+        public async Task ConfirmAsync(int tripId, string userEmail)
+        {
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user is null)
+            {
+                throw new BusinessLogicException("User was not found");
+            }
+
+            var trip = await _tripRepository.GetTripByIdAsync(tripId);
+            if (trip is null)
+            {
+                throw new BusinessLogicException("Trip was not found");
+            }
+
+            var usersInTrip = trip.UserTrips.Select(ut => ut.User);
+            if (!usersInTrip.Contains(user))
+            {
+                throw new BusinessLogicException("User is not in this trip.");
+            }
+
+            var userTrip = trip.UserTrips.First(ut => ut.UserId == user.Id);
+            userTrip.Confirmed = true;
+            await _userTripRepository.UpdateUserTripAsync(userTrip);
+        }
+
         public async Task<MergedTripDto> GetMergedTripsDataAsync(int baseTripId, int additionalTripId)
         {
             try

@@ -35,5 +35,11 @@ namespace MVP.DataAccess.Repositories
             _context.UserTrips.Remove(userTrip);
             await _context.SaveChangesAsync();
         }
+
+        public async Task UpdateUserTripAsync(UserTrip userTrip)
+        {
+            _context.UserTrips.Update(userTrip);
+            await _context.SaveChangesAsync();
+        }
     }
 }

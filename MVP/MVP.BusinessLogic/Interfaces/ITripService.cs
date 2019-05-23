@@ -23,5 +23,6 @@ namespace MVP.BusinessLogic.Interfaces
         IEnumerable<TripStatusDto> GetTripStatuses();
         IEnumerable<RentalCarStatusDto> GetRentalCarStatuses();
         IEnumerable<FlightInformationStatusDto> GetFlightInformationStatuses();
+        Task ConfirmAsync(int tripId, string userEmail);
     }
 }
