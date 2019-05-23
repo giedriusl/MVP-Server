@@ -1,17 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Dtos.Offices;
 using MVP.Entities.Exceptions;
+using MVP.Filters;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 namespace MVP.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [LoggerFilter]
     public class OfficeController : ControllerBase
     {
         private readonly IOfficeService _officeService;

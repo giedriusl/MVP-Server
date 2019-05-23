@@ -6,6 +6,7 @@ using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Dtos.Apartments;
 using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 using MVP.Entities.Exceptions;
+using MVP.Filters;
 using System;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ namespace MVP.Controllers
     [Route("")]
     [ApiController]
     [Authorize]
+    [LoggerFilter]
     public class ApartmentController : ControllerBase
     {
         private readonly IApartmentService _apartmentService;

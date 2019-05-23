@@ -133,7 +133,6 @@ namespace MVP.BusinessLogic.Services
         public async Task UploadUsersCalendarAsync(IFormFile file)
         {
             var calendars = await _fileReader.ReadUsersCalendarFileAsync(file);
-            var users = _userManager.Users;
             var validCalendars = new List<Calendar>();
 
             foreach (var calendar in calendars)
