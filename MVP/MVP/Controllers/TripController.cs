@@ -13,7 +13,7 @@ namespace MVP.Controllers
 {
     [Route("")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class TripController : ControllerBase
     {
         private readonly ITripService _tripService;
