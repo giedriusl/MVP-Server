@@ -165,6 +165,24 @@ namespace MVP.Controllers
             }
         }
 
+        [HttpPut("api/[controller]/{tripId}/UpdateFlight")]
+        [Authorize(Policy = "RequireOrganizerRole")]
+        public async Task<IActionResult> UpdateFlightInformationForTrip(int tripId,
+            [FromBody] UpdateFlightInformationDto updateFlightInformationDto)
+        {
+            try
+            {
+                await _tripService.UpdateFlightInformationForTripAsync(tripId, updateFlightInformationDto);
+
+                return Ok();
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
         [HttpPut("api/[controller]/{tripId}/AddRentalCar")]
         [Authorize(Policy = "RequireOrganizerRole")]
         public async Task<IActionResult> AddRentalCarInformationToTrip(int tripId, [FromBody] RentalCarInformationDto rentalCarInformationDto)

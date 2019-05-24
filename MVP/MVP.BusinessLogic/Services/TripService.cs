@@ -354,6 +354,36 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
+        public async Task UpdateFlightInformationForTripAsync(int tripId,
+            UpdateFlightInformationDto updateFlightInformationDto)
+        {
+            try
+            {
+                ValidateUpdateFlightInformation(updateFlightInformationDto);
+                var trip = await _tripRepository.GetTripByIdAsync(tripId);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip not found");
+                }
+
+                var flightInformationToUpdate = trip.FlightInformations
+                    .FirstOrDefault(flightInformation => flightInformation.Id == updateFlightInformationDto.Id);
+
+                if (flightInformationToUpdate is null)
+                {
+                    throw new BusinessLogicException("Specified flight information does not exist");
+                }
+
+                flightInformationToUpdate.UpdateFlightInformation(updateFlightInformationDto);
+                await _tripRepository.UpdateTripAsync(trip);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to update flight information");
+            }
+        }
+
         private void ValidateCreateTrip(CreateTripDto createTripDto)
         {
             if (createTripDto.FromOfficeId == createTripDto.ToOfficeId)
@@ -385,6 +415,14 @@ namespace MVP.BusinessLogic.Services
                 {
                     throw new BusinessLogicException($"Rental car {rentalCarInformation.Id} start date cannot be later than end date!");
                 }
+            }
+        }
+
+        private void ValidateUpdateFlightInformation(UpdateFlightInformationDto updateFlightInformationDto)
+        {
+            if (updateFlightInformationDto.Start > updateFlightInformationDto.End)
+            {
+                throw new BusinessLogicException($"Flight information {updateFlightInformationDto.Id} start date cannot be later than end date!");
             }
         }
     }
