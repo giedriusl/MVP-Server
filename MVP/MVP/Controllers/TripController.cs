@@ -165,6 +165,27 @@ namespace MVP.Controllers
             }
         }
 
+        [HttpDelete("api/[controller]/{tripId}/DeleteFlight/{flightInformationId}")]
+        [Authorize(Policy = "RequireOrganizerRole")]
+        public async Task<IActionResult> DeleteFlightInformationFromTrip(int tripId, int flightInformationId)
+        {
+            try
+            {
+                await _tripService.DeleteFlightInformationFromTrip(tripId, flightInformationId);
+
+                return Ok();
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid delete flight information from trip request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+            
         [HttpPut("api/[controller]/{tripId}/UpdateFlight")]
         [Authorize(Policy = "RequireOrganizerRole")]
         public async Task<IActionResult> UpdateFlightInformationForTrip(int tripId,
@@ -175,6 +196,11 @@ namespace MVP.Controllers
                 await _tripService.UpdateFlightInformationForTripAsync(tripId, updateFlightInformationDto);
 
                 return Ok();
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid update flight information request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
             }
             catch (Exception exception)
             {
