@@ -292,6 +292,34 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
+        public async Task DeleteFlightInformationFromTrip(int tripId, int flightInformationId)
+        {
+            try
+            {
+                var trip = await _tripRepository.GetTripByIdAsync(tripId);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip does not exist");
+                }
+
+                var flightInformationToRemove = trip.FlightInformations
+                    .First(flightInformation => flightInformation.Id == flightInformationId);
+
+                if (flightInformationToRemove is null)
+                {
+                    throw new BusinessLogicException("Specified flight information does not exist");
+                }
+
+                trip.FlightInformations.Remove(flightInformationToRemove);
+                await _tripRepository.UpdateTripAsync(trip);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to delete flight information from trip");
+            }
+        }
+
         public async Task AddRentalCarInformationToTripAsync(int tripId,
             RentalCarInformationDto rentalCarInformationDto)
         {
