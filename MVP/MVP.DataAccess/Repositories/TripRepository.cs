@@ -26,7 +26,10 @@ namespace MVP.DataAccess.Repositories
 
         public async Task<IEnumerable<Trip>> GetAllTripsAsync()
         {
-            var trips = await _context.Trips.ToListAsync();
+            var trips = await _context.Trips
+                .Include(t => t.FromOffice)
+                .Include(t => t.ToOffice)
+                .ToListAsync();
 
             return trips;
         }

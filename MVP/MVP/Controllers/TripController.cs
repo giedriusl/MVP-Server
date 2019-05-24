@@ -185,6 +185,28 @@ namespace MVP.Controllers
                 _logger.Log(LogLevel.Error, "internal error occured: ", exception);
                 return StatusCode(500, "common.internal");
             }
+            
+        [HttpPut("api/[controller]/{tripId}/UpdateFlight")]
+        [Authorize(Policy = "RequireOrganizerRole")]
+        public async Task<IActionResult> UpdateFlightInformationForTrip(int tripId,
+            [FromBody] UpdateFlightInformationDto updateFlightInformationDto)
+        {
+            try
+            {
+                await _tripService.UpdateFlightInformationForTripAsync(tripId, updateFlightInformationDto);
+
+                return Ok();
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid update flight information request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
         }
 
         [HttpPut("api/[controller]/{tripId}/AddRentalCar")]
