@@ -171,7 +171,7 @@ namespace MVP.Controllers
         {
             try
             {
-                await _tripService.DeleteFlightInformationFromTrip(tripId, flightInformationId);
+                await _tripService.DeleteFlightInformationFromTripAsync(tripId, flightInformationId);
 
                 return Ok();
             }
@@ -185,7 +185,8 @@ namespace MVP.Controllers
                 _logger.Log(LogLevel.Error, "internal error occured: ", exception);
                 return StatusCode(500, "common.internal");
             }
-            
+        }
+
         [HttpPut("api/[controller]/{tripId}/UpdateFlight")]
         [Authorize(Policy = "RequireOrganizerRole")]
         public async Task<IActionResult> UpdateFlightInformationForTrip(int tripId,
@@ -222,6 +223,29 @@ namespace MVP.Controllers
             catch (BusinessLogicException exception)
             {
                 _logger.Log(LogLevel.Warning, "Invalid add rental car information to trip request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [HttpPut("api/[controller]/{tripId}/UpdateRentalCar")]
+        [Authorize(Policy = "RequireOrganizerRole")]
+        public async Task<IActionResult> UpdateRentalCarInformationForTrip(int tripId,
+            [FromBody] UpdateRentalCarInformationDto updateRentalCarInformationDto)
+        {
+            try
+            {
+                await _tripService.UpdateRentalCarInformationForTripAsync(tripId, updateRentalCarInformationDto);
+
+                return Ok();
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid update rental car information for trip request: ", exception);
                 return BadRequest($"trip.{exception.ErrorCode}");
             }
             catch (Exception exception)
