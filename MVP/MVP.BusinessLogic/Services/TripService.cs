@@ -292,7 +292,7 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        public async Task DeleteFlightInformationFromTrip(int tripId, int flightInformationId)
+        public async Task DeleteFlightInformationFromTripAsync(int tripId, int flightInformationId)
         {
             try
             {
@@ -338,6 +338,36 @@ namespace MVP.BusinessLogic.Services
             catch (Exception exception)
             {
                 throw new BusinessLogicException(exception, "Failed to add rental car information to trip");
+            }
+        }
+
+        public async Task UpdateRentalCarInformationForTripAsync(int tripId,
+            UpdateRentalCarInformationDto updateRentalCarInformationDto)
+        {
+            try
+            {
+                ValidateRentalCarInformation(updateRentalCarInformationDto);
+                var trip = await _tripRepository.GetTripByIdAsync(tripId);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip was not found");
+                }
+
+                var rentalCarInformationToUpdate = trip.RentalCarInformations
+                    .First(rentalCarInformation => rentalCarInformation.Id == updateRentalCarInformationDto.Id);
+
+                if (rentalCarInformationToUpdate is null)
+                {
+                    throw new BusinessLogicException("Specified rental car information does not exist");
+                }
+
+                rentalCarInformationToUpdate.UpdateRentalCarInformation(updateRentalCarInformationDto);
+                await _tripRepository.UpdateTripAsync(trip);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to update rental car information for trip");
             }
         }
 
@@ -451,6 +481,14 @@ namespace MVP.BusinessLogic.Services
             if (updateFlightInformationDto.Start > updateFlightInformationDto.End)
             {
                 throw new BusinessLogicException($"Flight information {updateFlightInformationDto.Id} start date cannot be later than end date!");
+            }
+        }
+
+        private void ValidateRentalCarInformation(RentalCarInformationDto rentalCarInformationDto)
+        {
+            if (rentalCarInformationDto.Start > rentalCarInformationDto.End)
+            {
+                throw new BusinessLogicException($"Rental car information {rentalCarInformationDto.Id} start date cannot be later than end date!");
             }
         }
     }
