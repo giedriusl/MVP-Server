@@ -11,6 +11,7 @@ using MVP.Entities.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MVP.BusinessLogic.Services
@@ -227,6 +228,34 @@ namespace MVP.BusinessLogic.Services
             await _tripRepository.UpdateTripAsync(trip);
         }
 
+        public async Task DeleteFlightInformationFromTripAsync(int tripId, int flightInformationId)
+        {
+            try
+            {
+                var trip = await _tripRepository.GetTripByIdAsync(tripId);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip does not exist");
+                }
+
+                var flightInformationToRemove = trip.FlightInformations
+                    .First(flightInformation => flightInformation.Id == flightInformationId);
+
+                if (flightInformationToRemove is null)
+                {
+                    throw new BusinessLogicException("Specified flight information does not exist");
+                }
+
+                trip.FlightInformations.Remove(flightInformationToRemove);
+                await _tripRepository.UpdateTripAsync(trip);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to delete flight information from trip");
+            }
+        }
+
         public async Task AddRentalCarInformationToTripAsync(int tripId,
             RentalCarInformationDto rentalCarInformationDto)
         {
@@ -241,6 +270,107 @@ namespace MVP.BusinessLogic.Services
             await _tripRepository.UpdateTripAsync(trip);
         }
 
+        public async Task UpdateRentalCarInformationForTripAsync(int tripId,
+            UpdateRentalCarInformationDto updateRentalCarInformationDto)
+        {
+            try
+            {
+                ValidateRentalCarInformation(updateRentalCarInformationDto);
+                var trip = await _tripRepository.GetTripByIdAsync(tripId);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip was not found");
+                }
+
+                var rentalCarInformationToUpdate = trip.RentalCarInformations
+                    .First(rentalCarInformation => rentalCarInformation.Id == updateRentalCarInformationDto.Id);
+
+                if (rentalCarInformationToUpdate is null)
+                {
+                    throw new BusinessLogicException("Specified rental car information does not exist");
+                }
+
+                rentalCarInformationToUpdate.UpdateRentalCarInformation(updateRentalCarInformationDto);
+                await _tripRepository.UpdateTripAsync(trip);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to update rental car information for trip");
+            }
+        }
+
+        public async Task UpdateTripAsync(UpdateTripDto updateTripDto)
+        {
+            try
+            {
+                ValidateCreateTrip((CreateTripDto)updateTripDto);
+                var trip = await _tripRepository.GetTripByIdAsync(updateTripDto.Id);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip was not found");
+                }
+
+                var originalUsers = trip.UserTrips.Select(userTrip => userTrip.UserId).ToList();
+                var updateUsers = updateTripDto.UserIds;
+                var areAllEqual = originalUsers.All(updateUsers.Contains) && originalUsers.Count == updateUsers.Count;
+
+                if (!areAllEqual)
+                {
+                    var userTripsToAdd = new List<UserTrip>();
+                    var userTrips = await _userTripRepository.GetUserTripsByTripIdAsync(trip.Id);
+
+                    var usersToDelete = originalUsers.Where(original => updateUsers.All(update => update != original)).ToList();
+                    var usersToAdd = updateUsers.Where(update => originalUsers.All(orig => orig != update)).ToList();
+
+                    var userTripsToDelete = userTrips.Where(userTrip => usersToDelete.Contains(userTrip.UserId)).ToList();
+                    usersToAdd.ForEach(add => userTripsToAdd.Add(new UserTrip{ TripId = trip.Id, UserId = add}));
+
+                    await _userTripRepository.DeleteUserTripsAsync(userTripsToDelete);
+                    await _userTripRepository.AddUserTripsAsync(userTripsToAdd);
+                }
+
+                trip.UpdateTrip(updateTripDto);
+
+                await _tripRepository.UpdateTripAsync(trip);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to update trip");
+            }
+        }
+
+        public async Task UpdateFlightInformationForTripAsync(int tripId,
+            UpdateFlightInformationDto updateFlightInformationDto)
+        {
+            try
+            {
+                ValidateUpdateFlightInformation(updateFlightInformationDto);
+                var trip = await _tripRepository.GetTripByIdAsync(tripId);
+
+                if (trip is null)
+                {
+                    throw new BusinessLogicException("Trip not found");
+                }
+
+                var flightInformationToUpdate = trip.FlightInformations
+                    .FirstOrDefault(flightInformation => flightInformation.Id == updateFlightInformationDto.Id);
+
+                if (flightInformationToUpdate is null)
+                {
+                    throw new BusinessLogicException("Specified flight information does not exist");
+                }
+
+                flightInformationToUpdate.UpdateFlightInformation(updateFlightInformationDto);
+                await _tripRepository.UpdateTripAsync(trip);
+            }
+            catch (Exception exception)
+            {
+                throw new BusinessLogicException(exception, "Failed to update flight information");
+            }
+        }
+
         private void ValidateCreateTrip(CreateTripDto createTripDto)
         {
             if (createTripDto.FromOfficeId == createTripDto.ToOfficeId)
@@ -251,6 +381,43 @@ namespace MVP.BusinessLogic.Services
             if (!_userManager.Users.Any(user => createTripDto.UserIds.Contains(user.Id)))
             {
                 throw new BusinessLogicException("Trip should contain at least one user!", "noUsers");
+            }
+
+            if (createTripDto.End < createTripDto.Start)
+            {
+                throw new BusinessLogicException("Trip start date cannot be later than trip end date!");
+            }
+
+            foreach (var flightInformation in createTripDto.FlightInformations)
+            {
+                if (flightInformation.End < flightInformation.Start)
+                {
+                    throw new BusinessLogicException($"Flight {flightInformation.Id} start date cannot be later than end date!");
+                }
+            }
+
+            foreach (var rentalCarInformation in createTripDto.RentalCarInformations)
+            {
+                if (rentalCarInformation.End < rentalCarInformation.Start)
+                {
+                    throw new BusinessLogicException($"Rental car {rentalCarInformation.Id} start date cannot be later than end date!");
+                }
+            }
+        }
+
+        private void ValidateUpdateFlightInformation(UpdateFlightInformationDto updateFlightInformationDto)
+        {
+            if (updateFlightInformationDto.Start > updateFlightInformationDto.End)
+            {
+                throw new BusinessLogicException($"Flight information {updateFlightInformationDto.Id} start date cannot be later than end date!");
+            }
+        }
+
+        private void ValidateRentalCarInformation(RentalCarInformationDto rentalCarInformationDto)
+        {
+            if (rentalCarInformationDto.Start > rentalCarInformationDto.End)
+            {
+                throw new BusinessLogicException($"Rental car information {rentalCarInformationDto.Id} start date cannot be later than end date!");
             }
         }
     }

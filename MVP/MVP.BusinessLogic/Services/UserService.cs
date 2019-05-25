@@ -167,6 +167,21 @@ namespace MVP.BusinessLogic.Services
             return roles.Select(UserRolesDto.ToDto).ToList();
         }
 
+        public async Task ValidateResetPasswordToken(string email, string token)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                throw new BusinessLogicException("User not found.");
+            }
+                
+            var valid = await _userManager.VerifyUserTokenAsync(user, this._userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", token);
+            if (!valid)
+            {
+                throw new BusinessLogicException("Invalid token.");
+            }
+        }
+
         private async Task SendResetPasswordLinkAsync(User user)
         {
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
