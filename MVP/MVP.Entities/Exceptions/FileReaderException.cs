@@ -20,10 +20,9 @@ namespace MVP.Entities.Exceptions
         {
         }
 
-        public FileReaderException(string message, string errorCode, Exception exception) : base(message)
+        public FileReaderException(string message, string errorCode) : base(message)
         {
             ErrorCode = errorCode;
-            Exception = exception;
         }
     }
 }

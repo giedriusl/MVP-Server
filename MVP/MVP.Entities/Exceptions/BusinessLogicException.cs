@@ -18,10 +18,9 @@ namespace MVP.Entities.Exceptions
         {
         }
 
-        public BusinessLogicException(string message, string errorCode, Exception exception) : base(message)
+        public BusinessLogicException(string message, string errorCode) : base(message)
         {
             ErrorCode = errorCode;
-            Exception = exception;
         }
     }
 }
