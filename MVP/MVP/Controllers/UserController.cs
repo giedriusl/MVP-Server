@@ -98,13 +98,13 @@ namespace MVP.Controllers
             catch (InvalidUserException exception)
             {
                 _logger.Log(LogLevel.Error, $"Password reset failed. {exception.Message}");
-                return BadRequest("invalidPasswordReset");
+                return BadRequest("user.invalidPasswordReset");
             }
         }
 
         [HttpPost("api/[controller]/SendResetPasswordLink")]
         [AllowAnonymous]
-        public async Task<IActionResult> SendResetPasswordLink(string email)
+        public async Task<IActionResult> SendResetPasswordLink([FromBody] SendResetPasswordDto sendResetPasswordDto)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace MVP.Controllers
                     return BadRequest("Model is not valid");
                 }
 
-                await _userService.SendResetPasswordLinkAsync(email);
+                await _userService.SendResetPasswordLinkAsync(sendResetPasswordDto.Email);
 
                 return Ok();
             }
@@ -125,7 +125,7 @@ namespace MVP.Controllers
             catch (Exception exception)
             {
                 _logger.Log(LogLevel.Error, $"Internal error occured. {exception.Message}");
-                return StatusCode(500);
+                return StatusCode(500, "common.internal");
             }
         }
 
@@ -141,7 +141,7 @@ namespace MVP.Controllers
             catch (Exception exception)
             {
                 _logger.Log(LogLevel.Error, $"Internal error occured. {exception.Message}");
-                return StatusCode(500);
+                return StatusCode(500, "common.internal");
             }
         }
 
@@ -157,7 +157,7 @@ namespace MVP.Controllers
             catch (Exception exception)
             {
                 _logger.Log(LogLevel.Error, $"Internal error occured. {exception.Message}");
-                return StatusCode(500);
+                return StatusCode(500, "common.internal");
             }
         }
 
