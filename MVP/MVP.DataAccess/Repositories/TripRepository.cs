@@ -37,18 +37,10 @@ namespace MVP.DataAccess.Repositories
         public async Task<Trip> GetTripByIdAsync(int tripId)
         {
             var tripEntity = await _context.Trips
-                .Include(trip => trip.FlightInformations)
-                .Include(trip => trip.RentalCarInformations)
                 .Include(trip => trip.FromOffice)
                     .ThenInclude(fromOffice => fromOffice.Location)
-                .Include(trip => trip.FromOffice)
-                    .ThenInclude(fromOffice => fromOffice.Apartments)
                 .Include(trip => trip.ToOffice)
                     .ThenInclude(toOffice => toOffice.Location)
-                .Include(trip => trip.ToOffice)
-                    .ThenInclude(toOffice => toOffice.Apartments)
-                .Include(trip => trip.UserTrips)
-                    .ThenInclude(userTrips => userTrips.User)
                 .FirstOrDefaultAsync(trip => trip.Id == tripId);
             
             return tripEntity;
@@ -76,6 +68,10 @@ namespace MVP.DataAccess.Repositories
         {
             var trips = await _context.Trips
                 .Where(trip => trip.UserTrips.Any(userTrip => userTrip.UserId == userId))
+                .Include(trip => trip.ToOffice)
+                    .ThenInclude(office => office.Location)
+                .Include(trip => trip.FromOffice)
+                    .ThenInclude(office => office.Location)
                 .ToListAsync();
 
             return trips;
@@ -117,6 +113,26 @@ namespace MVP.DataAccess.Repositories
         {
             _context.Trips.Remove(trip);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<FlightInformation>> GetTripsFlightInformationsByTripIdAsync(int tripId)
+        {
+            var informations = await _context.Trips
+                .Where(trip => trip.Id == tripId)
+                .SelectMany(trip => trip.FlightInformations)
+                .ToListAsync();
+
+            return informations;
+        }
+
+        public async Task<IEnumerable<RentalCarInformation>> GetTripsRentalCarInformationsByTripIdAsync(int tripId)
+        {
+            var informations = await _context.Trips
+                .Where(trip => trip.Id == tripId)
+                .SelectMany(trip => trip.RentalCarInformations)
+                .ToListAsync();
+
+            return informations;
         }
     }
 }

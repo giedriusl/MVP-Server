@@ -342,6 +342,28 @@ namespace MVP.BusinessLogic.Services
             await _tripRepository.UpdateTripAsync(trip);
         }
 
+        public async Task<IEnumerable<UserDto>> GetTripUsers(int tripId)
+        {
+            var userIds = await _userTripRepository.GetTripUserIdsByTripIdAsync(tripId);
+            var users = _userManager.Users.Where(user => userIds.Contains(user.Id)).ToList();
+
+            return users.Select(UserDto.ToDto);
+        }
+
+        public async Task<IEnumerable<FlightInformationDto>> GetTripsFlightInformationsAsync(int tripId)
+        {
+            var informations = await _tripRepository.GetTripsFlightInformationsByTripIdAsync(tripId);
+
+            return informations.Select(FlightInformationDto.ToDto);
+        }
+
+        public async Task<IEnumerable<RentalCarInformationDto>> GetTripsRentalCarInformationsAsync(int tripId)
+        {
+            var informations = await _tripRepository.GetTripsRentalCarInformationsByTripIdAsync(tripId);
+
+            return informations.Select(RentalCarInformationDto.ToDto);
+        }
+
         private void ValidateCreateTrip(CreateTripDto createTripDto)
         {
             if (createTripDto.FromOfficeId == createTripDto.ToOfficeId)
