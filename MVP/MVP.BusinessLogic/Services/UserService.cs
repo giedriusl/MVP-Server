@@ -148,7 +148,7 @@ namespace MVP.BusinessLogic.Services
             await _calendarRepository.AddCalendarsAsync(validCalendars);
         }
 
-        public async Task<UserDto> GetUserByEmail(string email)
+        public async Task<CreateUserDto> GetUserByEmail(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
