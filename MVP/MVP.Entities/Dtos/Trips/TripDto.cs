@@ -36,6 +36,7 @@ namespace MVP.Entities.Dtos.Trips
         {
             return new TripDto
             {
+                Id = trip.Id,
                 Title = trip.Title,
                 Start = trip.Start,
                 End = trip.End,
