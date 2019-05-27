@@ -262,10 +262,10 @@ namespace MVP.BusinessLogic.Services
             await _tripRepository.UpdateTripAsync(trip);
         }
 
-        public async Task UpdateTripAsync(UpdateTripDto updateTripDto)
+        public async Task UpdateTripAsync(int id, CreateTripDto updateTripDto)
         {
-            ValidateCreateTrip((CreateTripDto)updateTripDto);
-            var trip = await _tripRepository.GetTripByIdAsync(updateTripDto.Id);
+            ValidateCreateTrip(updateTripDto);
+            var trip = await _tripRepository.GetTripByIdAsync(id);
 
             if (trip is null)
             {
