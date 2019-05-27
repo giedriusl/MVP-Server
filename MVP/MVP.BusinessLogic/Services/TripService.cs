@@ -262,6 +262,27 @@ namespace MVP.BusinessLogic.Services
             await _tripRepository.UpdateTripAsync(trip);
         }
 
+        public async Task DeleteRentalCarInformationFromTripAsync(int tripId, int rentalCarInformationId)
+        {
+            var trip = await _tripRepository.GetTripByIdWithRentalCarInformationAsync(tripId);
+
+            if (trip is null)
+            {
+                throw  new BusinessLogicException("Trip was not found", "tripNotFound");
+            }
+
+            var rentalCarInformationToDelete = trip.RentalCarInformations
+                .First(rentalCarInformation => rentalCarInformation.Id == rentalCarInformationId);
+
+            if (rentalCarInformationToDelete is null)
+            {
+                throw new BusinessLogicException("Rental car information not found", "rentalCarInfoNotFound");
+            }
+
+            trip.RentalCarInformations.Remove(rentalCarInformationToDelete);
+            await _tripRepository.UpdateTripAsync(trip);
+        }
+
         public async Task UpdateTripAsync(int id, CreateTripDto updateTripDto)
         {
             ValidateCreateTrip(updateTripDto);

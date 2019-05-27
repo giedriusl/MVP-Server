@@ -255,6 +255,28 @@ namespace MVP.Controllers
             }
         }
 
+        [HttpDelete("api/[controller]/{tripId}/DeleteRentalCar/{rentalCarInformationId}")]
+        [Authorize(Policy = "RequireOrganizerRole")]
+        public async Task<IActionResult> DeleteRentalCarInformationFromTrip(int tripId, int rentalCarInformationId)
+        {
+            try
+            {
+                await _tripService.DeleteRentalCarInformationFromTripAsync(tripId, rentalCarInformationId);
+
+                return Ok();
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid rental rental car information from trip request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
         [HttpGet("api/[controller]/TripStatus")]
         [Authorize(Policy = "AllowAllRoles")]
         public IActionResult GetTripStatus()
