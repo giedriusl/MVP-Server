@@ -20,18 +20,21 @@ namespace MVP.BusinessLogic.Services
         private readonly ILocationRepository _locationRepository;
         private readonly IOfficeRepository _officeRepository;
         private readonly IFileReader _fileReader;
+        private readonly ITripRepository _tripRepository;
 
         public ApartmentService(IApartmentRepository apartmentRepository,
             ICalendarRepository calendarRepository,
             ILocationRepository locationRepository,
             IOfficeRepository officeRepository,
-            IFileReader fileReader)
+            IFileReader fileReader, 
+            ITripRepository tripRepository)
         {
             _apartmentRepository = apartmentRepository;
             _calendarRepository = calendarRepository;
             _locationRepository = locationRepository;
             _officeRepository = officeRepository;
             _fileReader = fileReader;
+            _tripRepository = tripRepository;
         }
 
         public async Task<CreateApartmentDto> CreateApartmentAsync(CreateApartmentDto createApartmentDto)
@@ -133,9 +136,15 @@ namespace MVP.BusinessLogic.Services
             await _calendarRepository.AddCalendarsAsync(calendars.ToList());
         }
 
-        public async Task<IEnumerable<ApartmentRoomDto>> GetAvailableRooms(int apartmentId, DateTimeOffset start, DateTimeOffset end)
+        public async Task<IEnumerable<ApartmentRoomDto>> GetAvailableRooms(int apartmentId, int tripId)
         {
-            var rooms = await _apartmentRepository.GetRoomsByApartmentIdAndDateAsync(apartmentId, start, end);
+            var trip = await _tripRepository.GetTripByIdAsync(tripId);
+            if (trip is null)
+            {
+                throw new BusinessLogicException("Trip was not found", "tripNotFound");
+            }
+
+            var rooms = await _apartmentRepository.GetRoomsByApartmentIdAndDateAsync(apartmentId, trip.Start, trip.End);
             return rooms.Select(ApartmentRoomDto.ToDto);
         }
     }

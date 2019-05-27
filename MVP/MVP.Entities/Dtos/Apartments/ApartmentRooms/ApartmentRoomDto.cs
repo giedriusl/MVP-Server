@@ -1,4 +1,7 @@
-﻿using MVP.Entities.Entities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using MVP.Entities.Dtos.Calendars;
+using MVP.Entities.Entities;
 
 namespace MVP.Entities.Dtos.Apartments.ApartmentRooms
 {

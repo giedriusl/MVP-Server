@@ -269,8 +269,8 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpGet("api/[controller]/{apartmentId}/AvailableRooms")]
-        public async Task<IActionResult> GetAvailableRooms(int apartmentId, DateTimeOffset start, DateTimeOffset end)
+        [HttpGet("api/[controller]/{apartmentId}/AvailableRooms/{tripId}")]
+        public async Task<IActionResult> GetAvailableRooms(int apartmentId, int tripId)
         {
             try
             {
@@ -279,9 +279,8 @@ namespace MVP.Controllers
                     return BadRequest("Model is not valid");
                 }
 
-                var rooms = await _apartmentService.GetAvailableRooms(apartmentId, start, end);
+                var rooms = await _apartmentService.GetAvailableRooms(apartmentId, tripId);
                 return Ok(rooms);
-
             }
             catch (BusinessLogicException ex)
             {
