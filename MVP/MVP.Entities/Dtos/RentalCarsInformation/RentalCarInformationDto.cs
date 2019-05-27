@@ -11,6 +11,8 @@ namespace MVP.Entities.Dtos.RentalCarsInformation
         public double Cost { get; set; }
         public DateTimeOffset Start { get; set; }
         public DateTimeOffset End { get; set; }
+        public string PickupAddress { get; set; }
+        public string DropOffAddress { get; set; }
 
         [Required]
         public RentalCarStatus Status { get; set; }
@@ -24,7 +26,9 @@ namespace MVP.Entities.Dtos.RentalCarsInformation
                 Cost = rentalCarInformation.Cost,
                 End = rentalCarInformation.End,
                 Start = rentalCarInformation.Start,
-                Status = rentalCarInformation.Status
+                Status = rentalCarInformation.Status,
+                PickupAddress = rentalCarInformation.PickupAddress,
+                DropOffAddress = rentalCarInformation.DropOffAddress
             };
         }
 
@@ -35,7 +39,9 @@ namespace MVP.Entities.Dtos.RentalCarsInformation
                 Cost = rentalCarInformationDto.Cost,
                 End = rentalCarInformationDto.End,
                 Start = rentalCarInformationDto.Start,
-                Status = rentalCarInformationDto.Status
+                Status = rentalCarInformationDto.Status,
+                PickupAddress = rentalCarInformationDto.PickupAddress,
+                DropOffAddress = rentalCarInformationDto.DropOffAddress
             };
         }
     }
