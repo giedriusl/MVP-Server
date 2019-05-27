@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using Microsoft.AspNetCore.Http;
 using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Dtos.Apartments;
@@ -130,6 +131,12 @@ namespace MVP.BusinessLogic.Services
         {
             var calendars = await _fileReader.ReadApartmentCalendarFileAsync(apartmentId, file);
             await _calendarRepository.AddCalendarsAsync(calendars.ToList());
+        }
+
+        public async Task<IEnumerable<ApartmentRoomDto>> GetAvailableRooms(int apartmentId, DateTimeOffset start, DateTimeOffset end)
+        {
+            var rooms = await _apartmentRepository.GetRoomsByApartmentIdAndDateAsync(apartmentId, start, end);
+            return rooms.Select(ApartmentRoomDto.ToDto);
         }
     }
 }

@@ -98,7 +98,8 @@ namespace MVP.DataAccess.Repositories
             var rooms = await _context.Apartments
                 .Where(a => a.Id == apartmentId)
                 .SelectMany(a => a.Rooms)
-                .Where(r => r.Calendars.Any(c => start < c.End && c.Start < end)).ToListAsync();
+                .Where(r => r.Calendars.Any(c => start < c.End && c.Start < end))
+                .ToListAsync();
 
             return rooms;
         }

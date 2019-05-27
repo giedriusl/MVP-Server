@@ -267,5 +267,32 @@ namespace MVP.Controllers
                 return StatusCode(500, "common.internal");
             }
         }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpGet("api/[controller]/{apartmentId}/AvailableRooms")]
+        public async Task<IActionResult> GetAvailableRooms(int apartmentId, DateTimeOffset start, DateTimeOffset end)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
+                var rooms = await _apartmentService.GetAvailableRooms(apartmentId, start, end);
+                return Ok(rooms);
+
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment rooms get request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
     }
 }
