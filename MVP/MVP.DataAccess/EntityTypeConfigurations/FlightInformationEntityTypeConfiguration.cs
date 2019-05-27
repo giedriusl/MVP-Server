@@ -15,6 +15,8 @@ namespace MVP.DataAccess.EntityTypeConfigurations
             builder.Property(x => x.Status);
             builder.Property(x => x.TripId).IsRequired();
             builder.Property(x => x.Cost);
+            builder.Property(x => x.FromAirport).IsRequired();
+            builder.Property(x => x.ToAirport).IsRequired();
         }
     }
 }
