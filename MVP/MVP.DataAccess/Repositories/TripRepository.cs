@@ -41,8 +41,10 @@ namespace MVP.DataAccess.Repositories
                     .ThenInclude(fromOffice => fromOffice.Location)
                 .Include(trip => trip.ToOffice)
                     .ThenInclude(toOffice => toOffice.Location)
+                .Include(trip => trip.UserTrips)
+                    .ThenInclude(userTrips => userTrips.User)
                 .FirstOrDefaultAsync(trip => trip.Id == tripId);
-            
+
             return tripEntity;
         }
 
@@ -80,7 +82,7 @@ namespace MVP.DataAccess.Repositories
         public async Task<IEnumerable<Trip>> GetSimilarTrips(Trip trip)
         {
             var trips = await _context.Trips
-                .Where(t => t.ToOfficeId == trip.ToOfficeId 
+                .Where(t => t.ToOfficeId == trip.ToOfficeId
                                 && t.FromOfficeId == trip.FromOfficeId
                                 && t.Start <= trip.Start.AddDays(1)
                                 && t.Start >= trip.Start.AddDays(-1)
