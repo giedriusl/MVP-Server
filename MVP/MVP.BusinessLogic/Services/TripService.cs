@@ -229,7 +229,7 @@ namespace MVP.BusinessLogic.Services
 
         public async Task DeleteFlightInformationFromTripAsync(int tripId, int flightInformationId)
         {
-            var trip = await _tripRepository.GetTripByIdAsync(tripId);
+            var trip = await _tripRepository.GetTripByIdWithFlightInformationAsync(tripId);
 
             if (trip is null)
             {
@@ -289,7 +289,7 @@ namespace MVP.BusinessLogic.Services
         {
             try
             {
-                var trip = await _tripRepository.GetTripByIdAsync(tripId);
+                var trip = await _tripRepository.GetTripByIdWithRentalCarInformationAsync(tripId);
 
                 if (trip is null)
                 {
