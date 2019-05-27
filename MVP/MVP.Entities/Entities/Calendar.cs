@@ -9,7 +9,7 @@ namespace MVP.Entities.Entities
         public DateTimeOffset End { get; set; }
         public string UserId { get; set; }
         public virtual User User { get; set; }
-        public int ApartmentRoomId { get; set; }
+        public int? ApartmentRoomId { get; set; }
         public virtual ApartmentRoom ApartmentRoom { get; set; }
     }
 }
