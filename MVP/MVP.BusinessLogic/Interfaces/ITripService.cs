@@ -3,6 +3,7 @@ using MVP.Entities.Dtos.RentalCarsInformation;
 using MVP.Entities.Dtos.Trips;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 
 namespace MVP.BusinessLogic.Interfaces
 {
@@ -28,5 +29,7 @@ namespace MVP.BusinessLogic.Interfaces
         IEnumerable<TripStatusDto> GetTripStatuses();
         IEnumerable<RentalCarStatusDto> GetRentalCarStatuses();
         IEnumerable<FlightInformationStatusDto> GetFlightInformationStatuses();
+
+        Task AddUsersToRooms(UserToRoomDto userToRoom);
     }
 }

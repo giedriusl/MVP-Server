@@ -12,26 +12,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 
 namespace MVP.BusinessLogic.Services
 {
     public class TripService : ITripService
     {
         private readonly ITripRepository _tripRepository;
+        private readonly IApartmentRepository _apartmentRepository;
         private readonly IOfficeRepository _officeRepository;
         private readonly IUserTripRepository _userTripRepository;
+        private readonly ICalendarRepository _calendarRepository;
         private readonly UserManager<User> _userManager;
 
 
         public TripService(ITripRepository tripRepository,
             IOfficeRepository officeRepository,
             UserManager<User> userManager,
-            IUserTripRepository userTripRepository)
+            IUserTripRepository userTripRepository, 
+            IApartmentRepository apartmentRepository, 
+            ICalendarRepository calendarRepository)
         {
             _tripRepository = tripRepository;
             _officeRepository = officeRepository;
             _userManager = userManager;
             _userTripRepository = userTripRepository;
+            _apartmentRepository = apartmentRepository;
+            _calendarRepository = calendarRepository;
         }
 
         public async Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto)
@@ -340,6 +347,35 @@ namespace MVP.BusinessLogic.Services
 
             flightInformationToUpdate.UpdateFlightInformation(updateFlightInformationDto);
             await _tripRepository.UpdateTripAsync(trip);
+        }
+
+        public async Task AddUsersToRooms(UserToRoomDto userToRoom)
+        {
+            var apartment = _apartmentRepository.GetApartmentByIdAsync(userToRoom.ApartmentId);
+            if (apartment is null)
+            {
+                throw new BusinessLogicException("Apartment not found", "apartmentNotFound");
+            }
+
+            var isRoomAvailable = await _apartmentRepository.IsRoomAvailable(userToRoom.ApartmentId, userToRoom.ApartmentRoomId, userToRoom.Start, userToRoom.End);
+            if (!isRoomAvailable)
+            {
+                throw new BusinessLogicException("This room is not available at given time period.", "roomNotAvailable");
+            }
+
+            var user = _userManager.FindByIdAsync(userToRoom.UserId);
+            if (user is null)
+            {
+                throw new BusinessLogicException("User not found", "userNotFound");
+            }
+
+            await _calendarRepository.AddCalendarAsync(new Calendar
+            {
+                ApartmentRoomId = userToRoom.ApartmentRoomId,
+                UserId = userToRoom.UserId,
+                Start = userToRoom.Start,
+                End = userToRoom.End
+            });
         }
 
         private void ValidateCreateTrip(CreateTripDto createTripDto)

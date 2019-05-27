@@ -9,6 +9,7 @@ using MVP.Entities.Exceptions;
 using MVP.Filters;
 using System;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 
 namespace MVP.Controllers
 {
@@ -367,6 +368,34 @@ namespace MVP.Controllers
             catch (Exception exception)
             {
                 _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpPost("api/[controller]/AddUsersToRooms")]
+        public async Task<IActionResult> AddUsersToRooms([FromBody] UserToRoomDto userToRoom)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
+                await _tripService.AddUsersToRooms(userToRoom);
+
+                return Ok();
+
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Could not add users to rooms:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
                 return StatusCode(500, "common.internal");
             }
         }
