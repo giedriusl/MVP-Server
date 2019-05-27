@@ -13,6 +13,8 @@ namespace MVP.Entities.Entities
         public DateTimeOffset Start{ get; set; }
         public DateTimeOffset End { get; set; }
         public FlightInformationStatus Status{ get ; set; }
+        public string FromAirport { get; set; }
+        public string ToAirport { get; set; }
 
         public void UpdateFlightInformation(UpdateFlightInformationDto updateFlightInformationDto)
         {
@@ -20,6 +22,8 @@ namespace MVP.Entities.Entities
             Start = updateFlightInformationDto.Start;
             End = updateFlightInformationDto.End;
             Status = updateFlightInformationDto.Status;
+            FromAirport = updateFlightInformationDto.FromAirport;
+            ToAirport = updateFlightInformationDto.ToAirport;
         }
     }
 }

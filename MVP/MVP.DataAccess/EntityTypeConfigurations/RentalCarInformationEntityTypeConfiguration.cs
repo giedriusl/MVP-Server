@@ -15,6 +15,8 @@ namespace MVP.DataAccess.EntityTypeConfigurations
             builder.Property(x => x.Status);
             builder.Property(x => x.TripId).IsRequired();
             builder.Property(x => x.Cost);
+            builder.Property(x => x.PickupAddress).IsRequired();
+            builder.Property(x => x.DropOffAddress).IsRequired();
         }
     }
 }

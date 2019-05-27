@@ -13,6 +13,8 @@ namespace MVP.Entities.Entities
         public DateTimeOffset Start { get; set; }
         public DateTimeOffset End { get; set; }
         public RentalCarStatus Status{ get; set; }
+        public string PickupAddress { get; set; }
+        public string DropOffAddress { get; set; }
 
         public void UpdateRentalCarInformation(UpdateRentalCarInformationDto updateRentalCarInformationDto)
         {
@@ -20,6 +22,8 @@ namespace MVP.Entities.Entities
             Start = updateRentalCarInformationDto.Start;
             End = updateRentalCarInformationDto.End;
             Status = updateRentalCarInformationDto.Status;
+            PickupAddress = updateRentalCarInformationDto.PickupAddress;
+            DropOffAddress = updateRentalCarInformationDto.DropOffAddress;
         }
     }
 }
