@@ -4,14 +4,16 @@ using MVP.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MVP.DataAccess.Migrations
 {
     [DbContext(typeof(MvpContext))]
-    partial class MvpContextModelSnapshot : ModelSnapshot
+    [Migration("20190527183056_UpdateRentalCarInfoFlightInfoEntities")]
+    partial class UpdateRentalCarInfoFlightInfoEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -389,8 +391,6 @@ namespace MVP.DataAccess.Migrations
                     b.Property<string>("UserId");
 
                     b.Property<int>("TripId");
-
-                    b.Property<bool>("Confirmed");
 
                     b.HasKey("UserId", "TripId");
 

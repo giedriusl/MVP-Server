@@ -2,8 +2,7 @@
 {
     public enum RentalCarStatus
     {
-        NotRequired = 0,
-        Required = 1,
-        Booked = 2
+        Required = 0,
+        Booked = 1
     }
 }

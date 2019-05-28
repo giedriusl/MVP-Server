@@ -28,14 +28,22 @@ namespace MVP.Entities.Dtos.Trips
         public List<RentalCarInformationDto> RentalCarInformations { get; set; } = new List<RentalCarInformationDto>();
 
 
+        public string FromOfficeName { get; set; }
+        public string ToOfficeName { get; set; }
+        public string StatusName { get; set; }
+
         public static TripDto ToDto(Trip trip)
         {
             return new TripDto
             {
+                Id = trip.Id,
                 Title = trip.Title,
                 Start = trip.Start,
                 End = trip.End,
-                TripStatus = trip.TripStatus
+                TripStatus = trip.TripStatus,
+                FromOfficeName = trip.FromOffice.Name,
+                ToOfficeName = trip.ToOffice.Name,
+                StatusName = trip.TripStatus.ToString()
             };
         }
     }

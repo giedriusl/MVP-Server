@@ -11,9 +11,12 @@ namespace MVP.Entities.Dtos.FlightsInformation
         public double Cost { get; set; }
         public DateTimeOffset Start { get; set; }
         public DateTimeOffset End { get; set; }
+        public string FromAirport { get; set; }
+        public string ToAirport { get; set; }
 
         [Required]
         public FlightInformationStatus Status { get; set; }
+        public string StatusName { get; set; }
 
 
         public static FlightInformationDto ToDto(FlightInformation flightInformation)
@@ -24,7 +27,10 @@ namespace MVP.Entities.Dtos.FlightsInformation
                 Cost = flightInformation.Cost,
                 End = flightInformation.End,
                 Start = flightInformation.Start,
-                Status = flightInformation.Status
+                StatusName = flightInformation.Status.ToString(),
+                Status = flightInformation.Status,
+                FromAirport = flightInformation.FromAirport,
+                ToAirport = flightInformation.ToAirport
             };
         }
 
@@ -35,7 +41,9 @@ namespace MVP.Entities.Dtos.FlightsInformation
                 Cost = createFlightInformationDto.Cost,
                 End = createFlightInformationDto.End,
                 Start = createFlightInformationDto.Start,
-                Status = createFlightInformationDto.Status
+                Status = createFlightInformationDto.Status,
+                FromAirport = createFlightInformationDto.FromAirport,
+                ToAirport = createFlightInformationDto.ToAirport
             };
         }
     }

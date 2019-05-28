@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Entities;
+using MVP.Entities.Enums;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +27,10 @@ namespace MVP.DataAccess.Repositories
 
         public async Task<IEnumerable<Trip>> GetAllTripsAsync()
         {
-            var trips = await _context.Trips.ToListAsync();
+            var trips = await _context.Trips
+                .Include(t => t.FromOffice)
+                .Include(t => t.ToOffice)
+                .ToListAsync();
 
             return trips;
         }
@@ -34,20 +38,14 @@ namespace MVP.DataAccess.Repositories
         public async Task<Trip> GetTripByIdAsync(int tripId)
         {
             var tripEntity = await _context.Trips
-                .Include(trip => trip.FlightInformations)
-                .Include(trip => trip.RentalCarInformations)
                 .Include(trip => trip.FromOffice)
                     .ThenInclude(fromOffice => fromOffice.Location)
-                .Include(trip => trip.FromOffice)
-                    .ThenInclude(fromOffice => fromOffice.Apartments)
                 .Include(trip => trip.ToOffice)
                     .ThenInclude(toOffice => toOffice.Location)
-                .Include(trip => trip.ToOffice)
-                    .ThenInclude(toOffice => toOffice.Apartments)
                 .Include(trip => trip.UserTrips)
                     .ThenInclude(userTrips => userTrips.User)
                 .FirstOrDefaultAsync(trip => trip.Id == tripId);
-            
+
             return tripEntity;
         }
 
@@ -73,6 +71,10 @@ namespace MVP.DataAccess.Repositories
         {
             var trips = await _context.Trips
                 .Where(trip => trip.UserTrips.Any(userTrip => userTrip.UserId == userId))
+                .Include(trip => trip.ToOffice)
+                    .ThenInclude(office => office.Location)
+                .Include(trip => trip.FromOffice)
+                    .ThenInclude(office => office.Location)
                 .ToListAsync();
 
             return trips;
@@ -81,13 +83,15 @@ namespace MVP.DataAccess.Repositories
         public async Task<IEnumerable<Trip>> GetSimilarTrips(Trip trip)
         {
             var trips = await _context.Trips
-                .Where(t => t.ToOfficeId == trip.ToOfficeId 
+                .Where(t => t.ToOfficeId == trip.ToOfficeId
                                 && t.FromOfficeId == trip.FromOfficeId
                                 && t.Start <= trip.Start.AddDays(1)
                                 && t.Start >= trip.Start.AddDays(-1)
                                 && t.End <= trip.End.AddDays(1)
                                 && t.End >= trip.End.AddDays(-1)
-                                && t.Id != trip.Id)
+                                && t.Id != trip.Id
+                                && t.TripStatus != TripStatus.Completed
+                                && t.TripStatus != TripStatus.InProgress)
                 .ToListAsync();
 
             return trips;
@@ -114,6 +118,36 @@ namespace MVP.DataAccess.Repositories
         {
             _context.Trips.Remove(trip);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<FlightInformation>> GetTripsFlightInformationsByTripIdAsync(int tripId)
+        {
+            var informations = await _context.Trips
+                .Where(trip => trip.Id == tripId)
+                .SelectMany(trip => trip.FlightInformations)
+                .ToListAsync();
+
+            return informations;
+        }
+
+        public async Task<IEnumerable<RentalCarInformation>> GetTripsRentalCarInformationsByTripIdAsync(int tripId)
+        {
+            var informations = await _context.Trips
+                .Where(trip => trip.Id == tripId)
+                .SelectMany(trip => trip.RentalCarInformations)
+                .ToListAsync();
+
+            return informations;
+        }
+
+        public async Task<IEnumerable<Trip>> GetMergableTrips()
+        {
+            var trips = await _context.Trips
+                .Where(trip => trip.TripStatus != TripStatus.InProgress
+                    && trip.TripStatus != TripStatus.Completed)
+                .ToListAsync();
+
+            return trips;
         }
     }
 }

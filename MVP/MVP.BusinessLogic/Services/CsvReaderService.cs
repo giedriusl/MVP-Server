@@ -3,13 +3,13 @@ using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Dtos.Users;
 using MVP.Entities.Entities;
+using MVP.Entities.Enums;
 using MVP.Entities.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using MVP.Entities.Enums;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -37,8 +37,10 @@ namespace MVP.BusinessLogic.Services
             {
                 var data = await ReadData(file);
                 var roomNumbers = new List<int>();
-                var rooms = await _apartmentRepository.GetApartmentRoomsByNumberAsync(apartmentId, roomNumbers);
                 data.ForEach(l => roomNumbers.Add(Int32.Parse(l[2])));
+
+                var rooms = await _apartmentRepository.GetApartmentRoomsByNumberAsync(apartmentId, roomNumbers);
+
                 var calendars = new List<Calendar>();
 
                 if (rooms.Count == 0)
@@ -63,9 +65,9 @@ namespace MVP.BusinessLogic.Services
 
                 return calendars;
             }
-            catch (Exception ex)
+            catch
             {
-                throw new FileReaderException(ex, $"Exception while reading {file.FileName} file");
+                throw new FileReaderException($"Exception while reading {file.FileName} file", "invalidFile");
             }
 
         }
@@ -89,9 +91,9 @@ namespace MVP.BusinessLogic.Services
 
                 return users;
             }
-            catch (Exception ex)
+            catch
             {
-                throw new FileReaderException(ex, $"Exception while reading {file.FileName} file");
+                throw new FileReaderException($"Exception while reading {file.FileName} file", "invalidFile");
             }
 
         }
@@ -115,9 +117,9 @@ namespace MVP.BusinessLogic.Services
 
                 return calendars;
             }
-            catch (Exception ex)
+            catch
             {
-                throw new FileReaderException(ex, $"Exception while reading {file.FileName} file");
+                throw new FileReaderException( $"Exception while reading {file.FileName} file", "invalidFile");
             }
         }
 
@@ -142,9 +144,9 @@ namespace MVP.BusinessLogic.Services
 
                 return result;
             }
-            catch (Exception ex)
+            catch
             {
-                throw new FileReaderException(ex, $"Exception while reading {file.FileName} file");
+                throw new FileReaderException($"Exception while reading {file.FileName} file", "invalidFile");
             }
         }
     }
