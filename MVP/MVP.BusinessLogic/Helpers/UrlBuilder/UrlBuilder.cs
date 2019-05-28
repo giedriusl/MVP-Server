@@ -18,5 +18,13 @@ namespace MVP.BusinessLogic.Helpers.UrlBuilder
 
             return urlWithToken;
         }
+
+        public string BuildTripConfirmationLink(int tripId)
+        {
+            var confirmationUrl = _configuration["Urls:TripConfirmationUrl"];
+            var urlWithId = confirmationUrl + $"/{tripId}";
+
+            return urlWithId;
+        }
     }
 }

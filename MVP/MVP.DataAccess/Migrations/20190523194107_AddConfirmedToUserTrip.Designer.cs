@@ -4,14 +4,16 @@ using MVP.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MVP.DataAccess.Migrations
 {
     [DbContext(typeof(MvpContext))]
-    partial class MvpContextModelSnapshot : ModelSnapshot
+    [Migration("20190523194107_AddConfirmedToUserTrip")]
+    partial class AddConfirmedToUserTrip
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -208,15 +210,9 @@ namespace MVP.DataAccess.Migrations
 
                     b.Property<DateTimeOffset>("End");
 
-                    b.Property<string>("FromAirport")
-                        .IsRequired();
-
                     b.Property<DateTimeOffset>("Start");
 
                     b.Property<int>("Status");
-
-                    b.Property<string>("ToAirport")
-                        .IsRequired();
 
                     b.Property<int>("TripId");
 
@@ -276,13 +272,7 @@ namespace MVP.DataAccess.Migrations
 
                     b.Property<double>("Cost");
 
-                    b.Property<string>("DropOffAddress")
-                        .IsRequired();
-
                     b.Property<DateTimeOffset>("End");
-
-                    b.Property<string>("PickupAddress")
-                        .IsRequired();
 
                     b.Property<DateTimeOffset>("Start");
 

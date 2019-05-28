@@ -35,5 +35,6 @@ namespace MVP.BusinessLogic.Interfaces
         Task<IEnumerable<RentalCarInformationDto>> GetTripsRentalCarInformationsAsync(int tripId);
 
         Task<IEnumerable<CreateTripDto>> GetMergableTrips();
+        Task ConfirmAsync(int tripId, string userEmail);
     }
 }

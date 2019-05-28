@@ -475,5 +475,27 @@ namespace MVP.Controllers
                 return StatusCode(500, "common.internal");
             }
         }
+
+        [Authorize(Policy = "AllowAllRoles")]
+        [HttpPost("api/[controller]/Confirm/{tripId}")]
+        public async Task<IActionResult> Confirm(int tripId)
+        {
+            try
+            {
+                var userEmail = User.Identity.Name;
+                await _tripService.ConfirmAsync(tripId, userEmail);
+                return Ok();
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid trip confirmation.", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
     }
 }

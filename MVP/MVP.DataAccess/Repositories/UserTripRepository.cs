@@ -60,5 +60,11 @@ namespace MVP.DataAccess.Repositories
 
             return userTrips;
         }
+
+        public async Task UpdateUserTripAsync(UserTrip userTrip)
+        {
+            _context.UserTrips.Update(userTrip);
+            await _context.SaveChangesAsync();
+        }
     }
 }
