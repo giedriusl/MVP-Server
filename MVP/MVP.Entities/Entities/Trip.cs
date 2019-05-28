@@ -21,7 +21,7 @@ namespace MVP.Entities.Entities
         public virtual ICollection<UserTrip> UserTrips { get; set; } = new List<UserTrip>();
 
 
-        public void UpdateTrip(UpdateTripDto updateTripDto)
+        public void UpdateTrip(CreateTripDto updateTripDto)
         {
             Title = updateTripDto.Title;
             Start = updateTripDto.Start;

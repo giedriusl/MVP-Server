@@ -3,6 +3,7 @@ using MVP.Entities.Dtos.RentalCarsInformation;
 using MVP.Entities.Dtos.Trips;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.Users;
 using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 
 namespace MVP.BusinessLogic.Interfaces
@@ -16,7 +17,7 @@ namespace MVP.BusinessLogic.Interfaces
         Task UpdateRentalCarInformationForTripAsync(int tripId,
             UpdateRentalCarInformationDto updateRentalCarInformationDto);
         Task DeleteRentalCarInformationFromTripAsync(int tripId, int rentalCarInformationId);
-        Task UpdateTripAsync(UpdateTripDto updateTripDto);
+        Task UpdateTripAsync(int tripId, CreateTripDto updateTripDto);
         Task DeleteFlightInformationFromTripAsync(int tripId, int flightInformationId);
         Task UpdateFlightInformationForTripAsync(int tripId, UpdateFlightInformationDto updateFlightInformationDto);
 
@@ -30,6 +31,12 @@ namespace MVP.BusinessLogic.Interfaces
         IEnumerable<TripStatusDto> GetTripStatuses();
         IEnumerable<RentalCarStatusDto> GetRentalCarStatuses();
         IEnumerable<FlightInformationStatusDto> GetFlightInformationStatuses();
+        Task<IEnumerable<UserDto>> GetTripUsers(int tripId);
+        Task<IEnumerable<FlightInformationDto>> GetTripsFlightInformationsAsync(int tripId);
+        Task<IEnumerable<RentalCarInformationDto>> GetTripsRentalCarInformationsAsync(int tripId);
+
+        Task<IEnumerable<CreateTripDto>> GetMergableTrips();
+        Task ConfirmAsync(int tripId, string userEmail);
 
         Task AddUsersToRooms(UserToRoomDto userToRoom);
     }

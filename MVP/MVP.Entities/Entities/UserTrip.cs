@@ -6,5 +6,6 @@
         public virtual User User { get; set; }
         public int TripId { get; set; }
         public virtual Trip Trip { get; set; }
+        public bool Confirmed { get; set; }
     }
 }

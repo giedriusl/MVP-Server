@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MVP.DataAccess.Repositories
 {
-    public class UserTripRepository :IUserTripRepository
+    public class UserTripRepository : IUserTripRepository
     {
         private readonly MvpContext _context;
 
@@ -51,6 +49,22 @@ namespace MVP.DataAccess.Repositories
                 .ToListAsync();
 
             return userTrips;
+        }
+
+        public async Task<IEnumerable<string>> GetTripUserIdsByTripIdAsync(int tripId)
+        {
+            var userTrips = await _context.UserTrips
+                .Where(userTrip => userTrip.TripId == tripId)
+                .Select(userTrip => userTrip.UserId)
+                .ToListAsync();
+
+            return userTrips;
+        }
+
+        public async Task UpdateUserTripAsync(UserTrip userTrip)
+        {
+            _context.UserTrips.Update(userTrip);
+            await _context.SaveChangesAsync();
         }
     }
 }

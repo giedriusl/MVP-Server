@@ -16,7 +16,7 @@ namespace MVP.Entities.Dtos.RentalCarsInformation
 
         [Required]
         public RentalCarStatus Status { get; set; }
-
+        public string StatusName { get; set; }
 
         public static RentalCarInformationDto ToDto(RentalCarInformation rentalCarInformation)
         {
@@ -27,6 +27,7 @@ namespace MVP.Entities.Dtos.RentalCarsInformation
                 End = rentalCarInformation.End,
                 Start = rentalCarInformation.Start,
                 Status = rentalCarInformation.Status,
+                StatusName = rentalCarInformation.Status.ToString(),
                 PickupAddress = rentalCarInformation.PickupAddress,
                 DropOffAddress = rentalCarInformation.DropOffAddress
             };
