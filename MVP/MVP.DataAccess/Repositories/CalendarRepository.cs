@@ -31,10 +31,12 @@ namespace MVP.DataAccess.Repositories
             return calendar;
         }
 
-        public async Task AddCalendarAsync(Calendar calendar)
+        public async Task<Calendar> AddCalendarAsync(Calendar calendar)
         {
-            _context.Calendars.Add(calendar);
+            var calendarEntity = _context.Calendars.Add(calendar).Entity;
             await _context.SaveChangesAsync();
+
+            return calendarEntity;
         }
     }
 }

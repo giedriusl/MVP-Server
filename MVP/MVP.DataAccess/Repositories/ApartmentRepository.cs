@@ -95,16 +95,6 @@ namespace MVP.DataAccess.Repositories
 
         public async Task<IEnumerable<ApartmentRoom>> GetRoomsByApartmentIdAndDateAsync(int apartmentId, DateTimeOffset start, DateTimeOffset end)
         {
-            //var roomsAndCalendars = await _context.Apartments
-            //    .Where(a => a.Id == apartmentId)
-            //    .SelectMany(a => a.Rooms)
-            //    .Where(r => r.Calendars.Any(c => start > c.End && c.Start > end))
-            //    .Select(r => new
-            //    {
-            //        Room = r,
-            //        Calendars = r.Calendars.Where(c => start > c.End && c.Start > end)
-            //    })
-            //    .ToListAsync();
             var rooms = await _context.Apartments
                 .Where(a => a.Id == apartmentId)
                 .SelectMany(a => a.Rooms)
@@ -112,16 +102,6 @@ namespace MVP.DataAccess.Repositories
                 .ToListAsync();
 
             return rooms;
-            //var roomsWithCalendars = new List<ApartmentRoom>();
-
-            //foreach (var roomAndCalendars in roomsAndCalendars)
-            //{
-            //    var room = roomAndCalendars.Room;
-            //    room.Calendars = roomAndCalendars.Calendars.ToList();
-            //    roomsWithCalendars.Add(room);
-            //}
-
-            //return roomsWithCalendars;
         }
     }
 }

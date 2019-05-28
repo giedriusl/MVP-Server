@@ -28,6 +28,7 @@ namespace MVP.BusinessLogic.Services
         private readonly UserManager<User> _userManager;
         private readonly IEmailManager _emailManager;
         private readonly IUrlBuilder _urlBuilder;
+        private readonly ITripApartmentInfoRepository _tripApartmentInfoRepository;
 
 
         public TripService(ITripRepository tripRepository, 
@@ -37,7 +38,8 @@ namespace MVP.BusinessLogic.Services
             IEmailManager emailManager, 
             IUrlBuilder urlBuilder,
             IApartmentRepository apartmentRepository, 
-            ICalendarRepository calendarRepository)
+            ICalendarRepository calendarRepository, 
+            ITripApartmentInfoRepository tripApartmentInfoRepository)
         {
             _tripRepository = tripRepository;
             _officeRepository = officeRepository;
@@ -47,6 +49,7 @@ namespace MVP.BusinessLogic.Services
             _urlBuilder = urlBuilder;
             _apartmentRepository = apartmentRepository;
             _calendarRepository = calendarRepository;
+            _tripApartmentInfoRepository = tripApartmentInfoRepository;
         }
 
         public async Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto)
@@ -450,7 +453,7 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        public async Task AddUsersToRooms(UserToRoomDto userToRoom)
+        public async Task<TripApartmentInfo> AddUsersToRooms(int tripId, UserToRoomDto userToRoom)
         {
             var apartment = _apartmentRepository.GetApartmentByIdAsync(userToRoom.ApartmentId);
             if (apartment is null)
@@ -470,13 +473,23 @@ namespace MVP.BusinessLogic.Services
                 throw new BusinessLogicException("User not found", "userNotFound");
             }
 
-            await _calendarRepository.AddCalendarAsync(new Calendar
+            var calendar = await _calendarRepository.AddCalendarAsync(new Calendar
             {
                 ApartmentRoomId = userToRoom.ApartmentRoomId,
                 UserId = userToRoom.UserId,
                 Start = userToRoom.Start,
                 End = userToRoom.End
             });
+
+            var tripApartmentInfo = await _tripApartmentInfoRepository.AddTripApartmentInfoAsync(new TripApartmentInfo
+            {
+                ApartmentRoomId = userToRoom.ApartmentRoomId,
+                UserId = userToRoom.UserId,
+                TripId = tripId,
+                CalendarId = calendar.Id
+            });
+
+            return tripApartmentInfo;
         }
 
         private void ValidateCreateTrip(CreateTripDto createTripDto)
