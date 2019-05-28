@@ -10,7 +10,7 @@ namespace MVP.DataAccess.EntityTypeConfigurations
         {
             builder.ToTable(nameof(Calendar));
             builder.HasKey(c => c.Id);
-            builder.Property(c => c.ApartmentRoomId);
+            builder.Property(c => c.ApartmentRoomId).IsRequired(false);
             builder.HasOne(c => c.User)
                 .WithMany(u => u.Calendars)
                 .HasForeignKey(c => c.UserId);
