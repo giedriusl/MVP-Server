@@ -372,12 +372,12 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpPut("api/[controller]/{id}")]
-        public async Task<IActionResult> UpdateTrip(int id, [FromBody] CreateTripDto updateTripDto)
+        [HttpPut("api/[controller]/{tripId}")]
+        public async Task<IActionResult> UpdateTrip(int tripId, [FromBody] CreateTripDto updateTripDto)
         {
             try
             {
-                await _tripService.UpdateTripAsync(id, updateTripDto);
+                await _tripService.UpdateTripAsync(tripId, updateTripDto);
 
                 return Ok();
             }
