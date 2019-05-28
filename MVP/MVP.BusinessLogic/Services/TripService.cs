@@ -362,6 +362,13 @@ namespace MVP.BusinessLogic.Services
             return informations.Select(RentalCarInformationDto.ToDto);
         }
 
+        public async Task<IEnumerable<CreateTripDto>> GetMergableTrips()
+        {
+            var trips = await _tripRepository.GetMergableTrips();
+
+            return trips.Select(CreateTripDto.ToDto);
+        }
+
         private void ValidateCreateTrip(CreateTripDto createTripDto)
         {
             if (createTripDto.FromOfficeId == createTripDto.ToOfficeId)
@@ -439,6 +446,5 @@ namespace MVP.BusinessLogic.Services
                 throw new BusinessLogicException($"One of the trips is in {trip.TripStatus} status so it cannot be merged.", "invalidTripStatus");
             }
         }
-
     }
 }

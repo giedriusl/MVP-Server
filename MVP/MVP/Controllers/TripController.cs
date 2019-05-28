@@ -458,5 +458,22 @@ namespace MVP.Controllers
                 return StatusCode(500, "common.internal");
             }
         }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpGet("api/[controller]/GetMergableTrips")]
+        public async Task<IActionResult> GetMergableTrips()
+        {
+            try
+            {
+                var trips = await _tripService.GetMergableTrips();
+
+                return Ok(trips);
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
     }
 }
