@@ -493,34 +493,6 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        private static IEnumerable<UserDto> RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
-        {
-            var duplicateUsers = users.Where(user => mergedTrip.Users.Select(u => u.Email).Contains(user.Email)).ToList();
-
-            duplicateUsers.ForEach(duplicateUser => users.Remove(duplicateUser));
-
-            return users;
-        }
-
-        private static void ValidateTripsForMerge(Trip baseTrip, Trip additionalTrip)
-        {
-            if (baseTrip is null || additionalTrip is null)
-            {
-                throw new BusinessLogicException("Trip was not found", "tripNotFound");
-            }
-
-            ValidateTripStatus(baseTrip);
-            ValidateTripStatus(additionalTrip);
-        }
-
-        private static void ValidateTripStatus(Trip trip)
-        {
-            if (trip.TripStatus == TripStatus.InProgress || trip.TripStatus == TripStatus.Completed)
-            {
-                throw new BusinessLogicException($"One of the trips is in {trip.TripStatus} status so it cannot be merged.", "invalidTripStatus");
-            }
-        }
-
         private void SendConfirmationEmail(string email, int tripId)
         {
             var url = _urlBuilder.BuildTripConfirmationLink(tripId);
