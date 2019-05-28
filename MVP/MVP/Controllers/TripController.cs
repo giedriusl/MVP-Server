@@ -99,7 +99,7 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireOrganizerRole")]
+        [Authorize(Policy = "AllowAllRoles")]
         [HttpGet("api/[controller]/{tripId}")]
         public async Task<IActionResult> GetTripById(int tripId)
         {
@@ -372,14 +372,80 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpPut("api/[controller]/UpdateTrip")]
-        public async Task<IActionResult> UpdateTrip([FromBody] UpdateTripDto updateTripDto)
+        [HttpPut("api/[controller]/{tripId}")]
+        public async Task<IActionResult> UpdateTrip(int tripId, [FromBody] CreateTripDto updateTripDto)
         {
             try
             {
-                await _tripService.UpdateTripAsync(updateTripDto);
+                await _tripService.UpdateTripAsync(tripId, updateTripDto);
 
                 return Ok();
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid trip update request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "AllowAllRoles")]
+        [HttpGet("api/[controller]/{tripId}/Users")]
+        public async Task<IActionResult> GetTripUsers(int tripId)
+        {
+            try
+            {
+                var users = await _tripService.GetTripUsers(tripId);
+
+                return Ok(users);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid trip update request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "AllowAllRoles")]
+        [HttpGet("api/[controller]/{tripId}/FlightInformations")]
+        public async Task<IActionResult> GetTripsFlightInformations(int tripId)
+        {
+            try
+            {
+                var informations = await _tripService.GetTripsFlightInformationsAsync(tripId);
+
+                return Ok(informations);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid trip update request: ", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "AllowAllRoles")]
+        [HttpGet("api/[controller]/{tripId}/RentalCarInformations")]
+        public async Task<IActionResult> GetTripsRentalCarInformations(int tripId)
+        {
+            try
+            {
+                var informations = await _tripService.GetTripsRentalCarInformationsAsync(tripId);
+
+                return Ok(informations);
             }
             catch (BusinessLogicException exception)
             {

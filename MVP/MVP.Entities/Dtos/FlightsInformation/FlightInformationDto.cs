@@ -16,6 +16,7 @@ namespace MVP.Entities.Dtos.FlightsInformation
 
         [Required]
         public FlightInformationStatus Status { get; set; }
+        public string StatusName { get; set; }
 
 
         public static FlightInformationDto ToDto(FlightInformation flightInformation)
@@ -26,6 +27,7 @@ namespace MVP.Entities.Dtos.FlightsInformation
                 Cost = flightInformation.Cost,
                 End = flightInformation.End,
                 Start = flightInformation.Start,
+                StatusName = flightInformation.Status.ToString(),
                 Status = flightInformation.Status,
                 FromAirport = flightInformation.FromAirport,
                 ToAirport = flightInformation.ToAirport

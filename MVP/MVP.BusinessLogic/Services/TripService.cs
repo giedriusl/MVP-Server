@@ -185,34 +185,6 @@ namespace MVP.BusinessLogic.Services
             return similarTrips.Select(TripViewDto.ToDto);
         }
 
-        private static IEnumerable<UserDto> RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
-        {
-            var duplicateUsers = users.Where(user => mergedTrip.Users.Select(u => u.Email).Contains(user.Email)).ToList();
-
-            duplicateUsers.ForEach(duplicateUser => users.Remove(duplicateUser));
-
-            return users;
-        }
-
-        private static void ValidateTripsForMerge(Trip baseTrip, Trip additionalTrip)
-        {
-            if (baseTrip is null || additionalTrip is null)
-            {
-                throw new BusinessLogicException("Trip was not found", "tripNotFound");
-            }
-
-            ValidateTripStatus(baseTrip);
-            ValidateTripStatus(additionalTrip);
-        }
-
-        private static void ValidateTripStatus(Trip trip)
-        {
-            if (trip.TripStatus == TripStatus.InProgress || trip.TripStatus == TripStatus.Completed)
-            {
-                throw new BusinessLogicException($"One of the trips is in {trip.TripStatus} status so it cannot be merged.", "invalidTripStatus");
-            }
-        }
-
         public async Task AddFlightInformationToTripAsync(int tripId,
             FlightInformationDto flightInformationDto)
         {
@@ -234,6 +206,11 @@ namespace MVP.BusinessLogic.Services
             if (trip is null)
             {
                 throw new BusinessLogicException("Trip does not exist", "tripNotFound");
+            }
+
+            if (trip.FlightInformations.Count == 0)
+            {
+                throw new BusinessLogicException("Specified flight information does not exist", "flightInfoNotFound");
             }
 
             var flightInformationToRemove = trip.FlightInformations
@@ -306,10 +283,10 @@ namespace MVP.BusinessLogic.Services
             await _tripRepository.UpdateTripAsync(trip);
         }
 
-        public async Task UpdateTripAsync(UpdateTripDto updateTripDto)
+        public async Task UpdateTripAsync(int tripId, CreateTripDto updateTripDto)
         {
-            ValidateCreateTrip((CreateTripDto)updateTripDto);
-            var trip = await _tripRepository.GetTripByIdAsync(updateTripDto.Id);
+            ValidateCreateTrip(updateTripDto);
+            var trip = await _tripRepository.GetTripByIdAsync(tripId);
 
             if (trip is null)
             {
@@ -363,6 +340,28 @@ namespace MVP.BusinessLogic.Services
             await _tripRepository.UpdateTripAsync(trip);
         }
 
+        public async Task<IEnumerable<UserDto>> GetTripUsers(int tripId)
+        {
+            var userIds = await _userTripRepository.GetTripUserIdsByTripIdAsync(tripId);
+            var users = _userManager.Users.Where(user => userIds.Contains(user.Id)).ToList();
+
+            return users.Select(UserDto.ToDto);
+        }
+
+        public async Task<IEnumerable<FlightInformationDto>> GetTripsFlightInformationsAsync(int tripId)
+        {
+            var informations = await _tripRepository.GetTripsFlightInformationsByTripIdAsync(tripId);
+
+            return informations.Select(FlightInformationDto.ToDto);
+        }
+
+        public async Task<IEnumerable<RentalCarInformationDto>> GetTripsRentalCarInformationsAsync(int tripId)
+        {
+            var informations = await _tripRepository.GetTripsRentalCarInformationsByTripIdAsync(tripId);
+
+            return informations.Select(RentalCarInformationDto.ToDto);
+        }
+
         private void ValidateCreateTrip(CreateTripDto createTripDto)
         {
             if (createTripDto.FromOfficeId == createTripDto.ToOfficeId)
@@ -412,5 +411,34 @@ namespace MVP.BusinessLogic.Services
                 throw new BusinessLogicException($"Rental car information {rentalCarInformationDto.Id} start date cannot be later than end date!", "invalidDateRage");
             }
         }
+
+        private static IEnumerable<UserDto> RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
+        {
+            var duplicateUsers = users.Where(user => mergedTrip.Users.Select(u => u.Email).Contains(user.Email)).ToList();
+
+            duplicateUsers.ForEach(duplicateUser => users.Remove(duplicateUser));
+
+            return users;
+        }
+
+        private static void ValidateTripsForMerge(Trip baseTrip, Trip additionalTrip)
+        {
+            if (baseTrip is null || additionalTrip is null)
+            {
+                throw new BusinessLogicException("Trip was not found", "tripNotFound");
+            }
+
+            ValidateTripStatus(baseTrip);
+            ValidateTripStatus(additionalTrip);
+        }
+
+        private static void ValidateTripStatus(Trip trip)
+        {
+            if (trip.TripStatus == TripStatus.InProgress || trip.TripStatus == TripStatus.Completed)
+            {
+                throw new BusinessLogicException($"One of the trips is in {trip.TripStatus} status so it cannot be merged.", "invalidTripStatus");
+            }
+        }
+
     }
 }
