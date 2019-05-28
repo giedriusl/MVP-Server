@@ -32,5 +32,7 @@ namespace MVP.BusinessLogic.Interfaces
         Task<IEnumerable<UserDto>> GetTripUsers(int tripId);
         Task<IEnumerable<FlightInformationDto>> GetTripsFlightInformationsAsync(int tripId);
         Task<IEnumerable<RentalCarInformationDto>> GetTripsRentalCarInformationsAsync(int tripId);
+
+        Task<IEnumerable<CreateTripDto>> GetMergableTrips();
     }
 }

@@ -19,5 +19,6 @@ namespace MVP.DataAccess.Interfaces
         Task<IEnumerable<User>> GetUsersByTripIdAsync(int tripId);
         Task<IEnumerable<FlightInformation>> GetTripsFlightInformationsByTripIdAsync(int tripId);
         Task<IEnumerable<RentalCarInformation>> GetTripsRentalCarInformationsByTripIdAsync(int tripId);
+        Task<IEnumerable<Trip>> GetMergableTrips();
     }
 }

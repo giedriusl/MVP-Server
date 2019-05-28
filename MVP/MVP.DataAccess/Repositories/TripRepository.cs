@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Entities;
+using MVP.Entities.Enums;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -88,7 +89,9 @@ namespace MVP.DataAccess.Repositories
                                 && t.Start >= trip.Start.AddDays(-1)
                                 && t.End <= trip.End.AddDays(1)
                                 && t.End >= trip.End.AddDays(-1)
-                                && t.Id != trip.Id)
+                                && t.Id != trip.Id
+                                && t.TripStatus != TripStatus.Completed
+                                && t.TripStatus != TripStatus.InProgress)
                 .ToListAsync();
 
             return trips;
@@ -135,6 +138,16 @@ namespace MVP.DataAccess.Repositories
                 .ToListAsync();
 
             return informations;
+        }
+
+        public async Task<IEnumerable<Trip>> GetMergableTrips()
+        {
+            var trips = await _context.Trips
+                .Where(trip => trip.TripStatus != TripStatus.InProgress
+                    && trip.TripStatus != TripStatus.Completed)
+                .ToListAsync();
+
+            return trips;
         }
     }
 }
