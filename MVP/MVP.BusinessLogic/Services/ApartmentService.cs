@@ -131,5 +131,20 @@ namespace MVP.BusinessLogic.Services
             var calendars = await _fileReader.ReadApartmentCalendarFileAsync(apartmentId, file);
             await _calendarRepository.AddCalendarsAsync(calendars.ToList());
         }
+
+        public async Task<IEnumerable<ApartmentViewDto>> GetAllOfficeApartmentsAsync(int officeId)
+        {
+            var office = await _officeRepository.GetOfficeByIdAsync(officeId);
+
+            if (office is null)
+            {
+                throw new BusinessLogicException("Specified office does not exist", "officeNotFound");
+            }
+
+            var apartments = await _apartmentRepository.GetApartmentsByOfficeId(officeId);
+            var apartmentsViewDto = apartments.Select(ApartmentViewDto.ToDto);
+
+            return apartmentsViewDto;
+        }
     }
 }
