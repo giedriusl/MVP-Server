@@ -20,13 +20,17 @@ namespace MVP.Controllers
     public class TripController : ControllerBase
     {
         private readonly ITripService _tripService;
+        private readonly IApartmentService _apartmentService;
         private readonly ILogger<TripController> _logger;
 
 
-        public TripController(ITripService tripService, ILogger<TripController> logger)
+        public TripController(ITripService tripService, 
+            ILogger<TripController> logger, 
+            IApartmentService apartmentService)
         {
             _tripService = tripService;
             _logger = logger;
+            _apartmentService = apartmentService;
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
@@ -518,6 +522,27 @@ namespace MVP.Controllers
             catch (BusinessLogicException ex)
             {
                 _logger.Log(LogLevel.Warning, "Could not add users to rooms:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpDelete("api/[controller]/{tripId}/User/{userId}/Room/{roomId}")]
+        public async Task<IActionResult> RemoveUserFromRoom(int tripId, string userId, int roomId)
+        {
+            try
+            {
+                await _apartmentService.RemoveUserFromRoom(tripId, roomId, userId);
+                return Ok();
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Could not remove user from room:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)

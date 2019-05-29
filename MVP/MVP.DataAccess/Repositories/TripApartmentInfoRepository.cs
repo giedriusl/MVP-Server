@@ -23,15 +23,21 @@ namespace MVP.DataAccess.Repositories
             return tripApartmentInfoEntity;
         }
 
-        public async Task<TripApartmentInfo> GetTripApartmentInfoByTripApartmentRoomAndUser(int tripId, int apartmentRoom, string userId)
+        public async Task<TripApartmentInfo> GetTripApartmentInfoByTripRoomAndUserAsync(int tripId, int roomId, string userId)
         {
             var tripApartmentInfo = await _context.TripApartmentInfos
                 .Include(ta => ta.Calendar)
                 .FirstOrDefaultAsync(ta => ta.TripId == tripId 
-                                           && ta.ApartmentRoomId == apartmentRoom 
+                                           && ta.ApartmentRoomId == roomId 
                                            && ta.UserId == userId);
 
             return tripApartmentInfo;
+        }
+
+        public async Task DeleteAsync(TripApartmentInfo tripApartmentInfo)
+        {
+            _context.TripApartmentInfos.Remove(tripApartmentInfo);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -25,18 +25,24 @@ namespace MVP.DataAccess.Repositories
         public async Task<List<Calendar>> GetCalendarByRoomAndApartmentId(int apartmentId, int roomId)
         {
             var calendar = await _context.Calendars
-                .Where(c => c.Id == roomId)
+                .Where(c => c.Id == roomId && c.ApartmentRoom.ApartmentId == apartmentId)
                 .ToListAsync();
 
             return calendar;
         }
 
-        public async Task<Calendar> AddCalendarAsync(Calendar calendar)
+        public async Task<Calendar> AddAsync(Calendar calendar)
         {
             var calendarEntity = _context.Calendars.Add(calendar).Entity;
             await _context.SaveChangesAsync();
 
             return calendarEntity;
+        }
+
+        public async Task DeleteAsync(Calendar calendar)
+        {
+            _context.Calendars.Remove(calendar);
+            await _context.SaveChangesAsync();
         }
     }
 }

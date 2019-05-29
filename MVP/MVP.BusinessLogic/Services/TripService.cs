@@ -473,7 +473,7 @@ namespace MVP.BusinessLogic.Services
                 throw new BusinessLogicException("User not found", "userNotFound");
             }
 
-            var calendar = await _calendarRepository.AddCalendarAsync(new Calendar
+            var calendar = await _calendarRepository.AddAsync(new Calendar
             {
                 ApartmentRoomId = userToRoom.ApartmentRoomId,
                 UserId = userToRoom.UserId,

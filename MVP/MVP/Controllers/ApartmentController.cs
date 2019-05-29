@@ -293,25 +293,5 @@ namespace MVP.Controllers
                 return StatusCode(500, "common.internal");
             }
         }
-
-        //[Authorize(Policy = "RequireOrganizerRole")]
-        //[HttpDelete("api/[controller]/{apartmentId}/User/{userId}/Room/{roomId}")]
-        //public async Task<IActionResult> RemoveUserFromRoom(int apartmentId, string userId, string roomId)
-        //{
-        //    try
-        //    {
-        //        await _apartmentService.RemoveUserFromRoom();
-        //    }
-        //    catch (BusinessLogicException ex)
-        //    {
-        //        _logger.Log(LogLevel.Warning, "Could not remove user from room:", ex);
-        //        return BadRequest($"apartment.{ex.ErrorCode}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.Log(LogLevel.Error, "Internal error occured:", ex);
-        //        return StatusCode(500, "common.internal");
-        //    }
-        //}
     }
 }

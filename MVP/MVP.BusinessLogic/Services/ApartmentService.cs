@@ -21,13 +21,15 @@ namespace MVP.BusinessLogic.Services
         private readonly IOfficeRepository _officeRepository;
         private readonly IFileReader _fileReader;
         private readonly ITripRepository _tripRepository;
+        private readonly ITripApartmentInfoRepository _tripApartmentInfoRepository;
 
         public ApartmentService(IApartmentRepository apartmentRepository,
             ICalendarRepository calendarRepository,
             ILocationRepository locationRepository,
             IOfficeRepository officeRepository,
             IFileReader fileReader, 
-            ITripRepository tripRepository)
+            ITripRepository tripRepository, 
+            ITripApartmentInfoRepository tripApartmentInfoRepository)
         {
             _apartmentRepository = apartmentRepository;
             _calendarRepository = calendarRepository;
@@ -35,6 +37,7 @@ namespace MVP.BusinessLogic.Services
             _officeRepository = officeRepository;
             _fileReader = fileReader;
             _tripRepository = tripRepository;
+            _tripApartmentInfoRepository = tripApartmentInfoRepository;
         }
 
         public async Task<CreateApartmentDto> CreateApartmentAsync(CreateApartmentDto createApartmentDto)
@@ -146,6 +149,20 @@ namespace MVP.BusinessLogic.Services
 
             var rooms = await _apartmentRepository.GetRoomsByApartmentIdAndDateAsync(apartmentId, trip.Start, trip.End);
             return rooms.Select(ApartmentRoomDto.ToDto);
+        }
+
+        public async Task RemoveUserFromRoom(int tripId, int roomId, string userId)
+        {
+            var tripApartmentInfo = await _tripApartmentInfoRepository.GetTripApartmentInfoByTripRoomAndUserAsync(tripId, roomId, userId);
+
+            if (tripApartmentInfo is null)
+            {
+                throw new BusinessLogicException("TripApartmentInfo was not found", "tripApartmentInfoNotFound");
+            }
+
+            var calendar = tripApartmentInfo.Calendar;
+            await _calendarRepository.DeleteAsync(calendar);
+            await _tripApartmentInfoRepository.DeleteAsync(tripApartmentInfo);
         }
     }
 }

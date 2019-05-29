@@ -8,6 +8,7 @@ namespace MVP.DataAccess.Interfaces
     {
         Task AddCalendarsAsync(List<Calendar> calendars);
         Task<List<Calendar>> GetCalendarByRoomAndApartmentId(int apartmentId, int roomId);
-        Task<Calendar> AddCalendarAsync(Calendar calendar);
+        Task<Calendar> AddAsync(Calendar calendar);
+        Task DeleteAsync(Calendar calendar);
     }
 }
