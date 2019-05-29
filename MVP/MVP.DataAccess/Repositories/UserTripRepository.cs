@@ -66,5 +66,26 @@ namespace MVP.DataAccess.Repositories
             _context.UserTrips.Update(userTrip);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<UserTrip> GetUserTripByTripIdAndUserEmailAsync(int tripId, string userEmail)
+        {
+            var userTrip = await _context.UserTrips
+                .Include(ut => ut.Trip)
+                .FirstOrDefaultAsync(ut => ut.TripId == tripId && ut.User.Email == userEmail);
+
+            return userTrip;
+        }
+
+        public async Task<IEnumerable<Trip>> GetUnconfirmedTripsByUserEmailAsync(string userEmail)
+        {
+            var trips = await _context.UserTrips
+                .Where(ut => ut.User.Email == userEmail && !ut.Confirmed)
+                .Select(ut => ut.Trip)
+                .Include(t => t.FromOffice)
+                .Include(t => t.ToOffice)
+                .ToListAsync();
+
+            return trips;
+        }
     }
 }
