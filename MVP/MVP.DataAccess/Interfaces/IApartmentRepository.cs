@@ -14,5 +14,6 @@ namespace MVP.DataAccess.Interfaces
         Task DeleteApartmentAsync(Apartment apartment);
         Task<List<ApartmentRoom>> GetApartmentRoomsByNumberAsync(int apartmentId, List<int> roomNumbers);
         Task<List<ApartmentRoom>> GetRoomsByApartmentIdAsync(int apartmentId);
+        Task<IEnumerable<Apartment>> GetApartmentsByOfficeId(int officeId);
     }
 }

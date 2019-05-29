@@ -131,5 +131,13 @@ namespace MVP.BusinessLogic.Services
             var calendars = await _fileReader.ReadApartmentCalendarFileAsync(apartmentId, file);
             await _calendarRepository.AddCalendarsAsync(calendars.ToList());
         }
+
+        public async Task<IEnumerable<ApartmentViewDto>> GetAllOfficeApartmentsAsync(int officeId)
+        {
+            var apartments = await _apartmentRepository.GetApartmentsByOfficeId(officeId);
+            var apartmentsViewDto = apartments.Select(ApartmentViewDto.ToDto);
+
+            return apartmentsViewDto;
+        }
     }
 }
