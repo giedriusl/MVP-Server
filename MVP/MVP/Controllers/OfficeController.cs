@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MVP.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("")]
     [ApiController]
     [Authorize]
     [LoggerFilter]
@@ -26,7 +26,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPost]
+        [HttpPost("api/[controller]")]
         public async Task<IActionResult> CreateOffice([FromBody] CreateOfficeDto createOfficeDto)
         {
             try
@@ -52,7 +52,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPut]
+        [HttpPut("api/[controller]")]
         public async Task<IActionResult> UpdateOffice([FromBody] UpdateOfficeDto updateOfficeDto)
         {
             try
@@ -78,7 +78,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpDelete("/{officeId}")]
+        [HttpDelete("api/[controller]/{officeId}")]
         public async Task<IActionResult> DeleteOffice(int officeId)
         {
             try
@@ -99,7 +99,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet]
+        [HttpGet("api/[controller]")]
         public async Task<IActionResult> GetAllOffices()
         {
             try
@@ -120,7 +120,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("/{officeId}")]
+        [HttpGet("api/[controller]/{officeId}")]
         public async Task<IActionResult> GetOfficeById(int officeId)
         {
             try
@@ -141,7 +141,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("/ByName/{officeName}")]
+        [HttpGet("api/[controller]/ByName/{officeName}")]
         public async Task<IActionResult> GetOfficeByName(string officeName)
         {
             try

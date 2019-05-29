@@ -102,12 +102,7 @@ namespace MVP.BusinessLogic.Services
 
         public async Task DeleteTripAsync(int tripId)
         {
-            var existingTrip = await _tripRepository.GetTripByIdAsync(tripId);
-
-            if (existingTrip is null)
-            {
-                throw new BusinessLogicException("Trip  was not found", "tripNotFound");
-            }
+            var existingTrip = await GetTripAsync(tripId);
 
             await _tripRepository.DeleteTripAsync(existingTrip);
         }
@@ -122,12 +117,7 @@ namespace MVP.BusinessLogic.Services
 
         public async Task<TripViewDto> GetTripByIdAsync(int tripId)
         {
-            var trip = await _tripRepository.GetTripByIdAsync(tripId);
-
-            if (trip is null)
-            {
-                throw new BusinessLogicException("Trip was not found", "tripNotFound");
-            }
+            var trip = await GetTripAsync(tripId);
 
             return TripViewDto.ToDto(trip);
         }
@@ -163,27 +153,31 @@ namespace MVP.BusinessLogic.Services
 
         public async Task ConfirmAsync(int tripId, string userEmail)
         {
-            var user = await _userManager.FindByEmailAsync(userEmail);
-            if (user is null)
+            var userTrip = await _userTripRepository.GetUserTripByTripIdAndUserEmailAsync(tripId, userEmail);
+            if (userTrip is null)
             {
-                throw new BusinessLogicException("User was not found");
+                throw new BusinessLogicException("User is not in this trip.", "cannotConfirm");
             }
 
-            var trip = await _tripRepository.GetTripByIdAsync(tripId);
-            if (trip is null)
-            {
-                throw new BusinessLogicException("Trip was not found");
-            }
-
-            var usersInTrip = trip.UserTrips.Select(ut => ut.User);
-            if (!usersInTrip.Contains(user))
-            {
-                throw new BusinessLogicException("User is not in this trip.");
-            }
-
-            var userTrip = trip.UserTrips.First(ut => ut.UserId == user.Id);
             userTrip.Confirmed = true;
             await _userTripRepository.UpdateUserTripAsync(userTrip);
+        }
+
+        public async Task<TripDto> GetConfirmingTrip(int tripId, string userEmail)
+        {
+            var userTrip = await _userTripRepository.GetUserTripByTripIdAndUserEmailAsync(tripId, userEmail);
+            if (userTrip is null)
+            {
+                throw new BusinessLogicException("User is not in this trip.", "cannotConfirm");
+            }
+
+            return TripDto.ToDto(userTrip.Trip);
+        }
+
+        public async Task<IEnumerable<TripDto>> GetTripsToConfirmAsync(string userEmail)
+        {
+            var trips = await _userTripRepository.GetUnconfirmedTripsByUserEmailAsync(userEmail);
+            return trips.Select(TripDto.ToDto);
         }
 
         public async Task<MergedTripDto> GetMergedTripsDataAsync(int baseTripId, int additionalTripId)
@@ -200,21 +194,16 @@ namespace MVP.BusinessLogic.Services
             mergedTrip.AdditionalTripId = additionalTripId;
 
             var users = (await _tripRepository.GetUsersByTripIdAsync(additionalTripId)).Select(UserDto.ToDto).ToList();
-            var uniqueUsers = RemoveDuplicateUsers(mergedTrip, users);
+            var uniqueUserIds = RemoveDuplicateUsers(mergedTrip, users);
 
-            mergedTrip.Users.AddRange(uniqueUsers);
+            mergedTrip.UserIds.AddRange(uniqueUserIds);
 
             return mergedTrip;
         }
 
         public async Task<CreateTripDto> MergeTripsAsync(MergedTripDto mergedTripDto)
         {
-            var baseTrip = await _tripRepository.GetTripByIdAsync(mergedTripDto.BaseTripId);
-
-            if (baseTrip is null)
-            {
-                throw new BusinessLogicException("Base trip was not found.", "tripNotFound");
-            }
+            var baseTrip = await GetTripAsync(mergedTripDto.BaseTripId);
 
             var toOffice = baseTrip.ToOffice;
             var fromOffice = baseTrip.FromOffice;
@@ -230,12 +219,7 @@ namespace MVP.BusinessLogic.Services
 
         public async Task<IEnumerable<TripViewDto>> GetSimilarTripsAsync(int tripId)
         {
-            var trip = await _tripRepository.GetTripByIdAsync(tripId);
-
-            if (trip is null)
-            {
-                throw new BusinessLogicException("Trip is not found", "tripNotFound");
-            }
+            var trip = await GetTripAsync(tripId);
 
             var similarTrips = await _tripRepository.GetSimilarTrips(trip);
 
@@ -245,12 +229,7 @@ namespace MVP.BusinessLogic.Services
         public async Task AddFlightInformationToTripAsync(int tripId,
             FlightInformationDto flightInformationDto)
         {
-            var trip = await _tripRepository.GetTripByIdWithFlightInformationAsync(tripId);
-
-            if (trip is null)
-            {
-                throw new BusinessLogicException("Trip was not found", "tripNotFound");
-            }
+            var trip = await GetTripAsync(tripId);
 
             trip.FlightInformations.Add(FlightInformationDto.ToEntity(flightInformationDto));
             await _tripRepository.UpdateTripAsync(trip);
@@ -258,12 +237,7 @@ namespace MVP.BusinessLogic.Services
 
         public async Task DeleteFlightInformationFromTripAsync(int tripId, int flightInformationId)
         {
-            var trip = await _tripRepository.GetTripByIdWithFlightInformationAsync(tripId);
-
-            if (trip is null)
-            {
-                throw new BusinessLogicException("Trip does not exist", "tripNotFound");
-            }
+            var trip = await GetTripAsync(tripId);
 
             if (trip.FlightInformations.Count == 0)
             {
@@ -285,12 +259,7 @@ namespace MVP.BusinessLogic.Services
         public async Task AddRentalCarInformationToTripAsync(int tripId,
             RentalCarInformationDto rentalCarInformationDto)
         {
-            var trip = await _tripRepository.GetTripByIdWithRentalCarInformationAsync(tripId);
-
-            if (trip is null)
-            {
-                throw new BusinessLogicException("Trip was not found", "tripNotFound");
-            }
+            var trip = await GetTripAsync(tripId);
 
             trip.RentalCarInformations.Add(RentalCarInformationDto.ToEntity(rentalCarInformationDto));
             await _tripRepository.UpdateTripAsync(trip);
@@ -300,12 +269,7 @@ namespace MVP.BusinessLogic.Services
             UpdateRentalCarInformationDto updateRentalCarInformationDto)
         {
             ValidateRentalCarInformation(updateRentalCarInformationDto);
-            var trip = await _tripRepository.GetTripByIdAsync(tripId);
-
-            if (trip is null)
-            {
-                throw new BusinessLogicException("Trip was not found", "tripNotFound");
-            }
+            var trip = await GetTripAsync(tripId);
 
             var rentalCarInformationToUpdate = trip.RentalCarInformations
                 .First(rentalCarInformation => rentalCarInformation.Id == updateRentalCarInformationDto.Id);
@@ -321,12 +285,7 @@ namespace MVP.BusinessLogic.Services
 
         public async Task DeleteRentalCarInformationFromTripAsync(int tripId, int rentalCarInformationId)
         {
-            var trip = await _tripRepository.GetTripByIdWithRentalCarInformationAsync(tripId);
-
-            if (trip is null)
-            {
-                throw  new BusinessLogicException("Trip was not found", "tripNotFound");
-            }
+            var trip = await GetTripAsync(tripId);
 
             var rentalCarInformationToDelete = trip.RentalCarInformations
                 .First(rentalCarInformation => rentalCarInformation.Id == rentalCarInformationId);
@@ -343,12 +302,8 @@ namespace MVP.BusinessLogic.Services
         public async Task UpdateTripAsync(int tripId, CreateTripDto updateTripDto)
         {
             ValidateCreateTrip(updateTripDto);
-            var trip = await _tripRepository.GetTripByIdAsync(tripId);
 
-            if (trip is null)
-            {
-                throw new BusinessLogicException("Trip was not found", "tripNotFound");
-            }
+            var trip = await GetTripAsync(tripId);
 
             var originalUsers = trip.UserTrips.Select(userTrip => userTrip.UserId).ToList();
             var updateUsers = updateTripDto.UserIds;
@@ -378,12 +333,7 @@ namespace MVP.BusinessLogic.Services
             UpdateFlightInformationDto updateFlightInformationDto)
         {
             ValidateUpdateFlightInformation(updateFlightInformationDto);
-            var trip = await _tripRepository.GetTripByIdAsync(tripId);
-
-            if (trip is null)
-            {
-                throw new BusinessLogicException("Trip not found", "tripNotFound");
-            }
+            var trip = await GetTripAsync(tripId);
 
             var flightInformationToUpdate = trip.FlightInformations
                 .FirstOrDefault(flightInformation => flightInformation.Id == updateFlightInformationDto.Id);
@@ -426,13 +376,35 @@ namespace MVP.BusinessLogic.Services
             return trips.Select(CreateTripDto.ToDto);
         }
 
-        private static IEnumerable<UserDto> RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
+        private async Task<User> GetUserAsync(string userEmail)
         {
-            var duplicateUsers = users.Where(user => mergedTrip.Users.Select(u => u.Email).Contains(user.Email)).ToList();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user is null)
+            {
+                throw new BusinessLogicException("User was not found", "userNotFound");
+            }
+
+            return user;
+        }
+
+        private async Task<Trip> GetTripAsync(int tripId)
+        {
+            var trip = await _tripRepository.GetTripByIdAsync(tripId);
+            if (trip is null)
+            {
+                throw new BusinessLogicException("Trip not found", "tripNotFound");
+            }
+
+            return trip;
+        }
+
+        private static IEnumerable<string> RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
+        {
+            var duplicateUsers = users.Where(user => mergedTrip.UserIds.Contains(user.Id)).ToList();
 
             duplicateUsers.ForEach(duplicateUser => users.Remove(duplicateUser));
 
-            return users;
+            return users.Select(user => user.Id);
         }
 
         private static void ValidateTripsForMerge(Trip baseTrip, Trip additionalTrip)

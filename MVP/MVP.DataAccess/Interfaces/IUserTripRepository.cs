@@ -15,5 +15,7 @@ namespace MVP.DataAccess.Interfaces
         Task<List<UserTrip>> GetUserTripsByTripIdAsync(int tripId);
         Task<IEnumerable<string>> GetTripUserIdsByTripIdAsync(int tripId);
         Task UpdateUserTripAsync(UserTrip userTrip);
+        Task<UserTrip> GetUserTripByTripIdAndUserEmailAsync(int tripId, string userEmail);
+        Task<IEnumerable<Trip>> GetUnconfirmedTripsByUserEmailAsync(string userEmail);
     }
 }

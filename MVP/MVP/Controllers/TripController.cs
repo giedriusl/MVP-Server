@@ -503,6 +503,50 @@ namespace MVP.Controllers
             }
         }
 
+        [Authorize(Policy = "AllowAllRoles")]
+        [HttpGet("api/[controller]/GetConfirming/{tripId}")]
+        public async Task<IActionResult> GetConfirmingTrip(int tripId)
+        {
+            try
+            {
+                var userEmail = User.Identity.Name;
+                var trip = await _tripService.GetConfirmingTrip(tripId, userEmail);
+                return Ok(trip);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Trip is not available for confirmation.", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "AllowAllRoles")]
+        [HttpGet("api/[controller]/GetTripsToConfirm")]
+        public async Task<IActionResult> GetTripsToConfirm()
+        {
+            try
+            {
+                var userEmail = User.Identity.Name;
+                var trips = await _tripService.GetTripsToConfirmAsync(userEmail);
+                return Ok(trips);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Trip is not available for confirmation.", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
         [Authorize(Policy = "RequireOrganizerRole")]
         [HttpPost("api/[controller]/AddUsersToRooms")]
         public async Task<IActionResult> AddUsersToRooms([FromBody] UserToRoomDto userToRoom)
