@@ -20,7 +20,7 @@ namespace MVP.BusinessLogic.Interfaces
         Task DeleteFlightInformationFromTripAsync(int tripId, int flightInformationId);
         Task UpdateFlightInformationForTripAsync(int tripId, UpdateFlightInformationDto updateFlightInformationDto);
 
-        Task<IEnumerable<TripDto>> GetAllTripsAsync();
+        Task<IEnumerable<TripDto>> GetAllTripsAsync(string userEmail);
         Task<TripViewDto> GetTripByIdAsync(int tripId);
         Task<IEnumerable<TripDto>> GetTripsByUserIdAsync(string userId);
         Task<MergedTripDto> GetMergedTripsDataAsync(int baseTripId, int additionalTripId);

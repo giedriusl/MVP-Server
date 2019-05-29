@@ -77,19 +77,19 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpGet("api/[controller]")]
+        [Authorize(Policy = "AllowAllRoles")]
         public async Task<IActionResult> GetAllTrips()
         {
             try
             {
-                var trips = await _tripService.GetAllTripsAsync();
+                var trips = await _tripService.GetAllTripsAsync(User.Identity.Name);
 
                 return Ok(trips);
             }
             catch (BusinessLogicException exception)
             {
-                _logger.Log(LogLevel.Warning, "Invalid trip get request: ", exception);
+                _logger.Log(LogLevel.Warning, "Invalid get trips request: ", exception);
                 return BadRequest($"trip.{exception.ErrorCode}");
             }
             catch (Exception exception)

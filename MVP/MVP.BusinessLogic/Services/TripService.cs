@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MVP.BusinessLogic.Factory;
+using MVP.BusinessLogic.Helpers.UrlBuilder;
 using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
+using MVP.EmailService.Interfaces;
 using MVP.Entities.Dtos.FlightsInformation;
 using MVP.Entities.Dtos.RentalCarsInformation;
 using MVP.Entities.Dtos.Trips;
@@ -12,8 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MVP.BusinessLogic.Helpers.UrlBuilder;
-using MVP.EmailService.Interfaces;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -64,25 +65,26 @@ namespace MVP.BusinessLogic.Services
 
             trip.FromOffice = fromOffice;
             trip.ToOffice = toOffice;
+            trip.OrganizerId = createTripDto.OrganizerId;
 
             var tripEntity = await _tripRepository.AddTripAsync(trip);
 
-                var usersInTrip = _userManager.Users
-                    .Where(user => createTripDto.UserIds.Contains(user.Id))
-                    .Select(u => new { u.Id, u.Email })
-                    .ToList();
+            var usersInTrip = _userManager.Users
+                .Where(user => createTripDto.UserIds.Contains(user.Id))
+                .Select(u => new { u.Id, u.Email })
+                .ToList();
 
-                foreach (var user in usersInTrip)
+            foreach (var user in usersInTrip)
+            {
+                userTrips.Add(new UserTrip
                 {
-                    userTrips.Add(new UserTrip
-                    {
-                        TripId = tripEntity.Id, UserId = user.Id
-                    });
+                    TripId = tripEntity.Id, UserId = user.Id
+                });
 
-                    SendConfirmationEmail(user.Email, tripEntity.Id);
-                }
+                SendConfirmationEmail(user.Email, tripEntity.Id);
+            }
 
-                trip.UserTrips = userTrips;
+            trip.UserTrips = userTrips;
 
             await _userTripRepository.AddUserTripsAsync(userTrips);
 
@@ -101,10 +103,27 @@ namespace MVP.BusinessLogic.Services
             await _tripRepository.DeleteTripAsync(existingTrip);
         }
 
-        public async Task<IEnumerable<TripDto>> GetAllTripsAsync()
+        public async Task<IEnumerable<TripDto>> GetAllTripsAsync(string userEmail)
         {
-            var trips = await _tripRepository.GetAllTripsAsync();
-            var tripsDto = trips.Select(TripDto.ToDto).ToList();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            
+            if (user is null)
+            {
+                throw new BusinessLogicException("Specified user not found", "notFound" );
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRole = userRoles.First();
+
+            var getTrips = GetAllTripsFactory.GetAllTrips(user, _tripRepository, userRole);
+            var trips = await getTrips.GetAllTrips();
+
+            if (trips is null)
+            {
+                throw new BusinessLogicException("No trips were found", "tripNotFound");
+            }
+
+            var tripsDto = trips.Select(TripDto.ToDto);
 
             return tripsDto;
         }
@@ -207,8 +226,9 @@ namespace MVP.BusinessLogic.Services
 
             var toOffice = baseTrip.ToOffice;
             var fromOffice = baseTrip.FromOffice;
+            var organizerId = baseTrip.OrganizerId;
 
-            var createTripDto = MergedTripDto.ToCreateTripDto(mergedTripDto, toOffice.Id, fromOffice.Id);
+            var createTripDto = MergedTripDto.ToCreateTripDto(mergedTripDto, toOffice.Id, fromOffice.Id, organizerId);
             var createdTrip = await CreateTripAsync(createTripDto);
 
             await _tripRepository.DeleteTripAsync(baseTrip);
