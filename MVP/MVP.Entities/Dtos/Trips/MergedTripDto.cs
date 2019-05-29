@@ -12,7 +12,7 @@ namespace MVP.Entities.Dtos.Trips
         public int BaseTripId { get; set; }
         public int AdditionalTripId { get; set; }
 
-        public List<UserDto> Users { get; set; } = new List<UserDto>();
+        public List<string> UserIds { get; set; } = new List<string>();
 
         public new static MergedTripDto ToDto(Trip trip)
         {
@@ -25,7 +25,7 @@ namespace MVP.Entities.Dtos.Trips
                 TripStatus = trip.TripStatus,
                 FlightInformations = trip.FlightInformations.Select(FlightInformationDto.ToDto).ToList(),
                 RentalCarInformations = trip.RentalCarInformations.Select(RentalCarInformationDto.ToDto).ToList(),
-                Users = trip.UserTrips.Select(userTrip => UserDto.ToDto(userTrip.User)).ToList()
+                UserIds = trip.UserTrips.Select(userTrip => userTrip.User.Id).ToList()
             };
 
             return mergedTrip;
@@ -43,7 +43,7 @@ namespace MVP.Entities.Dtos.Trips
                 ToOfficeId = toOfficeId,
                 FlightInformations = mergedTripDto.FlightInformations,
                 RentalCarInformations = mergedTripDto.RentalCarInformations,
-                UserIds = mergedTripDto.Users.Select(user => user.Id).ToList()
+                UserIds = mergedTripDto.UserIds.ToList()
             };
         }
     }
