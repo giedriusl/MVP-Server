@@ -134,6 +134,13 @@ namespace MVP.BusinessLogic.Services
 
         public async Task<IEnumerable<ApartmentViewDto>> GetAllOfficeApartmentsAsync(int officeId)
         {
+            var office = await _officeRepository.GetOfficeByIdAsync(officeId);
+
+            if (office is null)
+            {
+                throw new BusinessLogicException("Specified office does not exist", "officeNotFound");
+            }
+
             var apartments = await _apartmentRepository.GetApartmentsByOfficeId(officeId);
             var apartmentsViewDto = apartments.Select(ApartmentViewDto.ToDto);
 
