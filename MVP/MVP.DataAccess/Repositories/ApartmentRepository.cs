@@ -103,5 +103,15 @@ namespace MVP.DataAccess.Repositories
 
             return rooms;
         }
+
+        public async Task<IEnumerable<Apartment>> GetApartmentsByOfficeId(int officeId)
+        {
+            var apartments = await _context.Apartments
+                .Where(apartment => apartment.OfficeId == officeId)
+                .Include(apartment => apartment.Location)
+                .ToListAsync();
+
+            return apartments;
+        }
     }
 }

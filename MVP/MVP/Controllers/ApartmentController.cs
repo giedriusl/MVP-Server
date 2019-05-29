@@ -268,6 +268,28 @@ namespace MVP.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireAdministratorRole")]
+        [HttpGet("api/[controller]/GetOfficeApartments/{officeId}")]
+        public async Task<IActionResult> GetAllOfficeApartments(int officeId)
+        {
+            try
+            {
+                var apartments = await _apartmentService.GetAllOfficeApartmentsAsync(officeId);
+
+                return Ok(apartments);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid get apartments request: ", exception);
+                return BadRequest($"apartment.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
         [Authorize(Policy = "RequireOrganizerRole")]
         [HttpGet("api/[controller]/{apartmentId}/AvailableRooms/{tripId}")]
         public async Task<IActionResult> GetAvailableRooms(int apartmentId, int tripId)
