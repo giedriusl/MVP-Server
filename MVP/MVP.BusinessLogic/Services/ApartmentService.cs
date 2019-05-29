@@ -162,7 +162,6 @@ namespace MVP.BusinessLogic.Services
 
             var calendar = tripApartmentInfo.Calendar;
             await _calendarRepository.DeleteAsync(calendar);
-            await _tripApartmentInfoRepository.DeleteAsync(tripApartmentInfo);
         }
     }
 }
