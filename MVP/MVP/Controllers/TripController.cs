@@ -504,8 +504,8 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpPost("api/[controller]/{tripId}/AddUsersToRooms")]
-        public async Task<IActionResult> AddUsersToRooms(int tripId, [FromBody] UserToRoomDto userToRoom)
+        [HttpPost("api/[controller]/AddUsersToRooms")]
+        public async Task<IActionResult> AddUsersToRooms([FromBody] UserToRoomDto userToRoom)
         {
             try
             {
@@ -514,7 +514,7 @@ namespace MVP.Controllers
                     return BadRequest("Model is not valid");
                 }
 
-                var tripApartmentInfo = await _tripService.AddUsersToRooms(tripId, userToRoom);
+                var tripApartmentInfo = await _tripService.AddUsersToRooms(userToRoom);
 
                 return Ok(tripApartmentInfo);
 

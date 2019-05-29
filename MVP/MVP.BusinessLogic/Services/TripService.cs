@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using MVP.BusinessLogic.Helpers.UrlBuilder;
 using MVP.EmailService.Interfaces;
 using MVP.Entities.Dtos.Apartments.ApartmentRooms;
+using MVP.Entities.Dtos.TripInfo;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -453,7 +454,7 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        public async Task<TripApartmentInfo> AddUsersToRooms(int tripId, UserToRoomDto userToRoom)
+        public async Task<TripApartmentInfoDto> AddUsersToRooms(UserToRoomDto userToRoom)
         {
             var apartment = _apartmentRepository.GetApartmentByIdAsync(userToRoom.ApartmentId);
             if (apartment is null)
@@ -485,11 +486,11 @@ namespace MVP.BusinessLogic.Services
             {
                 ApartmentRoomId = userToRoom.ApartmentRoomId,
                 UserId = userToRoom.UserId,
-                TripId = tripId,
+                TripId = userToRoom.TripId,
                 CalendarId = calendar.Id
             });
 
-            return tripApartmentInfo;
+            return TripApartmentInfoDto.ToDto(tripApartmentInfo);
         }
 
         private void ValidateCreateTrip(CreateTripDto createTripDto)

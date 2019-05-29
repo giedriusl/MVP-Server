@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MVP.Entities.Dtos.Users;
 using MVP.Entities.Dtos.Apartments.ApartmentRooms;
+using MVP.Entities.Dtos.TripInfo;
 using MVP.Entities.Entities;
 
 namespace MVP.BusinessLogic.Interfaces
@@ -39,6 +40,6 @@ namespace MVP.BusinessLogic.Interfaces
         Task<IEnumerable<CreateTripDto>> GetMergableTrips();
         Task ConfirmAsync(int tripId, string userEmail);
 
-        Task<TripApartmentInfo> AddUsersToRooms(int tripId, UserToRoomDto userToRoom);
+        Task<TripApartmentInfoDto> AddUsersToRooms(UserToRoomDto userToRoom);
     }
 }
