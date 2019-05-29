@@ -27,11 +27,11 @@ namespace MVP.BusinessLogic.Services
         private readonly IUrlBuilder _urlBuilder;
 
 
-        public TripService(ITripRepository tripRepository, 
-            IOfficeRepository officeRepository, 
-            UserManager<User> userManager, 
-            IUserTripRepository userTripRepository, 
-            IEmailManager emailManager, 
+        public TripService(ITripRepository tripRepository,
+            IOfficeRepository officeRepository,
+            UserManager<User> userManager,
+            IUserTripRepository userTripRepository,
+            IEmailManager emailManager,
             IUrlBuilder urlBuilder)
         {
             _tripRepository = tripRepository;
@@ -189,9 +189,9 @@ namespace MVP.BusinessLogic.Services
             mergedTrip.AdditionalTripId = additionalTripId;
 
             var users = (await _tripRepository.GetUsersByTripIdAsync(additionalTripId)).Select(UserDto.ToDto).ToList();
-            var uniqueUsers = RemoveDuplicateUsers(mergedTrip, users);
+            var uniqueUserIds = RemoveDuplicateUsers(mergedTrip, users);
 
-            mergedTrip.Users.AddRange(uniqueUsers);
+            mergedTrip.UserIds.AddRange(uniqueUserIds);
 
             return mergedTrip;
         }
@@ -415,13 +415,13 @@ namespace MVP.BusinessLogic.Services
             return trips.Select(CreateTripDto.ToDto);
         }
 
-        private static IEnumerable<UserDto> RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
+        private static IEnumerable<string> RemoveDuplicateUsers(MergedTripDto mergedTrip, ICollection<UserDto> users)
         {
-            var duplicateUsers = users.Where(user => mergedTrip.Users.Select(u => u.Email).Contains(user.Email)).ToList();
+            var duplicateUsers = users.Where(user => mergedTrip.UserIds.Contains(user.Id)).ToList();
 
             duplicateUsers.ForEach(duplicateUser => users.Remove(duplicateUser));
 
-            return users;
+            return users.Select(user => user.Id);
         }
 
         private static void ValidateTripsForMerge(Trip baseTrip, Trip additionalTrip)
