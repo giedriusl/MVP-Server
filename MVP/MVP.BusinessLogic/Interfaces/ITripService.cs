@@ -4,12 +4,13 @@ using MVP.Entities.Dtos.Trips;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MVP.Entities.Dtos.Users;
+using MVP.Entities.Entities;
 
 namespace MVP.BusinessLogic.Interfaces
 {
     public interface ITripService
     {
-        Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto);
+        Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto, string organizerEmail);
         Task DeleteTripAsync(int tripId);
         Task AddFlightInformationToTripAsync(int tripId, FlightInformationDto flightInformationDto);
         Task AddRentalCarInformationToTripAsync(int tripId, RentalCarInformationDto rentalCarInformationDto);

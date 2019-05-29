@@ -38,8 +38,8 @@ namespace MVP.Controllers
                 {
                     return BadRequest("Model is not valid");
                 }
-
-                var trip = await _tripService.CreateTripAsync(createTripDto);
+                
+                var trip = await _tripService.CreateTripAsync(createTripDto, User.Identity.Name);
 
                 return Ok(trip);
             }

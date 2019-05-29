@@ -2,6 +2,7 @@
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Entities;
 using System;
+using MVP.Entities.Enums;
 
 namespace MVP.BusinessLogic.Factory
 {
@@ -9,20 +10,22 @@ namespace MVP.BusinessLogic.Factory
     {
         public static GetAllTripsStrategy GetAllTrips(User user, ITripRepository tripRepository, string userRole)
         {
-            switch (userRole)
+            if (userRole == UserRoles.User.ToString())
             {
-                case "User":
-                    return new GetAllUserTrips(tripRepository, user);
-
-                case "Organizer":
-                    return new GetAllOrganizerTrips(tripRepository, user);
-
-                case "Administrator":
-                    return new GetAllAdminTrips(tripRepository, user);
-
-                default:
-                    throw new NotSupportedException("User role is not supported");
+                return new GetAllUserTrips(tripRepository, user);
             }
+
+            if (userRole == UserRoles.Organizer.ToString())
+            {
+                return new GetAllOrganizerTrips(tripRepository, user);
+            }
+
+            if (userRole == UserRoles.Administrator.ToString())
+            {
+                return new GetAllAdminTrips(tripRepository, user);
+            }
+
+            throw new NotSupportedException("User role is not supported");
         }
     }
 }
