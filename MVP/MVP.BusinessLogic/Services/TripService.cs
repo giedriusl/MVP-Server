@@ -155,19 +155,19 @@ namespace MVP.BusinessLogic.Services
             var user = await _userManager.FindByEmailAsync(userEmail);
             if (user is null)
             {
-                throw new BusinessLogicException("User was not found");
+                throw new BusinessLogicException("User was not found", "userNotFound");
             }
 
             var trip = await _tripRepository.GetTripByIdAsync(tripId);
             if (trip is null)
             {
-                throw new BusinessLogicException("Trip was not found");
+                throw new BusinessLogicException("Trip was not found", "tripNotFound");
             }
 
             var usersInTrip = trip.UserTrips.Select(ut => ut.User);
             if (!usersInTrip.Contains(user))
             {
-                throw new BusinessLogicException("User is not in this trip.");
+                throw new BusinessLogicException("User is not in this trip.", "canNotConfirm");
             }
 
             var userTrip = trip.UserTrips.First(ut => ut.UserId == user.Id);
