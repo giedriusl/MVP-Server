@@ -25,10 +25,12 @@ namespace MVP.BusinessLogic.Services
 
 
         private readonly IApartmentRepository _apartmentRepository;
+        private readonly ICalendarRepository _calendarRepository;
 
-        public CsvReaderService(IApartmentRepository apartmentRepository)
+        public CsvReaderService(IApartmentRepository apartmentRepository, ICalendarRepository calendarRepository)
         {
             _apartmentRepository = apartmentRepository;
+            _calendarRepository = calendarRepository;
         }
 
         public async Task<IEnumerable<Calendar>> ReadApartmentCalendarFileAsync(int apartmentId, IFormFile file)
@@ -120,6 +122,58 @@ namespace MVP.BusinessLogic.Services
             catch
             {
                 throw new FileReaderException( $"Exception while reading {file.FileName} file", "invalidFile");
+            }
+        }
+
+        public async Task<IEnumerable<Calendar>> ReadApartmentRoomCalendarFileAsync(IFormFile file)
+        {
+            try
+            {
+                var data = await ReadData(file);
+                var calendarsToImport = new List<Calendar>();
+                var apartments = await _apartmentRepository.GetAllApartmentsAsync();
+                var apartmentRooms = await _apartmentRepository.GetAllApartmentRoomsAsync();
+
+                foreach (var line in data)
+                {
+                    var endDate = DateTimeOffset.Parse(line[(int) ImportApartmentRoomSchedule.EndDate]);
+                    var startDate = DateTimeOffset.Parse(line[(int) ImportApartmentRoomSchedule.StartDate]);
+
+                    var apartment = apartments.FirstOrDefault(apart =>
+                        apart.Title == line[(int) ImportApartmentRoomSchedule.ApartmentTitle]);
+
+                    if (apartment == null)
+                        continue;
+
+                    var apartmentRoom = apartmentRooms
+                        .FirstOrDefault(room => room.ApartmentId == apartment.Id
+                                                && room.Title == line[(int) ImportApartmentRoomSchedule.RoomTitle]);
+
+                    if (apartmentRoom == null)
+                        continue;
+
+                    var calendars = await _calendarRepository.GetCalendarByRoomAndApartmentId(apartment.Id, apartmentRoom.Id);
+
+                    bool calendarOverlaps = calendars.Any(x => (x.Start <= endDate) && (x.End >= startDate));
+                    calendarOverlaps = calendarOverlaps || calendarsToImport.Any(x => (x.Start <= endDate) && (x.End >= startDate));
+
+                    if (calendarOverlaps) 
+                        continue;
+                    
+
+                    calendarsToImport.Add(new Calendar
+                    {
+                        ApartmentRoomId = apartmentRoom.Id,
+                        End = endDate,
+                        Start = startDate
+                    });
+                }
+
+                return calendarsToImport;
+            }
+            catch (Exception exception)
+            {
+                throw new FileReaderException($"Exception while reading {file.FileName} file", "invalidFile");
             }
         }
 

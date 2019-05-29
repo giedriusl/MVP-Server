@@ -267,5 +267,27 @@ namespace MVP.Controllers
                 return StatusCode(500, "common.internal");
             }
         }
+
+        [Authorize(Policy = "RequireAdministratorRole")]
+        [HttpPost("api/[controller]/UploadCalendar")]
+        public async Task<IActionResult> UploadApartmentRoomsCalendar(IFormFile file)
+        {
+            try
+            {
+                await _apartmentService.UploadApartmentRoomsCalendarAsync(file);
+
+                return Ok();
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid upload apartment rooms calendar request: ", exception);
+                return BadRequest($"apartment.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
     }
 }

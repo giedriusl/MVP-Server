@@ -80,5 +80,14 @@ namespace MVP.DataAccess.Repositories
 
             return room;
         }
+
+        public async Task<List<ApartmentRoom>> GetAllApartmentRoomsAsync()
+        {
+            var apartmentRooms = await _context.Apartments
+                .SelectMany(apartment => apartment.Rooms)
+                .ToListAsync();
+
+            return apartmentRooms;
+        }
     }
 }
