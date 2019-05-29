@@ -9,6 +9,11 @@ namespace MVP.Entities.Dtos.TripInfo
         public string UserId { get; set; }
         public int CalendarId { get; set; }
 
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string ApartmentName { get; set; }
+        public int RoomNumber { get; set; }
+
         public static TripApartmentInfoDto ToDto(TripApartmentInfo tripApartmentInfo)
         {
             var dto = new TripApartmentInfoDto

@@ -20,17 +20,14 @@ namespace MVP.Controllers
     public class TripController : ControllerBase
     {
         private readonly ITripService _tripService;
-        private readonly IApartmentService _apartmentService;
         private readonly ILogger<TripController> _logger;
 
 
         public TripController(ITripService tripService, 
-            ILogger<TripController> logger, 
-            IApartmentService apartmentService)
+            ILogger<TripController> logger)
         {
             _tripService = tripService;
             _logger = logger;
-            _apartmentService = apartmentService;
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
@@ -549,7 +546,7 @@ namespace MVP.Controllers
 
         [Authorize(Policy = "RequireOrganizerRole")]
         [HttpPost("api/[controller]/AddUsersToRooms")]
-        public async Task<IActionResult> AddUsersToRooms([FromBody] UserToRoomDto userToRoom)
+        public async Task<IActionResult> AddUsersToRooms([FromBody] UserRoomDto userToRoom)
         {
             try
             {
@@ -581,8 +578,29 @@ namespace MVP.Controllers
         {
             try
             {
-                await _apartmentService.RemoveUserFromRoom(tripId, roomId, userId);
+                await _tripService.RemoveUserFromRoom(tripId, roomId, userId);
                 return Ok();
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Could not remove user from room:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpGet("api/[controller]/{tripId}/GetUsersWithRooms")]
+        public async Task<IActionResult> GetUsersWithRooms(int tripId)
+        {
+            try
+            {
+                var usersWithRooms = await _tripService.GetUsersWithRooms(tripId);
+                return Ok(usersWithRooms);
             }
             catch (BusinessLogicException ex)
             {

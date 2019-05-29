@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MVP.Entities.Dtos.Apartments.ApartmentRooms
 {
-    public class UserToRoomDto
+    public class UserRoomDto
     {
         [Required]
         public int TripId { get; set; }
@@ -17,5 +17,10 @@ namespace MVP.Entities.Dtos.Apartments.ApartmentRooms
         public DateTimeOffset Start { get; set; }
         [Required]
         public DateTimeOffset End { get; set; }
+
+        public string UserName { get; set; }
+        public string UserLastName { get; set; }
+        public string ApartmentName { get; set; }
+        public int RoomNumber { get; set; }
     }
 }

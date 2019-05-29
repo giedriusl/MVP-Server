@@ -42,6 +42,8 @@ namespace MVP.BusinessLogic.Interfaces
         Task<TripDto> GetConfirmingTrip(int tripId, string userId);
         Task<IEnumerable<TripDto>> GetTripsToConfirmAsync(string userEmail);
 
-        Task<TripApartmentInfoDto> AddUsersToRooms(UserToRoomDto userToRoom);
+        Task<TripApartmentInfoDto> AddUsersToRooms(UserRoomDto userToRoom);
+        Task RemoveUserFromRoom(int tripId, int roomId, string userId);
+        Task<IEnumerable<TripApartmentInfoDto>> GetUsersWithRooms(int tripId);
     }
 }

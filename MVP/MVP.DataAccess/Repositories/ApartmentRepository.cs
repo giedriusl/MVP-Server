@@ -93,6 +93,16 @@ namespace MVP.DataAccess.Repositories
             return calendar is null;
         }
 
+        public async Task<Apartment> GetApartmentByRoomIdAsync(int roomId)
+        {
+            var apartment = await _context.Apartments
+                .Include(a => a.Rooms)
+                .Where(a => a.Rooms.Any(r => r.Id == roomId))
+                .FirstOrDefaultAsync();
+
+            return apartment;
+        }
+
         public async Task<IEnumerable<ApartmentRoom>> GetRoomsByApartmentIdAndDateAsync(int apartmentId, DateTimeOffset start, DateTimeOffset end)
         {
             var rooms = await _context.Apartments

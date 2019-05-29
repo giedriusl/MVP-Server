@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MVP.BusinessLogic.Helpers.UrlBuilder;
 using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
+using MVP.EmailService.Interfaces;
+using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 using MVP.Entities.Dtos.FlightsInformation;
 using MVP.Entities.Dtos.RentalCarsInformation;
+using MVP.Entities.Dtos.TripInfo;
 using MVP.Entities.Dtos.Trips;
 using MVP.Entities.Dtos.Users;
 using MVP.Entities.Entities;
@@ -12,10 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MVP.BusinessLogic.Helpers.UrlBuilder;
-using MVP.EmailService.Interfaces;
-using MVP.Entities.Dtos.Apartments.ApartmentRooms;
-using MVP.Entities.Dtos.TripInfo;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -426,7 +426,7 @@ namespace MVP.BusinessLogic.Services
             }
         }
 
-        public async Task<TripApartmentInfoDto> AddUsersToRooms(UserToRoomDto userToRoom)
+        public async Task<TripApartmentInfoDto> AddUsersToRooms(UserRoomDto userToRoom)
         {
             var apartment = _apartmentRepository.GetApartmentByIdAsync(userToRoom.ApartmentId);
             if (apartment is null)
@@ -463,6 +463,44 @@ namespace MVP.BusinessLogic.Services
             });
 
             return TripApartmentInfoDto.ToDto(tripApartmentInfo);
+        }
+
+        public async Task RemoveUserFromRoom(int tripId, int roomId, string userId)
+        {
+            var tripApartmentInfo = await _tripApartmentInfoRepository.GetTripApartmentInfoByTripRoomAndUserAsync(tripId, roomId, userId);
+
+            if (tripApartmentInfo is null)
+            {
+                throw new BusinessLogicException("TripApartmentInfo was not found", "tripApartmentInfoNotFound");
+            }
+
+            var calendar = tripApartmentInfo.Calendar;
+            await _calendarRepository.DeleteAsync(calendar);
+        }
+
+        public async Task<IEnumerable<TripApartmentInfoDto>> GetUsersWithRooms(int tripId)
+        {
+            var trip = await GetTripAsync(tripId);
+            var users = await _tripRepository.GetUsersByTripIdAsync(tripId);
+
+            var allTripApartmentInfos = new List<TripApartmentInfoDto>();
+            foreach (var user in users)
+            {
+                var tripInfos = await _tripApartmentInfoRepository.GetTripApartmentInfosByTripAndUserAsync(trip.Id, user.Id);
+                var tripInfosDto = tripInfos.Select(TripApartmentInfoDto.ToDto).ToList();
+                foreach (var tripInfo in tripInfosDto)
+                {
+                    var apartment = await _apartmentRepository.GetApartmentByRoomIdAsync(tripInfo.ApartmentRoomId);
+                    tripInfo.FirstName = user.Name;
+                    tripInfo.LastName = user.Surname;
+                    tripInfo.ApartmentName = apartment.Title;
+                    tripInfo.RoomNumber = apartment.Rooms.Where(x => x.Id == tripInfo.ApartmentRoomId).Select(x => x.RoomNumber).First();
+                }
+
+                allTripApartmentInfos.AddRange(tripInfosDto);
+            }
+
+            return allTripApartmentInfos;
         }
 
         private void ValidateCreateTrip(CreateTripDto createTripDto)

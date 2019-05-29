@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Entities;
 using System.Threading.Tasks;
@@ -38,6 +39,16 @@ namespace MVP.DataAccess.Repositories
         {
             _context.TripApartmentInfos.Remove(tripApartmentInfo);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<TripApartmentInfo>> GetTripApartmentInfosByTripAndUserAsync(int tripId, string userId)
+        {
+            var tripApartmentInfos = await _context.TripApartmentInfos
+                .Include(ta => ta.Calendar)
+                .Where(ta => ta.TripId == tripId && ta.UserId == userId)
+                .ToListAsync();
+
+            return tripApartmentInfos;
         }
     }
 }
