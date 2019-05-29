@@ -15,5 +15,6 @@ namespace MVP.DataAccess.Interfaces
         Task<List<ApartmentRoom>> GetApartmentRoomsByNumberAsync(int apartmentId, List<int> roomNumbers);
         Task<List<ApartmentRoom>> GetRoomsByApartmentIdAsync(int apartmentId);
         Task<List<ApartmentRoom>> GetAllApartmentRoomsAsync();
+        Task<IEnumerable<Apartment>> GetApartmentsByOfficeId(int officeId);
     }
 }

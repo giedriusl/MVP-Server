@@ -288,6 +288,27 @@ namespace MVP.Controllers
                 _logger.Log(LogLevel.Error, "Internal error occured: ", exception);
                 return StatusCode(500, "common.internal");
             }
+
+        [HttpGet("api/[controller]/GetOfficeApartments/{officeId}")]
+        [Authorize(Policy = "RequireAdministratorRole")]
+        public async Task<IActionResult> GetAllOfficeApartments(int officeId)
+        {
+            try
+            {
+                var apartments = await _apartmentService.GetAllOfficeApartmentsAsync(officeId);
+
+                return Ok(apartments);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid get apartments request: ", exception);
+                return BadRequest($"apartment.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
         }
     }
 }

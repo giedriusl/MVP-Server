@@ -36,5 +36,7 @@ namespace MVP.BusinessLogic.Interfaces
 
         Task<IEnumerable<CreateTripDto>> GetMergableTrips();
         Task ConfirmAsync(int tripId, string userEmail);
+        Task<TripDto> GetConfirmingTrip(int tripId, string userId);
+        Task<IEnumerable<TripDto>> GetTripsToConfirmAsync(string userEmail);
     }
 }
