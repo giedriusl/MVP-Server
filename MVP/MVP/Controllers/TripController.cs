@@ -38,7 +38,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
                 
                 var trip = await _tripService.CreateTripAsync(createTripDto, User.Identity.Name);
@@ -151,6 +151,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.AddFlightInformationToTripAsync(tripId, flightInformationDto);
 
                 return Ok();
@@ -196,6 +201,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.UpdateFlightInformationForTripAsync(tripId, updateFlightInformationDto);
 
                 return Ok();
@@ -218,6 +228,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.AddRentalCarInformationToTripAsync(tripId, rentalCarInformationDto);
 
                 return Ok();
@@ -241,6 +256,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.UpdateRentalCarInformationForTripAsync(tripId, updateRentalCarInformationDto);
 
                 return Ok();
@@ -335,6 +355,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 var mergedTrip = await _tripService.MergeTripsAsync(mergedTripDto);
 
                 return Ok(mergedTrip);
@@ -379,6 +404,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.UpdateTripAsync(tripId, updateTripDto);
 
                 return Ok();
@@ -552,7 +582,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var tripApartmentInfo = await _tripService.AddUsersToRooms(userToRoom);

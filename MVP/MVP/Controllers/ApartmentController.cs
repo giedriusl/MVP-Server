@@ -36,7 +36,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var response = await _apartmentService.CreateApartmentAsync(createApartmentDto);
@@ -62,7 +62,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 await _apartmentService.AddRoomToApartmentAsync(apartmentId, createRoomDto);
@@ -70,7 +70,7 @@ namespace MVP.Controllers
             }
             catch (BusinessLogicException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                _logger.Log(LogLevel.Warning, "Could not add room to apartment:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)
@@ -88,7 +88,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var response = await _apartmentService.UpdateApartmentAsync(updateApartmentDto);
@@ -114,12 +114,13 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
-                if (file.ContentType != "text/csv")
+                var fileExt = System.IO.Path.GetExtension(file.FileName).Substring(1);
+                if (fileExt != "csv")
                 {
-                    return BadRequest("Invalid file format");
+                    return BadRequest("file.invalid");
                 }
 
                 await _apartmentService.UploadCalendarAsync(apartmentId, file);
@@ -128,7 +129,7 @@ namespace MVP.Controllers
             }
             catch (FileReaderException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                _logger.Log(LogLevel.Warning, "Could not upload apartment calendars:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)
@@ -146,7 +147,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 await _apartmentService.DeleteApartmentAsync(apartmentId);
@@ -155,7 +156,7 @@ namespace MVP.Controllers
             }
             catch (BusinessLogicException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                _logger.Log(LogLevel.Warning, "Invalid apartment deletion request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)
@@ -177,7 +178,7 @@ namespace MVP.Controllers
             }
             catch (BusinessLogicException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid apartment get request:", ex);
+                _logger.Log(LogLevel.Warning, "Invalid apartments get request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)
@@ -195,7 +196,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var apartment = await _apartmentService.GetApartmentByIdAsync(apartmentId);
@@ -222,7 +223,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var rooms = await _apartmentService.GetRoomsByApartmentIdAsync(apartmentId);
@@ -249,7 +250,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var calendars = await _apartmentService.GetCalendarByRoomAndApartmentIdAsync(apartmentId, roomId);
@@ -258,7 +259,7 @@ namespace MVP.Controllers
             }
             catch (BusinessLogicException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid apartment rooms get request:", ex);
+                _logger.Log(LogLevel.Warning, "Invalid apartment rooms calendar get request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)
@@ -320,7 +321,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var rooms = await _apartmentService.GetAvailableRooms(apartmentId, tripId);
