@@ -33,14 +33,14 @@ namespace MVP.BusinessLogic.Services
         private readonly ITripApartmentInfoRepository _tripApartmentInfoRepository;
 
 
-        public TripService(ITripRepository tripRepository, 
-            IOfficeRepository officeRepository, 
-            UserManager<User> userManager, 
-            IUserTripRepository userTripRepository, 
-            IEmailManager emailManager, 
+        public TripService(ITripRepository tripRepository,
+            IOfficeRepository officeRepository,
+            UserManager<User> userManager,
+            IUserTripRepository userTripRepository,
+            IEmailManager emailManager,
             IUrlBuilder urlBuilder,
-            IApartmentRepository apartmentRepository, 
-            ICalendarRepository calendarRepository, 
+            IApartmentRepository apartmentRepository,
+            ICalendarRepository calendarRepository,
             ITripApartmentInfoRepository tripApartmentInfoRepository)
         {
             _tripRepository = tripRepository;
@@ -119,7 +119,7 @@ namespace MVP.BusinessLogic.Services
         public async Task<IEnumerable<TripDto>> GetAllTripsAsync(string userEmail)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
-            
+
             if (user is null)
             {
                 throw new BusinessLogicException("Specified user not found", "userNotFound" );
@@ -146,14 +146,6 @@ namespace MVP.BusinessLogic.Services
             var trip = await GetTripAsync(tripId);
 
             return TripViewDto.ToDto(trip);
-        }
-
-        public async Task<IEnumerable<TripDto>> GetTripsByUserIdAsync(string userId)
-        {
-            var trips = await _tripRepository.GetTripsByUserIdAsync(userId);
-            var tripsDto = trips.Select(TripDto.ToDto).ToList();
-
-            return tripsDto;
         }
 
         public IEnumerable<TripStatusDto> GetTripStatuses()

@@ -103,7 +103,7 @@ namespace MVP.Controllers
         }
 
         [HttpPost("api/[controller]/SendResetPasswordLink")]
-        [AllowAnonymous]
+        [Authorize(Policy = "RequireAdministratorRole")]
         public async Task<IActionResult> SendResetPasswordLink([FromBody] SendResetPasswordDto sendResetPasswordDto)
         {
             try
@@ -146,7 +146,7 @@ namespace MVP.Controllers
         }
 
         [HttpGet("api/[controller]/{userId}")]
-        [Authorize(Policy = "RequireOrganizerRole")]
+        [Authorize(Policy = "RequireAdministratorRole")]
         public async Task<IActionResult> GetUserById(string userId)
         {
             try

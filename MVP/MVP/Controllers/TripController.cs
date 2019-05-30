@@ -43,7 +43,7 @@ namespace MVP.Controllers
                 {
                     return BadRequest("model.invalid");
                 }
-                
+
                 var trip = await _tripService.CreateTripAsync(createTripDto, User.Identity.Name);
 
                 return Ok(trip);
@@ -122,28 +122,6 @@ namespace MVP.Controllers
             catch (Exception exception)
             {
                 _logger.Log(LogLevel.Error, "Internal error occured: ", exception);
-                return StatusCode(500, "common.internal");
-            }
-        }
-
-        [Authorize(Policy = "AllowAllRoles")]
-        [HttpGet("api/[controller]/ByUserId/{userId}")]
-        public async Task<IActionResult> GetTripsByUserId(string userId)
-        {
-            try
-            {
-                var trips = await _tripService.GetTripsByUserIdAsync(userId);
-
-                return Ok(trips);
-            }
-            catch (BusinessLogicException exception)
-            {
-                _logger.Log(LogLevel.Warning, "Invalid trips get request: ", exception);
-                return BadRequest($"trip.{exception.ErrorCode}");
-            }
-            catch (Exception exception)
-            {
-                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
                 return StatusCode(500, "common.internal");
             }
         }
@@ -435,7 +413,7 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "AllowAllRoles")]
+        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpGet("api/[controller]/{tripId}/Users")]
         public async Task<IActionResult> GetTripUsers(int tripId)
         {

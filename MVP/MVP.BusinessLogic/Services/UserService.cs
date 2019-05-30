@@ -156,8 +156,11 @@ namespace MVP.BusinessLogic.Services
             {
                 throw new InvalidUserException("There are no user with this email", "noUser");
             }
+            var roles = await _userManager.GetRolesAsync(user);
+            var userDto = CreateUserDto.ToDto(user);
 
-            return CreateUserDto.ToDto(user);
+            userDto.Role = (UserRoles)Enum.Parse(typeof(UserRoles), roles.First());
+            return userDto;
         }
 
         public IEnumerable<UserRolesDto> GetUserRoles()
@@ -174,7 +177,7 @@ namespace MVP.BusinessLogic.Services
             {
                 throw new BusinessLogicException("User not found.");
             }
-                
+
             var valid = await _userManager.VerifyUserTokenAsync(user, this._userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", token);
             if (!valid)
             {
