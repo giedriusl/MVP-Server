@@ -168,7 +168,8 @@ namespace MVP.Controllers
         {
             try
             {
-                if (file.ContentType != "text/csv")
+                var fileExt = System.IO.Path.GetExtension(file.FileName).Substring(1);
+                if (fileExt != "csv")
                 {
                     return BadRequest("Invalid file format");
                 }
