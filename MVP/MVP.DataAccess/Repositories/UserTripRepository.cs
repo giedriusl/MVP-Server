@@ -74,6 +74,7 @@ namespace MVP.DataAccess.Repositories
                 .ThenInclude(t => t.FromOffice)
                 .Include(ut => ut.Trip)
                 .ThenInclude(t => t.ToOffice)
+                .Include(ut => ut.User)
                 .FirstOrDefaultAsync(ut => ut.TripId == tripId && ut.User.Email == userEmail);
 
             return userTrip;
