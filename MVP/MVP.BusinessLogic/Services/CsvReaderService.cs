@@ -144,9 +144,9 @@ namespace MVP.BusinessLogic.Services
                     if (apartment is null)
                         continue;
 
+
                     var apartmentRoom = apartment.Rooms
-                        .FirstOrDefault(room => room.ApartmentId == apartment.Id
-                                                && room.Title == line[(int) ImportApartmentRoomSchedule.RoomTitle]);
+                        .FirstOrDefault(room => room.Title == line[(int) ImportApartmentRoomSchedule.RoomTitle]);
 
                     if (apartmentRoom == null)
                         continue;
