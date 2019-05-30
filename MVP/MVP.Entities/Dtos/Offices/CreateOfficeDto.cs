@@ -6,7 +6,7 @@ namespace MVP.Entities.Dtos.Offices
 {
     public class CreateOfficeDto : OfficeDto
     {
-        public int Id { get; set; }
+        public new int Id { get; set; }
 
         [Required]
         public LocationDto Location { get; set; }
@@ -22,7 +22,7 @@ namespace MVP.Entities.Dtos.Offices
             return office;
         }
 
-        public static CreateOfficeDto ToDto(Office office)
+        public new static CreateOfficeDto ToDto(Office office)
         {
             return new CreateOfficeDto
             {

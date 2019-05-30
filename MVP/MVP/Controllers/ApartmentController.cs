@@ -81,8 +81,8 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPut("api/[controller]")]
-        public async Task<IActionResult> UpdateApartment([FromBody] UpdateApartmentDto updateApartmentDto)
+        [HttpPut("api/[controller]/{apartmentId}")]
+        public async Task<IActionResult> UpdateApartment(int apartmentId, [FromBody] ApartmentDto updateApartmentDto)
         {
             try
             {
@@ -91,45 +91,12 @@ namespace MVP.Controllers
                     return BadRequest("model.invalid");
                 }
 
-                var response = await _apartmentService.UpdateApartmentAsync(updateApartmentDto);
+                var response = await _apartmentService.UpdateApartmentAsync(apartmentId, updateApartmentDto);
                 return Ok(response);
             }
             catch(BusinessLogicException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
-                return BadRequest($"apartment.{ex.ErrorCode}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
-                return StatusCode(500, "common.internal");
-            }
-        }
-
-        [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPost("api/[controller]/{apartmentId}/Calendar")]
-        public async Task<IActionResult> UploadCalendar(int apartmentId, IFormFile file)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest("model.invalid");
-                }
-
-                var fileExt = System.IO.Path.GetExtension(file.FileName).Substring(1);
-                if (fileExt != "csv")
-                {
-                    return BadRequest("file.invalid");
-                }
-
-                await _apartmentService.UploadCalendarAsync(apartmentId, file);
-
-                return Ok();
-            }
-            catch (FileReaderException ex)
-            {
-                _logger.Log(LogLevel.Warning, "Could not upload apartment calendars:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)

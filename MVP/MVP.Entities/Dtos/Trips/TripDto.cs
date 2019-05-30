@@ -6,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Linq;
+using MVP.Entities.Dtos.Offices;
+using MVP.Entities.Dtos.Users;
 
 namespace MVP.Entities.Dtos.Trips
 {
@@ -31,8 +34,9 @@ namespace MVP.Entities.Dtos.Trips
         public List<RentalCarInformationDto> RentalCarInformations { get; set; } = new List<RentalCarInformationDto>();
 
 
-        public string FromOfficeName { get; set; }
-        public string ToOfficeName { get; set; }
+        public OfficeDto FromOffice { get; set; }
+        public OfficeDto ToOffice { get; set; }
+        public List<UserDto> Users { get; set; } = new List<UserDto>();
         public string StatusName { get; set; }
 
         public static TripDto ToDto(Trip trip)
@@ -44,11 +48,12 @@ namespace MVP.Entities.Dtos.Trips
                 Start = trip.Start,
                 End = trip.End,
                 TripStatus = trip.TripStatus,
-                FromOfficeName = trip.FromOffice.Name,
-                ToOfficeName = trip.ToOffice.Name,
+                FromOffice = OfficeDto.ToDto(trip.FromOffice),
+                ToOffice = OfficeDto.ToDto(trip.ToOffice),
                 StatusName = trip.TripStatus.ToString(),
                 OrganizerId = trip.OrganizerId,
-                Timestamp = trip.Timestamp
+                Timestamp = trip.Timestamp,
+                Users = trip.UserTrips.Select(ut => UserDto.ToDto(ut.User)).ToList()
             };
         }
     }

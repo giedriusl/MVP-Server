@@ -71,6 +71,10 @@ namespace MVP.DataAccess.Repositories
         {
             var userTrip = await _context.UserTrips
                 .Include(ut => ut.Trip)
+                .ThenInclude(t => t.FromOffice)
+                .Include(ut => ut.Trip)
+                .ThenInclude(t => t.ToOffice)
+                .Include(ut => ut.User)
                 .FirstOrDefaultAsync(ut => ut.TripId == tripId && ut.User.Email == userEmail);
 
             return userTrip;

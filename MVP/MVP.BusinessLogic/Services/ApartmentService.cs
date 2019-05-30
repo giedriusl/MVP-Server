@@ -81,9 +81,9 @@ namespace MVP.BusinessLogic.Services
             await _apartmentRepository.UpdateApartmentAsync(apartment);
         }
 
-        public async Task<UpdateApartmentDto> UpdateApartmentAsync(UpdateApartmentDto updateApartmentDto)
+        public async Task<ApartmentDto> UpdateApartmentAsync(int apartmentId, ApartmentDto updateApartmentDto)
         {
-            var apartment = await _apartmentRepository.GetApartmentByIdAsync(updateApartmentDto.Id);
+            var apartment = await _apartmentRepository.GetApartmentByIdAsync(apartmentId);
 
             if (apartment is null)
             {
@@ -131,12 +131,6 @@ namespace MVP.BusinessLogic.Services
         {
             var calendars = await _calendarRepository.GetCalendarByRoomAndApartmentId(apartmentId, roomId);
             return calendars.Select(CalendarDto.ToDto).ToList();
-        }
-
-        public async Task UploadCalendarAsync(int apartmentId, IFormFile file)
-        {
-            var calendars = await _fileReader.ReadApartmentCalendarFileAsync(apartmentId, file);
-            await _calendarRepository.AddCalendarsAsync(calendars.ToList());
         }
 
         public async Task UploadApartmentRoomsCalendarAsync(IFormFile file)
