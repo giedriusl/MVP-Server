@@ -268,8 +268,8 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpGet("api/[controller]/GetOfficeApartments/{officeId}")]
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpGet("api/[controller]/{officeId}/OfficeApartments")]
         public async Task<IActionResult> GetAllOfficeApartments(int officeId)
         {
             try
