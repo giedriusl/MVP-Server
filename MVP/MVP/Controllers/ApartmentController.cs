@@ -307,7 +307,7 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpDelete("api/[controller]/Room/{roomId}")]
+        [HttpDelete("api/[controller]/Room/{apartmentRoomId}")]
         public async Task<IActionResult> DeleteRoom(int apartmentRoomId)
         {
             try
