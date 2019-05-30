@@ -10,13 +10,13 @@ namespace MVP.Entities.Dtos.Trips
     public class TripViewDto : TripDto
     {
         [Required]
-        public OfficeViewDto FromOffice { get; set; }
+        public new OfficeViewDto FromOffice { get; set; }
 
         [Required]
-        public OfficeViewDto ToOffice { get; set; }
+        public new OfficeViewDto ToOffice { get; set; }
 
         [Required]
-        public IEnumerable<UserDto> Users { get; set; }
+        public new IEnumerable<UserDto> Users { get; set; }
 
 
         public new static TripViewDto ToDto(Trip trip)
