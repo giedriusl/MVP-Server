@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using Microsoft.AspNetCore.Http;
 using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Dtos.Apartments;
@@ -19,18 +20,24 @@ namespace MVP.BusinessLogic.Services
         private readonly ILocationRepository _locationRepository;
         private readonly IOfficeRepository _officeRepository;
         private readonly IFileReader _fileReader;
+        private readonly ITripRepository _tripRepository;
+        private readonly ITripApartmentInfoRepository _tripApartmentInfoRepository;
 
         public ApartmentService(IApartmentRepository apartmentRepository,
             ICalendarRepository calendarRepository,
             ILocationRepository locationRepository,
             IOfficeRepository officeRepository,
-            IFileReader fileReader)
+            IFileReader fileReader, 
+            ITripRepository tripRepository, 
+            ITripApartmentInfoRepository tripApartmentInfoRepository)
         {
             _apartmentRepository = apartmentRepository;
             _calendarRepository = calendarRepository;
             _locationRepository = locationRepository;
             _officeRepository = officeRepository;
             _fileReader = fileReader;
+            _tripRepository = tripRepository;
+            _tripApartmentInfoRepository = tripApartmentInfoRepository;
         }
 
         public async Task<CreateApartmentDto> CreateApartmentAsync(CreateApartmentDto createApartmentDto)
@@ -145,6 +152,18 @@ namespace MVP.BusinessLogic.Services
             var apartmentsViewDto = apartments.Select(ApartmentViewDto.ToDto);
 
             return apartmentsViewDto;
+        }
+
+        public async Task<IEnumerable<ApartmentRoomDto>> GetAvailableRooms(int apartmentId, int tripId)
+        {
+            var trip = await _tripRepository.GetTripByIdAsync(tripId);
+            if (trip is null)
+            {
+                throw new BusinessLogicException("Trip was not found", "tripNotFound");
+            }
+
+            var rooms = await _apartmentRepository.GetRoomsByApartmentIdAndDateAsync(apartmentId, trip.Start, trip.End);
+            return rooms.Select(ApartmentRoomDto.ToDto);
         }
     }
 }

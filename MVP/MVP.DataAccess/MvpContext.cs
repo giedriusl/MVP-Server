@@ -16,6 +16,7 @@ namespace MVP.DataAccess
         public DbSet<Office> Offices{ get; set; }
         public DbSet<Trip> Trips{ get; set; }
         public DbSet<UserTrip> UserTrips { get; set; }
+        public DbSet<TripApartmentInfo> TripApartmentInfos { get; set; }
 
         public MvpContext(DbContextOptions<MvpContext> options) : base(options)
         {
@@ -35,6 +36,7 @@ namespace MVP.DataAccess
             modelBuilder.ApplyConfiguration(new TripEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new UserEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new UserTripEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new TripApartmentInfoEntityTypeConfiguration());
         }
     }
 

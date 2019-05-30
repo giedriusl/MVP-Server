@@ -4,14 +4,16 @@ using MVP.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MVP.DataAccess.Migrations
 {
     [DbContext(typeof(MvpContext))]
-    partial class MvpContextModelSnapshot : ModelSnapshot
+    [Migration("20190528210522_AddTripApartmentInfo")]
+    partial class AddTripApartmentInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,6 +188,8 @@ namespace MVP.DataAccess.Migrations
                     b.Property<DateTimeOffset>("End");
 
                     b.Property<DateTimeOffset>("Start");
+
+                    b.Property<int?>("TripApartmentInfoId");
 
                     b.Property<string>("UserId");
 
