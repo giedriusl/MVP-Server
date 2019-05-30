@@ -16,7 +16,7 @@ namespace MVP.Controllers
 {
     [Route("")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [LoggerFilter]
     public class TripController : ControllerBase
     {
