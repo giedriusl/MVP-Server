@@ -133,12 +133,6 @@ namespace MVP.BusinessLogic.Services
             return calendars.Select(CalendarDto.ToDto).ToList();
         }
 
-        public async Task UploadCalendarAsync(int apartmentId, IFormFile file)
-        {
-            var calendars = await _fileReader.ReadApartmentCalendarFileAsync(apartmentId, file);
-            await _calendarRepository.AddCalendarsAsync(calendars.ToList());
-        }
-
         public async Task UploadApartmentRoomsCalendarAsync(IFormFile file)
         {
             var calendars = await _fileReader.ReadApartmentRoomCalendarFileAsync(file);
