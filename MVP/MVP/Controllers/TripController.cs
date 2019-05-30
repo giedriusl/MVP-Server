@@ -38,7 +38,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var trip = await _tripService.CreateTripAsync(createTripDto);
@@ -552,7 +552,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var tripApartmentInfo = await _tripService.AddUsersToRooms(userToRoom);
