@@ -81,9 +81,9 @@ namespace MVP.BusinessLogic.Services
             await _apartmentRepository.UpdateApartmentAsync(apartment);
         }
 
-        public async Task<UpdateApartmentDto> UpdateApartmentAsync(UpdateApartmentDto updateApartmentDto)
+        public async Task<ApartmentDto> UpdateApartmentAsync(int apartmentId, ApartmentDto updateApartmentDto)
         {
-            var apartment = await _apartmentRepository.GetApartmentByIdAsync(updateApartmentDto.Id);
+            var apartment = await _apartmentRepository.GetApartmentByIdAsync(apartmentId);
 
             if (apartment is null)
             {
