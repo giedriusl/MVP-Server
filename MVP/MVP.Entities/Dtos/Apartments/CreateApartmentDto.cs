@@ -6,6 +6,7 @@ namespace MVP.Entities.Dtos.Apartments
     public class CreateApartmentDto : ApartmentDto
     {
         public int Id { get; set; }
+        public int? RoomNumber { get; set; }
         public LocationDto Location { get; set; }
 
 
