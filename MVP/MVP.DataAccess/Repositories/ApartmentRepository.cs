@@ -103,6 +103,23 @@ namespace MVP.DataAccess.Repositories
             return apartment;
         }
 
+        public async Task<ApartmentRoom> GetRoomByIdAsync(int apartmentRoomId)
+        {
+            var apartmentRoom = await _context.Apartments
+                .SelectMany(a => a.Rooms)
+                .FirstOrDefaultAsync(r => r.Id == apartmentRoomId);
+
+            return apartmentRoom;
+        }
+
+        public async Task DeleteApartmentRoomAsync(ApartmentRoom apartmentRoom)
+        {
+            var rooms = await _context.Apartments.SelectMany(a => a.Rooms).ToListAsync();
+            rooms.Remove(apartmentRoom);
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<ApartmentRoom>> GetRoomsByApartmentIdAndDateAsync(int apartmentId, DateTimeOffset start, DateTimeOffset end)
         {
             var rooms = await _context.Apartments
@@ -114,15 +131,6 @@ namespace MVP.DataAccess.Repositories
             return rooms;
         }
 
-        public async Task<List<ApartmentRoom>> GetAllApartmentRoomsAsync()
-        {
-            var apartmentRooms = await _context.Apartments
-                .SelectMany(apartment => apartment.Rooms)
-                .ToListAsync();
-
-            return apartmentRooms;
-        }
-        
         public async Task<IEnumerable<Apartment>> GetApartmentsByOfficeId(int officeId)
         {
             var apartments = await _context.Apartments
