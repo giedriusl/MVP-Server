@@ -131,21 +131,20 @@ namespace MVP.BusinessLogic.Services
             {
                 var data = await ReadData(file);
                 var calendarsToImport = new List<Calendar>();
-                var apartments = await _apartmentRepository.GetAllApartmentsAsync();
-                var apartmentRooms = await _apartmentRepository.GetAllApartmentRoomsAsync();
+                var apartmentsWithRooms = await _apartmentRepository.GetAllApartmentsWithRoomsAsync();
 
                 foreach (var line in data)
                 {
                     var endDate = DateTimeOffset.Parse(line[(int) ImportApartmentRoomSchedule.EndDate]);
                     var startDate = DateTimeOffset.Parse(line[(int) ImportApartmentRoomSchedule.StartDate]);
 
-                    var apartment = apartments.FirstOrDefault(apart =>
+                    var apartment = apartmentsWithRooms.FirstOrDefault(apart =>
                         apart.Title == line[(int) ImportApartmentRoomSchedule.ApartmentTitle]);
 
-                    if (apartment == null)
+                    if (apartment is null)
                         continue;
 
-                    var apartmentRoom = apartmentRooms
+                    var apartmentRoom = apartment.Rooms
                         .FirstOrDefault(room => room.ApartmentId == apartment.Id
                                                 && room.Title == line[(int) ImportApartmentRoomSchedule.RoomTitle]);
 
