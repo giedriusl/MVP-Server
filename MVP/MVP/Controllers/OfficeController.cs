@@ -52,8 +52,8 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPut("api/[controller]")]
-        public async Task<IActionResult> UpdateOffice([FromBody] UpdateOfficeDto updateOfficeDto)
+        [HttpPut("api/[controller]/{id}")]
+        public async Task<IActionResult> UpdateOffice(int id, [FromBody] UpdateOfficeDto updateOfficeDto)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace MVP.Controllers
                     return BadRequest("Model is not valid");
                 }
 
-                var response = await _officeService.UpdateOfficeAsync(updateOfficeDto);
+                var response = await _officeService.UpdateOfficeAsync(id, updateOfficeDto);
                 return Ok(response);
             }
             catch (BusinessLogicException ex)

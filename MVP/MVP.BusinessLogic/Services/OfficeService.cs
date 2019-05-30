@@ -43,9 +43,9 @@ namespace MVP.BusinessLogic.Services
             return CreateOfficeDto.ToDto(entity);
         }
 
-        public async Task<UpdateOfficeDto> UpdateOfficeAsync(UpdateOfficeDto updateOfficeDto)
+        public async Task<UpdateOfficeDto> UpdateOfficeAsync(int id, UpdateOfficeDto updateOfficeDto)
         {
-            var existingOffice = await _officeRepository.GetOfficeByIdAsync(updateOfficeDto.Id);
+            var existingOffice = await _officeRepository.GetOfficeByIdAsync(id);
 
             if (existingOffice is null)
             {
