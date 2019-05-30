@@ -418,7 +418,7 @@ namespace MVP.Controllers
             }
             catch (DbUpdateConcurrencyException exception)
             {
-                var timeStamp = _exceptionHandlingService.HandleConcurrencyExceptionAsync(exception);
+                var timeStamp = _exceptionHandlingService.HandleConcurrencyException(exception);
                 _logger.Log(LogLevel.Warning, "Invalid trip update request: ", exception);
 
                 return Conflict(new { Message = "trip.optLockException", Version = timeStamp});

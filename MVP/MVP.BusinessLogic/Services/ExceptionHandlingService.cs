@@ -6,7 +6,7 @@ namespace MVP.BusinessLogic.Services
 {
     public class ExceptionHandlingService : IExceptionHandlingService
     {
-        public byte[] HandleConcurrencyExceptionAsync(DbUpdateConcurrencyException exception)
+        public byte[] HandleConcurrencyException(DbUpdateConcurrencyException exception)
         {
             var entry = exception.Entries.First();
             var databaseValues = entry.GetDatabaseValues();
