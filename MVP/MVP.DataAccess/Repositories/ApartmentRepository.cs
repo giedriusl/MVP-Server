@@ -114,6 +114,15 @@ namespace MVP.DataAccess.Repositories
             return rooms;
         }
 
+        public async Task<List<ApartmentRoom>> GetAllApartmentRoomsAsync()
+        {
+            var apartmentRooms = await _context.Apartments
+                .SelectMany(apartment => apartment.Rooms)
+                .ToListAsync();
+
+            return apartmentRooms;
+        }
+        
         public async Task<IEnumerable<Apartment>> GetApartmentsByOfficeId(int officeId)
         {
             var apartments = await _context.Apartments
@@ -122,6 +131,15 @@ namespace MVP.DataAccess.Repositories
                 .ToListAsync();
 
             return apartments;
+        }
+
+        public async Task<List<Apartment>> GetAllApartmentsWithRoomsAsync()
+        {
+            var apartmentsWithRooms = await _context.Apartments
+                .Include(apartment => apartment.Rooms)
+                .ToListAsync();
+
+            return apartmentsWithRooms;
         }
     }
 }
