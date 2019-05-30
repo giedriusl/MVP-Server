@@ -17,6 +17,7 @@ namespace MVP.DataAccess.EntityTypeConfigurations
             builder.Property(x => x.FromOfficeId).IsRequired();
             builder.Property(x => x.TripStatus);
             builder.Property(x => x.OrganizerId).IsRequired();
+            builder.Property(x => x.Timestamp).IsConcurrencyToken();
 
             builder.HasOne(x => x.ToOffice).WithMany().HasForeignKey(x => x.ToOfficeId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(x => x.FromOffice).WithMany().HasForeignKey(x => x.FromOfficeId).OnDelete(DeleteBehavior.Restrict);

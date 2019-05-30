@@ -1,6 +1,9 @@
 ﻿using MVP.Entities.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 using MVP.Entities.Dtos.Trips;
 
 namespace MVP.Entities.Entities
@@ -22,6 +25,11 @@ namespace MVP.Entities.Entities
         public string OrganizerId { get; set; }
         public User Organizer { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [Timestamp]
+        [ConcurrencyCheck]
+        public byte[] Timestamp { get; set; }
+
         public void UpdateTrip(CreateTripDto updateTripDto)
         {
             Title = updateTripDto.Title;
@@ -30,6 +38,7 @@ namespace MVP.Entities.Entities
             FromOfficeId = updateTripDto.FromOfficeId;
             ToOfficeId = updateTripDto.ToOfficeId;
             TripStatus = updateTripDto.TripStatus;
+            Timestamp = updateTripDto.Timestamp;
         }
     }
 }

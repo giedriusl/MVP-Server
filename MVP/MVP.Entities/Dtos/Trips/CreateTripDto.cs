@@ -4,6 +4,7 @@ using MVP.Entities.Entities;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 
 namespace MVP.Entities.Dtos.Trips
 {
@@ -44,7 +45,8 @@ namespace MVP.Entities.Dtos.Trips
                 FromOfficeId = trip.FromOfficeId,
                 ToOfficeId = trip.ToOfficeId,
                 UserIds = trip.UserTrips.Select(userTrip => userTrip.UserId).ToList(),
-                OrganizerId = trip.OrganizerId
+                OrganizerId = trip.OrganizerId,
+                Timestamp = trip.Timestamp
             };
         }
     }
