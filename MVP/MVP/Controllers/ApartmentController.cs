@@ -288,6 +288,7 @@ namespace MVP.Controllers
                 _logger.Log(LogLevel.Error, "Internal error occured: ", exception);
                 return StatusCode(500, "common.internal");
             }
+        }
 
         [HttpGet("api/[controller]/GetOfficeApartments/{officeId}")]
         [Authorize(Policy = "RequireAdministratorRole")]

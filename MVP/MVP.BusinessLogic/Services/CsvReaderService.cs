@@ -171,7 +171,7 @@ namespace MVP.BusinessLogic.Services
 
                 return calendarsToImport;
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 throw new FileReaderException($"Exception while reading {file.FileName} file", "invalidFile");
             }
