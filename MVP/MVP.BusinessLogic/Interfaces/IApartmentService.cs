@@ -11,7 +11,7 @@ namespace MVP.BusinessLogic.Interfaces
     public interface IApartmentService
     {
         Task<CreateApartmentDto> CreateApartmentAsync(CreateApartmentDto createApartmentDto);
-        Task<UpdateApartmentDto> UpdateApartmentAsync(UpdateApartmentDto apartment);
+        Task<ApartmentDto> UpdateApartmentAsync(int apartmentId, ApartmentDto apartment);
         Task DeleteApartmentAsync(int apartmentId);
         Task AddRoomToApartmentAsync(int apartmentId, CreateApartmentRoomDto apartmentRoomDto);
 

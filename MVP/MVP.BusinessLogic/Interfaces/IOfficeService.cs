@@ -7,7 +7,7 @@ namespace MVP.BusinessLogic.Interfaces
     public interface IOfficeService
     {
         Task<CreateOfficeDto> CreateOfficeAsync(CreateOfficeDto createOfficeDto);
-        Task<UpdateOfficeDto> UpdateOfficeAsync(UpdateOfficeDto office);
+        Task<OfficeDto> UpdateOfficeAsync(int id, OfficeDto office);
         Task DeleteOfficeAsync(int officeId);
         Task AddApartmentToOfficeId(int officeId, int apartmentId);
 
