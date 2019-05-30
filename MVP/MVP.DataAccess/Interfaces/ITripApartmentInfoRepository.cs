@@ -7,7 +7,7 @@ namespace MVP.DataAccess.Interfaces
     public interface ITripApartmentInfoRepository
     {
         Task<TripApartmentInfo> AddTripApartmentInfoAsync(TripApartmentInfo tripApartmentInfo);
-        Task<TripApartmentInfo> GetTripApartmentInfoByTripRoomAndUserAsync(int tripId, int apartmentRoom, string userId);
+        Task<TripApartmentInfo> GetTripApartmentInfoByIdAsync(int tripApartmentInfoId);
         Task DeleteAsync(TripApartmentInfo tripApartmentInfo);
         Task<IEnumerable<TripApartmentInfo>> GetTripApartmentInfosByTripAndUserAsync(int tripId, string userId);
     }

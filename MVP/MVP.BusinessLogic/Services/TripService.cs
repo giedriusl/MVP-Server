@@ -428,7 +428,7 @@ namespace MVP.BusinessLogic.Services
 
         public async Task<TripApartmentInfoDto> AddUsersToRooms(UserRoomDto userToRoom)
         {
-            var apartment = _apartmentRepository.GetApartmentByIdAsync(userToRoom.ApartmentId);
+            var apartment = await _apartmentRepository.GetApartmentByIdAsync(userToRoom.ApartmentId);
             if (apartment is null)
             {
                 throw new BusinessLogicException("Apartment not found", "apartmentNotFound");
@@ -440,7 +440,7 @@ namespace MVP.BusinessLogic.Services
                 throw new BusinessLogicException("This room is not available at given time period.", "roomNotAvailable");
             }
 
-            var user = _userManager.FindByIdAsync(userToRoom.UserId);
+            var user = await _userManager.FindByIdAsync(userToRoom.UserId);
             if (user is null)
             {
                 throw new BusinessLogicException("User not found", "userNotFound");
@@ -465,10 +465,10 @@ namespace MVP.BusinessLogic.Services
             return TripApartmentInfoDto.ToDto(tripApartmentInfo);
         }
 
-        public async Task RemoveUserFromRoom(int tripId, int roomId, string userId)
+        public async Task RemoveUserFromRoom(int tripApartmentInfoId)
         {
-            var tripApartmentInfo = await _tripApartmentInfoRepository.GetTripApartmentInfoByTripRoomAndUserAsync(tripId, roomId, userId);
-
+            var tripApartmentInfo =
+                await _tripApartmentInfoRepository.GetTripApartmentInfoByIdAsync(tripApartmentInfoId);
             if (tripApartmentInfo is null)
             {
                 throw new BusinessLogicException("TripApartmentInfo was not found", "tripApartmentInfoNotFound");
