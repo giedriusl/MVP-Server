@@ -1,4 +1,5 @@
-﻿using MVP.Entities.Dtos.Locations;
+﻿using System.Linq;
+using MVP.Entities.Dtos.Locations;
 using MVP.Entities.Entities;
 
 namespace MVP.Entities.Dtos.Apartments
@@ -7,6 +8,7 @@ namespace MVP.Entities.Dtos.Apartments
     {
         public int Id { get; set; }
         public int? RoomNumber { get; set; }
+        public int? RoomId { get; set; }
         public LocationDto Location { get; set; }
 
 
@@ -25,7 +27,8 @@ namespace MVP.Entities.Dtos.Apartments
                 Id = apartment.Id,
                 Title = apartment.Title,
                 OfficeId = apartment.OfficeId,
-                Location = LocationDto.ToDto(apartment.Location)
+                Location = LocationDto.ToDto(apartment.Location),
+                RoomId = apartment.Rooms.First().Id
             };
         }
     }
