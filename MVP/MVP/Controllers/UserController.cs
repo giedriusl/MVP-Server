@@ -35,7 +35,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var user = await _userService.CreateAsync(createUserDto);
@@ -62,7 +62,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var token = await _userService.LoginAsync(userLoginDto);
@@ -76,7 +76,7 @@ namespace MVP.Controllers
             }
             catch (Exception exception)
             {
-                _logger.Log(LogLevel.Warning, $"Invalid user creation request: {exception.Message}");
+                _logger.Log(LogLevel.Warning, $"Internal error occured: {exception.Message}");
                 return StatusCode(500, "common.internal");
             }
         }
@@ -89,7 +89,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 await _userService.ResetPasswordAsync(resetPasswordDto);
@@ -110,7 +110,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 await _userService.SendResetPasswordLinkAsync(sendResetPasswordDto.Email);
@@ -168,9 +168,10 @@ namespace MVP.Controllers
         {
             try
             {
-                if (file.ContentType != "text/csv")
+                var fileExt = System.IO.Path.GetExtension(file.FileName).Substring(1);
+                if (fileExt != "csv")
                 {
-                    return BadRequest("Invalid file format");
+                    return BadRequest("file.invalid");
                 }
 
                 await _userService.UploadUsersAsync(file);
@@ -179,7 +180,7 @@ namespace MVP.Controllers
             }
             catch (FileReaderException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                _logger.Log(LogLevel.Warning, "Invalid user upload request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (InvalidUserException exception)
@@ -200,9 +201,10 @@ namespace MVP.Controllers
         {
             try
             {
-                if (file.ContentType != "text/csv")
+                var fileExt = System.IO.Path.GetExtension(file.FileName).Substring(1);
+                if (fileExt != "csv")
                 {
-                    return BadRequest("Invalid file format");
+                    return BadRequest("file.invalid");
                 }
 
                 await _userService.UploadUsersCalendarAsync(file);

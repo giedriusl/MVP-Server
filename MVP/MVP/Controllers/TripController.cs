@@ -9,6 +9,7 @@ using MVP.Entities.Exceptions;
 using MVP.Filters;
 using System;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 
 namespace MVP.Controllers
 {
@@ -22,7 +23,8 @@ namespace MVP.Controllers
         private readonly ILogger<TripController> _logger;
 
 
-        public TripController(ITripService tripService, ILogger<TripController> logger)
+        public TripController(ITripService tripService, 
+            ILogger<TripController> logger)
         {
             _tripService = tripService;
             _logger = logger;
@@ -36,10 +38,10 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
-
-                var trip = await _tripService.CreateTripAsync(createTripDto);
+                
+                var trip = await _tripService.CreateTripAsync(createTripDto, User.Identity.Name);
 
                 return Ok(trip);
             }
@@ -77,19 +79,19 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpGet("api/[controller]")]
+        [Authorize(Policy = "AllowAllRoles")]
         public async Task<IActionResult> GetAllTrips()
         {
             try
             {
-                var trips = await _tripService.GetAllTripsAsync();
+                var trips = await _tripService.GetAllTripsAsync(User.Identity.Name);
 
                 return Ok(trips);
             }
             catch (BusinessLogicException exception)
             {
-                _logger.Log(LogLevel.Warning, "Invalid trip get request: ", exception);
+                _logger.Log(LogLevel.Warning, "Invalid get trips request: ", exception);
                 return BadRequest($"trip.{exception.ErrorCode}");
             }
             catch (Exception exception)
@@ -149,6 +151,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.AddFlightInformationToTripAsync(tripId, flightInformationDto);
 
                 return Ok();
@@ -194,6 +201,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.UpdateFlightInformationForTripAsync(tripId, updateFlightInformationDto);
 
                 return Ok();
@@ -216,6 +228,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.AddRentalCarInformationToTripAsync(tripId, rentalCarInformationDto);
 
                 return Ok();
@@ -239,6 +256,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.UpdateRentalCarInformationForTripAsync(tripId, updateRentalCarInformationDto);
 
                 return Ok();
@@ -333,6 +355,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 var mergedTrip = await _tripService.MergeTripsAsync(mergedTripDto);
 
                 return Ok(mergedTrip);
@@ -377,6 +404,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.UpdateTripAsync(tripId, updateTripDto);
 
                 return Ok();
@@ -538,6 +570,76 @@ namespace MVP.Controllers
             catch (Exception exception)
             {
                 _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpPost("api/[controller]/AddUsersToRooms")]
+        public async Task<IActionResult> AddUsersToRooms([FromBody] UserRoomDto userToRoom)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
+                var tripApartmentInfo = await _tripService.AddUsersToRooms(userToRoom);
+
+                return Ok(tripApartmentInfo);
+
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Could not add users to rooms:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpDelete("api/[controller]/{tripId}/User/{userId}/Room/{roomId}")]
+        public async Task<IActionResult> RemoveUserFromRoom(int tripId, string userId, int roomId)
+        {
+            try
+            {
+                await _tripService.RemoveUserFromRoom(tripId, roomId, userId);
+                return Ok();
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Could not remove user from room:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpGet("api/[controller]/{tripId}/GetUsersWithRooms")]
+        public async Task<IActionResult> GetUsersWithRooms(int tripId)
+        {
+            try
+            {
+                var usersWithRooms = await _tripService.GetUsersWithRooms(tripId);
+                return Ok(usersWithRooms);
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Could not remove user from room:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
                 return StatusCode(500, "common.internal");
             }
         }

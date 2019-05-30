@@ -11,5 +11,6 @@ namespace MVP.Entities.Entities
         public virtual User User { get; set; }
         public int? ApartmentRoomId { get; set; }
         public virtual ApartmentRoom ApartmentRoom { get; set; }
+        public virtual TripApartmentInfo TripApartmentInfo { get; set; }
     }
 }

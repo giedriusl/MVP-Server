@@ -19,7 +19,7 @@ namespace MVP.DataAccess.Seed
             var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
 
             await SeedUser(logger, userManager, roleManager);
-            await SeedTrip(context, logger);
+            await SeedTrip(context, logger, userManager);
         }
         private static async Task<(Location, Location)> SeedLocations(MvpContext context, ILogger<MvpContext> logger)
         {
@@ -140,7 +140,7 @@ namespace MVP.DataAccess.Seed
                 throw;
             }
         }
-        private static async Task<Trip> SeedTrip(MvpContext context, ILogger<MvpContext> logger)
+        private static async Task<Trip> SeedTrip(MvpContext context, ILogger<MvpContext> logger, UserManager<User> userManager)
         {
             try
             {
@@ -163,15 +163,22 @@ namespace MVP.DataAccess.Seed
                     {
                         Cost = DefaultFlightInformation.Cost,
                         Start = DefaultFlightInformation.Start,
-                        End = DefaultFlightInformation.End
+                        End = DefaultFlightInformation.End,
+                        FromAirport = DefaultFlightInformation.FromAirport,
+                        ToAirport = DefaultFlightInformation.ToAirport
                     };
                     var carInfo = new RentalCarInformation
                     {
                         Cost = DefaultRentalCarInformation.Cost,
                         Start = DefaultRentalCarInformation.Start,
-                        End = DefaultRentalCarInformation.End
+                        End = DefaultRentalCarInformation.End,
+                        PickupAddress = DefaultRentalCarInformation.PickupAddress,
+                        DropOffAddress = DefaultRentalCarInformation.DropOffAddress
                     };
 
+                    var organizer = await userManager.FindByEmailAsync("pawlikas77@gmail.com");
+
+                    trip.OrganizerId = organizer.Id;
                     trip.FlightInformations.Add(flightInfo);
                     trip.RentalCarInformations.Add(carInfo);
 
@@ -229,7 +236,7 @@ namespace MVP.DataAccess.Seed
                     };
 
                     await userManager.CreateAsync(user, "Psk@team123");
-                    await userManager.AddToRoleAsync(user, UserRoles.Administrator.ToString());
+                    await userManager.AddToRoleAsync(user, UserRoles.Organizer.ToString());
                 }
 
                 nextUser = await userManager.Users.FirstOrDefaultAsync(u => u.Email == "gedgaudasdei@gmail.com");
@@ -246,7 +253,7 @@ namespace MVP.DataAccess.Seed
                     };
 
                     await userManager.CreateAsync(user, "Psk@team123");
-                    await userManager.AddToRoleAsync(user, UserRoles.Administrator.ToString());
+                    await userManager.AddToRoleAsync(user, UserRoles.User.ToString());
                 }
 
                 return firstUser;

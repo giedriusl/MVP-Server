@@ -4,12 +4,15 @@ using MVP.Entities.Dtos.Trips;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MVP.Entities.Dtos.Users;
+using MVP.Entities.Dtos.Apartments.ApartmentRooms;
+using MVP.Entities.Dtos.TripInfo;
+using MVP.Entities.Entities;
 
 namespace MVP.BusinessLogic.Interfaces
 {
     public interface ITripService
     {
-        Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto);
+        Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto, string organizerEmail);
         Task DeleteTripAsync(int tripId);
         Task AddFlightInformationToTripAsync(int tripId, FlightInformationDto flightInformationDto);
         Task AddRentalCarInformationToTripAsync(int tripId, RentalCarInformationDto rentalCarInformationDto);
@@ -20,7 +23,7 @@ namespace MVP.BusinessLogic.Interfaces
         Task DeleteFlightInformationFromTripAsync(int tripId, int flightInformationId);
         Task UpdateFlightInformationForTripAsync(int tripId, UpdateFlightInformationDto updateFlightInformationDto);
 
-        Task<IEnumerable<TripDto>> GetAllTripsAsync();
+        Task<IEnumerable<TripDto>> GetAllTripsAsync(string userEmail);
         Task<TripViewDto> GetTripByIdAsync(int tripId);
         Task<IEnumerable<TripDto>> GetTripsByUserIdAsync(string userId);
         Task<MergedTripDto> GetMergedTripsDataAsync(int baseTripId, int additionalTripId);
@@ -38,5 +41,9 @@ namespace MVP.BusinessLogic.Interfaces
         Task ConfirmAsync(int tripId, string userEmail);
         Task<TripDto> GetConfirmingTrip(int tripId, string userId);
         Task<IEnumerable<TripDto>> GetTripsToConfirmAsync(string userEmail);
+
+        Task<TripApartmentInfoDto> AddUsersToRooms(UserRoomDto userToRoom);
+        Task RemoveUserFromRoom(int tripId, int roomId, string userId);
+        Task<IEnumerable<TripApartmentInfoDto>> GetUsersWithRooms(int tripId);
     }
 }

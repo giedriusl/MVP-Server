@@ -24,6 +24,9 @@ namespace MVP.Entities.Dtos.Trips
 
         [Required]
         public TripStatus TripStatus { get; set; }
+
+        [Required]
+        public string OrganizerId { get; set; }
         public List<FlightInformationDto> FlightInformations { get; set; } = new List<FlightInformationDto>();
         public List<RentalCarInformationDto> RentalCarInformations { get; set; } = new List<RentalCarInformationDto>();
 
@@ -43,7 +46,8 @@ namespace MVP.Entities.Dtos.Trips
                 TripStatus = trip.TripStatus,
                 FromOfficeName = trip.FromOffice.Name,
                 ToOfficeName = trip.ToOffice.Name,
-                StatusName = trip.TripStatus.ToString()
+                StatusName = trip.TripStatus.ToString(),
+                OrganizerId = trip.OrganizerId
             };
         }
     }

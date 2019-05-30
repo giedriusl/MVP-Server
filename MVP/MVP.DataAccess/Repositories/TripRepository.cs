@@ -149,5 +149,18 @@ namespace MVP.DataAccess.Repositories
 
             return trips;
         }
+
+        public async Task<IEnumerable<Trip>> GetTripsByOrganizerIdAsync(string organizerId)
+        {
+            var trips = await _context.Trips
+                .Where(trip => trip.OrganizerId == organizerId)
+                .Include(trip => trip.ToOffice)
+                    .ThenInclude(office => office.Location)
+                .Include(trip => trip.FromOffice)
+                    .ThenInclude(office => office.Location)
+                .ToListAsync();
+
+            return trips;
+        }
     }
 }

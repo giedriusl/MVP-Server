@@ -25,7 +25,8 @@ namespace MVP.Entities.Dtos.Trips
                 Start = createTripDto.Start,
                 TripStatus = createTripDto.TripStatus,
                 FlightInformations = createTripDto.FlightInformations.Select(FlightInformationDto.ToEntity).ToList(),
-                RentalCarInformations = createTripDto.RentalCarInformations.Select(RentalCarInformationDto.ToEntity).ToList()
+                RentalCarInformations = createTripDto.RentalCarInformations.Select(RentalCarInformationDto.ToEntity).ToList(),
+                OrganizerId = createTripDto.OrganizerId
             };
         }
 
@@ -42,7 +43,8 @@ namespace MVP.Entities.Dtos.Trips
                 RentalCarInformations = trip.RentalCarInformations.Select(RentalCarInformationDto.ToDto).ToList(),
                 FromOfficeId = trip.FromOfficeId,
                 ToOfficeId = trip.ToOfficeId,
-                UserIds = trip.UserTrips.Select(userTrip => userTrip.UserId).ToList()
+                UserIds = trip.UserTrips.Select(userTrip => userTrip.UserId).ToList(),
+                OrganizerId = trip.OrganizerId
             };
         }
     }
