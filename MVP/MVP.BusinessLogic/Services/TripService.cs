@@ -4,7 +4,7 @@ using MVP.BusinessLogic.Helpers.UrlBuilder;
 using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
 using MVP.EmailService.Interfaces;
-using MVP.Entities.Dtos.Apartments.ApartmentRooms
+using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 using MVP.Entities.Dtos.FlightsInformation;
 using MVP.Entities.Dtos.RentalCarsInformation;
 using MVP.Entities.Dtos.TripInfo;
