@@ -165,5 +165,16 @@ namespace MVP.BusinessLogic.Services
             var rooms = await _apartmentRepository.GetRoomsByApartmentIdAndDateAsync(apartmentId, trip.Start, trip.End);
             return rooms.Select(ApartmentRoomDto.ToDto);
         }
+
+        public async Task DeleteRoomAsync(int apartmentRoomId)
+        {
+            var apartmentRoom = await _apartmentRepository.GetRoomByIdAsync(apartmentRoomId);
+            if (apartmentRoom is null)
+            {
+                throw new BusinessLogicException("Apartment room was not found", "roomNotFound");
+            }
+
+            await _apartmentRepository.DeleteApartmentRoomAsync(apartmentRoom);
+        }
     }
 }

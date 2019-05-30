@@ -14,7 +14,6 @@ namespace MVP.DataAccess.Interfaces
         Task<Apartment> GetApartmentWithRoomsByIdAsync(int apartmentId);
         Task DeleteApartmentAsync(Apartment apartment);
         Task<List<ApartmentRoom>> GetApartmentRoomsByNumberAsync(int apartmentId, List<int> roomNumbers);
-        Task<List<ApartmentRoom>> GetAllApartmentRoomsAsync();
         Task<List<Apartment>> GetAllApartmentsWithRoomsAsync();
 
         Task<IEnumerable<Apartment>> GetApartmentsByOfficeId(int officeId);
@@ -22,5 +21,7 @@ namespace MVP.DataAccess.Interfaces
         Task<IEnumerable<ApartmentRoom>> GetRoomsByApartmentIdAndDateAsync(int apartmentId, DateTimeOffset start, DateTimeOffset end);
         Task<bool> IsRoomAvailable(int apartmentId, int roomId, DateTimeOffset start, DateTimeOffset end);
         Task<Apartment> GetApartmentByRoomIdAsync(int roomId);
+        Task<ApartmentRoom> GetRoomByIdAsync(int apartmentRoomId);
+        Task DeleteApartmentRoomAsync(ApartmentRoom apartmentRoom);
     }
 }

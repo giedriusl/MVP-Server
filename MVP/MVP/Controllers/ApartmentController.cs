@@ -305,5 +305,26 @@ namespace MVP.Controllers
                 return StatusCode(500, "common.internal");
             }
         }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpDelete("api/[controller]/Room/{roomId}")]
+        public async Task<IActionResult> DeleteRoom(int apartmentRoomId)
+        {
+            try
+            {
+                await _apartmentService.DeleteRoomAsync(apartmentRoomId);
+                return Ok();
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid room delete request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
     }
 }

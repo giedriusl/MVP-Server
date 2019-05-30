@@ -22,5 +22,6 @@ namespace MVP.BusinessLogic.Interfaces
         Task<IEnumerable<CalendarDto>> GetCalendarByRoomAndApartmentIdAsync(int apartmentId, int roomId);
         Task UploadApartmentRoomsCalendarAsync(IFormFile file);
         Task<IEnumerable<ApartmentRoomDto>> GetAvailableRooms(int apartmentId, int tripId);
+        Task DeleteRoomAsync(int apartmentRoomId);
     }
 }
