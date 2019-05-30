@@ -9,6 +9,7 @@ using MVP.Entities.Exceptions;
 using MVP.Filters;
 using System;
 using System.Threading.Tasks;
+using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 
 namespace MVP.Controllers
 {
@@ -22,7 +23,8 @@ namespace MVP.Controllers
         private readonly ILogger<TripController> _logger;
 
 
-        public TripController(ITripService tripService, ILogger<TripController> logger)
+        public TripController(ITripService tripService, 
+            ILogger<TripController> logger)
         {
             _tripService = tripService;
             _logger = logger;
@@ -494,6 +496,120 @@ namespace MVP.Controllers
             catch (Exception exception)
             {
                 _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "AllowAllRoles")]
+        [HttpGet("api/[controller]/GetConfirming/{tripId}")]
+        public async Task<IActionResult> GetConfirmingTrip(int tripId)
+        {
+            try
+            {
+                var userEmail = User.Identity.Name;
+                var trip = await _tripService.GetConfirmingTrip(tripId, userEmail);
+                return Ok(trip);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Trip is not available for confirmation.", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "AllowAllRoles")]
+        [HttpGet("api/[controller]/GetTripsToConfirm")]
+        public async Task<IActionResult> GetTripsToConfirm()
+        {
+            try
+            {
+                var userEmail = User.Identity.Name;
+                var trips = await _tripService.GetTripsToConfirmAsync(userEmail);
+                return Ok(trips);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Trip is not available for confirmation.", exception);
+                return BadRequest($"trip.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpPost("api/[controller]/AddUsersToRooms")]
+        public async Task<IActionResult> AddUsersToRooms([FromBody] UserRoomDto userToRoom)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
+                var tripApartmentInfo = await _tripService.AddUsersToRooms(userToRoom);
+
+                return Ok(tripApartmentInfo);
+
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Could not add users to rooms:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpDelete("api/[controller]/{tripId}/User/{userId}/Room/{roomId}")]
+        public async Task<IActionResult> RemoveUserFromRoom(int tripId, string userId, int roomId)
+        {
+            try
+            {
+                await _tripService.RemoveUserFromRoom(tripId, roomId, userId);
+                return Ok();
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Could not remove user from room:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpGet("api/[controller]/{tripId}/GetUsersWithRooms")]
+        public async Task<IActionResult> GetUsersWithRooms(int tripId)
+        {
+            try
+            {
+                var usersWithRooms = await _tripService.GetUsersWithRooms(tripId);
+                return Ok(usersWithRooms);
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Could not remove user from room:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
                 return StatusCode(500, "common.internal");
             }
         }

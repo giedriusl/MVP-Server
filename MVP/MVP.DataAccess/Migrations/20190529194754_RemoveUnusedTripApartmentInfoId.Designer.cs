@@ -4,14 +4,16 @@ using MVP.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MVP.DataAccess.Migrations
 {
     [DbContext(typeof(MvpContext))]
-    partial class MvpContextModelSnapshot : ModelSnapshot
+    [Migration("20190529194754_RemoveUnusedTripApartmentInfoId")]
+    partial class RemoveUnusedTripApartmentInfoId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -307,9 +309,6 @@ namespace MVP.DataAccess.Migrations
 
                     b.Property<int>("FromOfficeId");
 
-                    b.Property<string>("OrganizerId")
-                        .IsRequired();
-
                     b.Property<DateTimeOffset>("Start");
 
                     b.Property<string>("Title")
@@ -322,8 +321,6 @@ namespace MVP.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FromOfficeId");
-
-                    b.HasIndex("OrganizerId");
 
                     b.HasIndex("ToOfficeId");
 
@@ -532,11 +529,6 @@ namespace MVP.DataAccess.Migrations
                     b.HasOne("MVP.Entities.Entities.Office", "FromOffice")
                         .WithMany()
                         .HasForeignKey("FromOfficeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("MVP.Entities.Entities.User", "Organizer")
-                        .WithMany()
-                        .HasForeignKey("OrganizerId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("MVP.Entities.Entities.Office", "ToOffice")

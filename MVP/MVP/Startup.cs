@@ -123,6 +123,7 @@ namespace MVP
             services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddScoped<ITripRepository, TripRepository>();
             services.AddScoped<IUserTripRepository, UserTripRepository>();
+            services.AddScoped<ITripApartmentInfoRepository, TripApartmentInfoRepository>();
 
             services.AddScoped<LoggerFilter>();
 

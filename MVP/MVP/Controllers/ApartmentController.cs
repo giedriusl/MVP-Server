@@ -267,5 +267,53 @@ namespace MVP.Controllers
                 return StatusCode(500, "common.internal");
             }
         }
+
+        [Authorize(Policy = "RequireAdministratorRole")]
+        [HttpGet("api/[controller]/GetOfficeApartments/{officeId}")]
+        public async Task<IActionResult> GetAllOfficeApartments(int officeId)
+        {
+            try
+            {
+                var apartments = await _apartmentService.GetAllOfficeApartmentsAsync(officeId);
+
+                return Ok(apartments);
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid get apartments request: ", exception);
+                return BadRequest($"apartment.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured: ", exception);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpGet("api/[controller]/{apartmentId}/AvailableRooms/{tripId}")]
+        public async Task<IActionResult> GetAvailableRooms(int apartmentId, int tripId)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model is not valid");
+                }
+
+                var rooms = await _apartmentService.GetAvailableRooms(apartmentId, tripId);
+                return Ok(rooms);
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid apartment rooms get request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
     }
 }
