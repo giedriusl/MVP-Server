@@ -12,7 +12,7 @@ namespace MVP.BusinessLogic.Interfaces
 {
     public interface ITripService
     {
-        Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto);
+        Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto, string organizerEmail);
         Task DeleteTripAsync(int tripId);
         Task AddFlightInformationToTripAsync(int tripId, FlightInformationDto flightInformationDto);
         Task AddRentalCarInformationToTripAsync(int tripId, RentalCarInformationDto rentalCarInformationDto);
@@ -23,7 +23,7 @@ namespace MVP.BusinessLogic.Interfaces
         Task DeleteFlightInformationFromTripAsync(int tripId, int flightInformationId);
         Task UpdateFlightInformationForTripAsync(int tripId, UpdateFlightInformationDto updateFlightInformationDto);
 
-        Task<IEnumerable<TripDto>> GetAllTripsAsync();
+        Task<IEnumerable<TripDto>> GetAllTripsAsync(string userEmail);
         Task<TripViewDto> GetTripByIdAsync(int tripId);
         Task<IEnumerable<TripDto>> GetTripsByUserIdAsync(string userId);
         Task<MergedTripDto> GetMergedTripsDataAsync(int baseTripId, int additionalTripId);
