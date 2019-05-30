@@ -5,6 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190529111402_AddOrganizerToTrip.cs" />
+    <Compile Remove="Migrations\20190529111911_AddOrganizerToTrip.cs" />
+    <Compile Remove="Migrations\20190529112454_AddOrganizertoTrip.cs" />
+    <Compile Remove="Migrations\20190529112837_AddOrganizerToTrip.cs" />
+    <Compile Remove="Migrations\20190529113144_AddOrganizerToTrip.cs" />
+    <Compile Remove="Migrations\20190529113532_AddOrganizerToTrip.cs" />
+    <Compile Remove="Migrations\20190529114920_AddOrganizerToTrip.cs" />
+    <Compile Remove="Migrations\20190529115458_AddOrganizerToTrip.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.8" />

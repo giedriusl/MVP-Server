@@ -25,12 +25,16 @@ namespace MVP.DataAccess.Seed
         public static readonly double Cost = 100;
         public static readonly DateTime Start = DateTime.UtcNow;
         public static readonly DateTime End = DateTime.UtcNow.AddDays(1);
+        public static readonly string FromAirport = "VNO";
+        public static readonly string ToAirport = "RIX";
     }
     public static class DefaultRentalCarInformation
     {
         public static readonly double Cost = 100;
         public static readonly DateTime Start = DateTime.UtcNow;
         public static readonly DateTime End = DateTime.UtcNow.AddDays(1);
+        public static readonly string PickupAddress = "Default pickup address";
+        public static readonly string DropOffAddress = "Default dropoff address";
     }
     public static class DefaultApartment
     {

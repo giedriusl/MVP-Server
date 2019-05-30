@@ -31,7 +31,7 @@ namespace MVP.Entities.Dtos.Trips
             return mergedTrip;
         }
 
-        public static CreateTripDto ToCreateTripDto(MergedTripDto mergedTripDto, int toOfficeId, int fromOfficeId)
+        public static CreateTripDto ToCreateTripDto(MergedTripDto mergedTripDto, int toOfficeId, int fromOfficeId, string organizerId)
         {
             return new CreateTripDto
             {
@@ -43,7 +43,8 @@ namespace MVP.Entities.Dtos.Trips
                 ToOfficeId = toOfficeId,
                 FlightInformations = mergedTripDto.FlightInformations,
                 RentalCarInformations = mergedTripDto.RentalCarInformations,
-                UserIds = mergedTripDto.UserIds.ToList()
+                UserIds = mergedTripDto.UserIds.ToList(),
+                OrganizerId = mergedTripDto.OrganizerId
             };
         }
     }

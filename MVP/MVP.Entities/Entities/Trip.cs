@@ -19,7 +19,8 @@ namespace MVP.Entities.Entities
         public virtual List<FlightInformation> FlightInformations { get; set; } = new List<FlightInformation>();
         public virtual List<RentalCarInformation> RentalCarInformations { get; set; } = new List<RentalCarInformation>();
         public virtual ICollection<UserTrip> UserTrips { get; set; } = new List<UserTrip>();
-
+        public string OrganizerId { get; set; }
+        public User Organizer { get; set; }
 
         public void UpdateTrip(CreateTripDto updateTripDto)
         {
