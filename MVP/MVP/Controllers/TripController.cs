@@ -9,6 +9,7 @@ using MVP.Entities.Exceptions;
 using MVP.Filters;
 using System;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 
 namespace MVP.Controllers
@@ -21,13 +22,15 @@ namespace MVP.Controllers
     {
         private readonly ITripService _tripService;
         private readonly ILogger<TripController> _logger;
+        private readonly IExceptionHandlingService _exceptionHandlingService;
 
 
         public TripController(ITripService tripService, 
-            ILogger<TripController> logger)
+            ILogger<TripController> logger, IExceptionHandlingService exceptionHandlingService)
         {
             _tripService = tripService;
             _logger = logger;
+            _exceptionHandlingService = exceptionHandlingService;
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
@@ -412,6 +415,13 @@ namespace MVP.Controllers
                 await _tripService.UpdateTripAsync(tripId, updateTripDto);
 
                 return Ok();
+            }
+            catch (DbUpdateConcurrencyException exception)
+            {
+                var timeStamp = _exceptionHandlingService.HandleConcurrencyException(exception);
+                _logger.Log(LogLevel.Warning, "Invalid trip update request: ", exception);
+
+                return Conflict(new { Message = "trip.optLockException", Version = timeStamp});
             }
             catch (BusinessLogicException exception)
             {
