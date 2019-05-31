@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using MVP.Entities.Entities;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using MVP.Entities.Entities;
 
 namespace MVP.DataAccess.Interfaces
 {

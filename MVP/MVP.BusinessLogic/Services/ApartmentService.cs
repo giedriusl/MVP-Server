@@ -5,11 +5,11 @@ using MVP.Entities.Dtos.Apartments;
 using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 using MVP.Entities.Dtos.Calendars;
 using MVP.Entities.Dtos.Locations;
+using MVP.Entities.Entities;
 using MVP.Entities.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MVP.Entities.Entities;
 
 namespace MVP.BusinessLogic.Services
 {

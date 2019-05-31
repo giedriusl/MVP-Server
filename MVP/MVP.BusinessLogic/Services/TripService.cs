@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using MVP.BusinessLogic.Factory;
 using MVP.BusinessLogic.Helpers.UrlBuilder;
 using MVP.BusinessLogic.Interfaces;
+using MVP.BusinessLogic.Strategy;
 using MVP.DataAccess.Interfaces;
 using MVP.EmailService.Interfaces;
 using MVP.Entities.Dtos.Apartments.ApartmentRooms;
@@ -128,7 +128,7 @@ namespace MVP.BusinessLogic.Services
             var userRoles = await _userManager.GetRolesAsync(user);
             var userRole = userRoles.First();
 
-            var getTrips = GetAllTripsFactory.GetAllTrips(user, _tripRepository, userRole);
+            var getTrips = GetAllTripsStrategy.GetAllTrips(user, _tripRepository, userRole);
             var trips = await getTrips.GetAllTrips();
 
             if (trips is null)

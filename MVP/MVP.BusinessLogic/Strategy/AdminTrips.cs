@@ -1,15 +1,13 @@
 ﻿using MVP.DataAccess.Interfaces;
-using MVP.Entities.Dtos.Trips;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MVP.Entities.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MVP.BusinessLogic.Strategy
 {
-    public class GetAllAdminTrips : GetAllTripsStrategy
+    public class AdminTrips : TripsStrategy
     {
-        public GetAllAdminTrips(ITripRepository tripRepository, User user) : base(tripRepository, user)
+        public AdminTrips(ITripRepository tripRepository, User user) : base(tripRepository, user)
         {
         }
 

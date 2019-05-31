@@ -9,22 +9,22 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using MVP.BusinessLogic.Helpers.TokenGenerator;
+using MVP.BusinessLogic.Helpers.UrlBuilder;
 using MVP.BusinessLogic.Interfaces;
 using MVP.BusinessLogic.Services;
 using MVP.DataAccess;
 using MVP.DataAccess.Interfaces;
 using MVP.DataAccess.Repositories;
+using MVP.EmailService;
+using MVP.EmailService.Interfaces;
 using MVP.Entities.Entities;
+using MVP.Filters;
 using MVP.Middlewares;
 using NLog.Extensions.Logging;
 using NLog.Web;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using MVP.BusinessLogic.Helpers.UrlBuilder;
-using MVP.EmailService;
-using MVP.EmailService.Interfaces;
-using MVP.Filters;
 
 namespace MVP
 {

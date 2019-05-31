@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using MVP.Entities.Dtos.Offices;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using MVP.Entities.Dtos.Offices;
 
 namespace MVP.BusinessLogic.Interfaces
 {
