@@ -28,7 +28,7 @@ namespace MVP.Controllers
             _logger = logger;
         }
 
-        [Authorize(Policy = "RequireAdministratorRole")]
+        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpPost("api/[controller]")]
         public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentDto createApartmentDto)
         {
@@ -54,7 +54,7 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireAdministratorRole")]
+        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpPost("api/[controller]/{apartmentId}/AddRoom")]
         public async Task<IActionResult> AddRoomToApartment(int apartmentId, [FromBody] CreateApartmentRoomDto createRoomDto)
         {
@@ -133,7 +133,7 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "AllowAllRoles")]
+        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpGet("api/[controller]")]
         public async Task<IActionResult> GetAllApartments()
         {
@@ -155,7 +155,7 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "AllowAllRoles")]
+        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpGet("api/[controller]/{apartmentId}")]
         public async Task<IActionResult> GetApartmentById(int apartmentId)
         {
@@ -182,7 +182,7 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "AllowAllRoles")]
+        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpGet("api/[controller]/{apartmentId}/Rooms")]
         public async Task<IActionResult> GetRooms(int apartmentId)
         {
@@ -209,7 +209,7 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "AllowAllRoles")]
+        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpGet("api/[controller]/{apartmentId}/Room/{roomId}/Calendar")]
         public async Task<IActionResult> GetRoomsCalendar(int apartmentId, int roomId)
         {

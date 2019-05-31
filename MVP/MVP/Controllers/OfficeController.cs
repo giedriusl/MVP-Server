@@ -98,7 +98,7 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "AllowAllRoles")]
+        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpGet("api/[controller]")]
         public async Task<IActionResult> GetAllOffices()
         {
@@ -119,7 +119,7 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "AllowAllRoles")]
+        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpGet("api/[controller]/{officeId}")]
         public async Task<IActionResult> GetOfficeById(int officeId)
         {
@@ -140,7 +140,7 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "AllowAllRoles")]
+        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpGet("api/[controller]/ByName/{officeName}")]
         public async Task<IActionResult> GetOfficeByName(string officeName)
         {
