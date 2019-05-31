@@ -613,12 +613,12 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
-        [HttpDelete("api/[controller]/{tripId}/User/{userId}/Room/{roomId}")]
-        public async Task<IActionResult> RemoveUserFromRoom(int tripId, string userId, int roomId)
+        [HttpDelete("api/[controller]/RemoveUserFromRoom/{tripApartmentInfoId}")]
+        public async Task<IActionResult> RemoveUserFromRoom(int tripApartmentInfoId)
         {
             try
             {
-                await _tripService.RemoveUserFromRoom(tripId, roomId, userId);
+                await _tripService.RemoveUserFromRoom(tripApartmentInfoId);
                 return Ok();
             }
             catch (BusinessLogicException ex)

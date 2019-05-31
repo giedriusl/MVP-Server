@@ -24,13 +24,11 @@ namespace MVP.DataAccess.Repositories
             return tripApartmentInfoEntity;
         }
 
-        public async Task<TripApartmentInfo> GetTripApartmentInfoByTripRoomAndUserAsync(int tripId, int roomId, string userId)
+        public async Task<TripApartmentInfo> GetTripApartmentInfoByIdAsync(int tripApartmentInfoId)
         {
             var tripApartmentInfo = await _context.TripApartmentInfos
                 .Include(ta => ta.Calendar)
-                .FirstOrDefaultAsync(ta => ta.TripId == tripId 
-                                           && ta.ApartmentRoomId == roomId 
-                                           && ta.UserId == userId);
+                .FirstOrDefaultAsync(ta => ta.Id == tripApartmentInfoId);
 
             return tripApartmentInfo;
         }
