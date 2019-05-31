@@ -189,6 +189,11 @@ namespace MVP.BusinessLogic.Services
                 throw new BusinessLogicException("User is not in this trip.", "cannotConfirm");
             }
 
+            if (userTrip.Confirmed)
+            {
+                throw new BusinessLogicException("User asking for confirm confirmed trip", "cannotConfirm");
+            }
+
             return TripDto.ToDto(userTrip.Trip);
         }
 
