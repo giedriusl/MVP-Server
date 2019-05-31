@@ -14,6 +14,7 @@ namespace MVP.Entities.Dtos.Apartments
             {
                 Id = apartment.Id,
                 Title = apartment.Title,
+                OfficeId = apartment.OfficeId,
                 Location = LocationDto.ToDto(apartment.Location)
             };
         }

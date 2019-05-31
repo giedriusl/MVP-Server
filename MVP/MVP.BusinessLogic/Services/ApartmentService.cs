@@ -20,15 +20,13 @@ namespace MVP.BusinessLogic.Services
         private readonly IOfficeRepository _officeRepository;
         private readonly IFileReader _fileReader;
         private readonly ITripRepository _tripRepository;
-        private readonly ITripApartmentInfoRepository _tripApartmentInfoRepository;
 
         public ApartmentService(IApartmentRepository apartmentRepository,
             ICalendarRepository calendarRepository,
             ILocationRepository locationRepository,
             IOfficeRepository officeRepository,
             IFileReader fileReader, 
-            ITripRepository tripRepository, 
-            ITripApartmentInfoRepository tripApartmentInfoRepository)
+            ITripRepository tripRepository)
         {
             _apartmentRepository = apartmentRepository;
             _calendarRepository = calendarRepository;
@@ -36,7 +34,6 @@ namespace MVP.BusinessLogic.Services
             _officeRepository = officeRepository;
             _fileReader = fileReader;
             _tripRepository = tripRepository;
-            _tripApartmentInfoRepository = tripApartmentInfoRepository;
         }
 
         public async Task<CreateApartmentDto> CreateApartmentAsync(CreateApartmentDto createApartmentDto)
