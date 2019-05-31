@@ -9,6 +9,7 @@ using MVP.Entities.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MVP.Entities.Entities;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -55,6 +56,15 @@ namespace MVP.BusinessLogic.Services
             }
 
             apartment.Location = location;
+
+            if (createApartmentDto.RoomNumber.HasValue)
+            {
+                apartment.Rooms.Add(new ApartmentRoom
+                {
+                    RoomNumber = createApartmentDto.RoomNumber.Value,
+                    Title = createApartmentDto.RoomNumber.ToString()
+                });
+            }
 
             var apartmentEntity = await _apartmentRepository.AddApartmentAsync(apartment);
 
