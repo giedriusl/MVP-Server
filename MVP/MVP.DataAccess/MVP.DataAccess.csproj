@@ -13,6 +13,10 @@
     <Compile Remove="Migrations\20190529113532_AddOrganizerToTrip.cs" />
     <Compile Remove="Migrations\20190529114920_AddOrganizerToTrip.cs" />
     <Compile Remove="Migrations\20190529115458_AddOrganizerToTrip.cs" />
+    <Compile Remove="Migrations\20190530201530_AddOptLockingForTrip.cs" />
+    <Compile Remove="Migrations\20190530211447_AddOptLockingForTrip.cs" />
+    <Compile Remove="Migrations\20190530212859_test.cs" />
+    <Compile Remove="Migrations\20190530213258_test.cs" />
     <Compile Remove="Migrations\20190530235819_AddCascadeDeleteOnRooms.cs" />
   </ItemGroup>
 

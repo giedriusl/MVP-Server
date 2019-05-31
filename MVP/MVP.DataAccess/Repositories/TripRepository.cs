@@ -108,6 +108,8 @@ namespace MVP.DataAccess.Repositories
 
         public async Task<Trip> UpdateTripAsync(Trip trip)
         {
+            _context.Entry(trip).OriginalValues["Timestamp"] = trip.Timestamp;
+
             var tripEntity = _context.Trips.Update(trip).Entity;
             await _context.SaveChangesAsync();
 

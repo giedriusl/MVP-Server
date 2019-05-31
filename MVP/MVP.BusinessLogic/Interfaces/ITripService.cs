@@ -43,7 +43,7 @@ namespace MVP.BusinessLogic.Interfaces
         Task<IEnumerable<TripDto>> GetTripsToConfirmAsync(string userEmail);
 
         Task<TripApartmentInfoDto> AddUsersToRooms(UserRoomDto userToRoom);
-        Task RemoveUserFromRoom(int tripId, int roomId, string userId);
+        Task RemoveUserFromRoom(int tripApartmentInfoId);
         Task<IEnumerable<TripApartmentInfoDto>> GetUsersWithRooms(int tripId);
     }
 }
