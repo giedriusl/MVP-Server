@@ -264,7 +264,7 @@ namespace MVP.BusinessLogic.Services
 
         public async Task DeleteFlightInformationFromTripAsync(int tripId, int flightInformationId)
         {
-            var trip = await GetTripAsync(tripId);
+            var trip = await _tripRepository.GetTripByIdWithFlightInformationAsync(tripId);
 
             if (trip.FlightInformations.Count == 0)
             {
@@ -312,7 +312,7 @@ namespace MVP.BusinessLogic.Services
 
         public async Task DeleteRentalCarInformationFromTripAsync(int tripId, int rentalCarInformationId)
         {
-            var trip = await GetTripAsync(tripId);
+            var trip = await _tripRepository.GetTripByIdWithRentalCarInformationAsync(tripId);
 
             var rentalCarInformationToDelete = trip.RentalCarInformations
                 .First(rentalCarInformation => rentalCarInformation.Id == rentalCarInformationId);
