@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
 using MVP.Entities.Dtos.Offices;
@@ -90,6 +91,11 @@ namespace MVP.Controllers
             {
                 _logger.Log(LogLevel.Warning, "Invalid office deletion request:", ex);
                 return BadRequest($"office.{ex.ErrorCode}");
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid office deletion request:", ex);
+                return Conflict("office.cannotRemove");
             }
             catch (Exception ex)
             {
