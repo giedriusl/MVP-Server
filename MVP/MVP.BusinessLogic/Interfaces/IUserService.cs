@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
 using MVP.Entities.Dtos;
 using MVP.Entities.Dtos.Users;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace MVP.BusinessLogic.Interfaces
 {

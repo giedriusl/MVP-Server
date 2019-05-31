@@ -2,7 +2,6 @@
 
 namespace MVP.Middlewares
 {
-
     public static class MiddlewareExtensions
     {
         public static IApplicationBuilder UseOptions(this IApplicationBuilder builder, string policy)

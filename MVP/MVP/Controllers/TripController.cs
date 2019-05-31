@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Interfaces;
+using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 using MVP.Entities.Dtos.FlightsInformation;
 using MVP.Entities.Dtos.RentalCarsInformation;
 using MVP.Entities.Dtos.Trips;
@@ -9,8 +11,6 @@ using MVP.Entities.Exceptions;
 using MVP.Filters;
 using System;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 
 namespace MVP.Controllers
 {

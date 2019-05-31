@@ -1,6 +1,6 @@
-﻿using MVP.Entities.Enums;
+﻿using MVP.Entities.Dtos.RentalCarsInformation;
+using MVP.Entities.Enums;
 using System;
-using MVP.Entities.Dtos.RentalCarsInformation;
 
 namespace MVP.Entities.Entities
 {

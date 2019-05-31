@@ -1,12 +1,11 @@
-﻿using MVP.Entities.Dtos.FlightsInformation;
+﻿using MVP.Entities.Dtos.Apartments.ApartmentRooms;
+using MVP.Entities.Dtos.FlightsInformation;
 using MVP.Entities.Dtos.RentalCarsInformation;
+using MVP.Entities.Dtos.TripInfo;
 using MVP.Entities.Dtos.Trips;
+using MVP.Entities.Dtos.Users;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MVP.Entities.Dtos.Users;
-using MVP.Entities.Dtos.Apartments.ApartmentRooms;
-using MVP.Entities.Dtos.TripInfo;
-using MVP.Entities.Entities;
 
 namespace MVP.BusinessLogic.Interfaces
 {

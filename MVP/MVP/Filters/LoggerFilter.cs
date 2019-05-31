@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using MVP.BusinessLogic.Helpers.TokenGenerator;
+using System;
+using System.Linq;
+using System.Security.Claims;
 
 namespace MVP.Filters
 {

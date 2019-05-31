@@ -1,6 +1,6 @@
-﻿using MVP.Entities.Enums;
+﻿using MVP.Entities.Dtos.FlightsInformation;
+using MVP.Entities.Enums;
 using System;
-using MVP.Entities.Dtos.FlightsInformation;
 
 namespace MVP.Entities.Entities
 {

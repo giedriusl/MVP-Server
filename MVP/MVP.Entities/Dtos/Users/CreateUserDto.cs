@@ -1,7 +1,5 @@
 ﻿using MVP.Entities.Entities;
 using MVP.Entities.Enums;
-using System;
-using System.Linq;
 
 namespace MVP.Entities.Dtos.Users
 {

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using MVP.Entities.Dtos.Emails;
+﻿using MVP.Entities.Dtos.Emails;
 
 namespace MVP.EmailService.Interfaces
 {
