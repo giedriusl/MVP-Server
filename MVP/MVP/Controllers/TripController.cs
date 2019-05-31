@@ -9,6 +9,7 @@ using MVP.Entities.Exceptions;
 using MVP.Filters;
 using System;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using MVP.Entities.Dtos.Apartments.ApartmentRooms;
 
 namespace MVP.Controllers
@@ -21,13 +22,15 @@ namespace MVP.Controllers
     {
         private readonly ITripService _tripService;
         private readonly ILogger<TripController> _logger;
+        private readonly IExceptionHandlingService _exceptionHandlingService;
 
 
         public TripController(ITripService tripService, 
-            ILogger<TripController> logger)
+            ILogger<TripController> logger, IExceptionHandlingService exceptionHandlingService)
         {
             _tripService = tripService;
             _logger = logger;
+            _exceptionHandlingService = exceptionHandlingService;
         }
 
         [Authorize(Policy = "RequireOrganizerRole")]
@@ -38,10 +41,10 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
-
-                var trip = await _tripService.CreateTripAsync(createTripDto);
+                
+                var trip = await _tripService.CreateTripAsync(createTripDto, User.Identity.Name);
 
                 return Ok(trip);
             }
@@ -79,19 +82,19 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireOrganizerRole")]
         [HttpGet("api/[controller]")]
+        [Authorize(Policy = "AllowAllRoles")]
         public async Task<IActionResult> GetAllTrips()
         {
             try
             {
-                var trips = await _tripService.GetAllTripsAsync();
+                var trips = await _tripService.GetAllTripsAsync(User.Identity.Name);
 
                 return Ok(trips);
             }
             catch (BusinessLogicException exception)
             {
-                _logger.Log(LogLevel.Warning, "Invalid trip get request: ", exception);
+                _logger.Log(LogLevel.Warning, "Invalid get trips request: ", exception);
                 return BadRequest($"trip.{exception.ErrorCode}");
             }
             catch (Exception exception)
@@ -151,6 +154,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.AddFlightInformationToTripAsync(tripId, flightInformationDto);
 
                 return Ok();
@@ -196,6 +204,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.UpdateFlightInformationForTripAsync(tripId, updateFlightInformationDto);
 
                 return Ok();
@@ -218,6 +231,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.AddRentalCarInformationToTripAsync(tripId, rentalCarInformationDto);
 
                 return Ok();
@@ -241,6 +259,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.UpdateRentalCarInformationForTripAsync(tripId, updateRentalCarInformationDto);
 
                 return Ok();
@@ -335,6 +358,11 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 var mergedTrip = await _tripService.MergeTripsAsync(mergedTripDto);
 
                 return Ok(mergedTrip);
@@ -379,9 +407,21 @@ namespace MVP.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("model.invalid");
+                }
+
                 await _tripService.UpdateTripAsync(tripId, updateTripDto);
 
                 return Ok();
+            }
+            catch (DbUpdateConcurrencyException exception)
+            {
+                var timeStamp = _exceptionHandlingService.HandleConcurrencyException(exception);
+                _logger.Log(LogLevel.Warning, "Invalid trip update request: ", exception);
+
+                return Conflict(new { Message = "trip.optLockException", Version = timeStamp});
             }
             catch (BusinessLogicException exception)
             {
@@ -552,7 +592,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var tripApartmentInfo = await _tripService.AddUsersToRooms(userToRoom);

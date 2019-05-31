@@ -33,7 +33,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var response = await _officeService.CreateOfficeAsync(createOfficeDto);
@@ -41,7 +41,7 @@ namespace MVP.Controllers
             }
             catch (BusinessLogicException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                _logger.Log(LogLevel.Warning, "Invalid office creation request:", ex);
                 return BadRequest($"office.{ex.ErrorCode}");
             }
             catch (Exception ex)
@@ -52,22 +52,22 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPut("api/[controller]")]
-        public async Task<IActionResult> UpdateOffice([FromBody] UpdateOfficeDto updateOfficeDto)
+        [HttpPut("api/[controller]/{officeId}")]
+        public async Task<IActionResult> UpdateOffice(int officeId, [FromBody] OfficeDto updateOfficeDto)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
-                var response = await _officeService.UpdateOfficeAsync(updateOfficeDto);
+                var response = await _officeService.UpdateOfficeAsync(officeId, updateOfficeDto);
                 return Ok(response);
             }
             catch (BusinessLogicException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid office creation request:", ex);
+                _logger.Log(LogLevel.Warning, "Invalid office update request:", ex);
                 return BadRequest($"office.{ex.ErrorCode}");
             }
             catch (Exception ex)

@@ -108,6 +108,8 @@ namespace MVP.DataAccess.Repositories
 
         public async Task<Trip> UpdateTripAsync(Trip trip)
         {
+            _context.Entry(trip).OriginalValues["Timestamp"] = trip.Timestamp;
+
             var tripEntity = _context.Trips.Update(trip).Entity;
             await _context.SaveChangesAsync();
 
@@ -145,6 +147,19 @@ namespace MVP.DataAccess.Repositories
             var trips = await _context.Trips
                 .Where(trip => trip.TripStatus != TripStatus.InProgress
                     && trip.TripStatus != TripStatus.Completed)
+                .ToListAsync();
+
+            return trips;
+        }
+
+        public async Task<IEnumerable<Trip>> GetTripsByOrganizerIdAsync(string organizerId)
+        {
+            var trips = await _context.Trips
+                .Where(trip => trip.OrganizerId == organizerId)
+                .Include(trip => trip.ToOffice)
+                    .ThenInclude(office => office.Location)
+                .Include(trip => trip.FromOffice)
+                    .ThenInclude(office => office.Location)
                 .ToListAsync();
 
             return trips;

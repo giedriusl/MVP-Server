@@ -4,14 +4,16 @@ using MVP.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MVP.DataAccess.Migrations
 {
     [DbContext(typeof(MvpContext))]
-    partial class MvpContextModelSnapshot : ModelSnapshot
+    [Migration("20190529120139_AddOrganizerToTrip")]
+    partial class AddOrganizerToTrip
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -312,10 +314,6 @@ namespace MVP.DataAccess.Migrations
 
                     b.Property<DateTimeOffset>("Start");
 
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
-
                     b.Property<string>("Title")
                         .IsRequired();
 
@@ -332,29 +330,6 @@ namespace MVP.DataAccess.Migrations
                     b.HasIndex("ToOfficeId");
 
                     b.ToTable("Trip");
-                });
-
-            modelBuilder.Entity("MVP.Entities.Entities.TripApartmentInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ApartmentRoomId");
-
-                    b.Property<int>("CalendarId");
-
-                    b.Property<int>("TripId");
-
-                    b.Property<string>("UserId")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CalendarId")
-                        .IsUnique();
-
-                    b.ToTable("TripApartmentInfo");
                 });
 
             modelBuilder.Entity("MVP.Entities.Entities.User", b =>
@@ -547,14 +522,6 @@ namespace MVP.DataAccess.Migrations
                         .WithMany()
                         .HasForeignKey("ToOfficeId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("MVP.Entities.Entities.TripApartmentInfo", b =>
-                {
-                    b.HasOne("MVP.Entities.Entities.Calendar", "Calendar")
-                        .WithOne("TripApartmentInfo")
-                        .HasForeignKey("MVP.Entities.Entities.TripApartmentInfo", "CalendarId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("MVP.Entities.Entities.UserTrip", b =>

@@ -81,9 +81,9 @@ namespace MVP.BusinessLogic.Services
             await _apartmentRepository.UpdateApartmentAsync(apartment);
         }
 
-        public async Task<UpdateApartmentDto> UpdateApartmentAsync(UpdateApartmentDto updateApartmentDto)
+        public async Task<ApartmentDto> UpdateApartmentAsync(int apartmentId, ApartmentDto updateApartmentDto)
         {
-            var apartment = await _apartmentRepository.GetApartmentByIdAsync(updateApartmentDto.Id);
+            var apartment = await _apartmentRepository.GetApartmentByIdAsync(apartmentId);
 
             if (apartment is null)
             {
@@ -133,9 +133,9 @@ namespace MVP.BusinessLogic.Services
             return calendars.Select(CalendarDto.ToDto).ToList();
         }
 
-        public async Task UploadCalendarAsync(int apartmentId, IFormFile file)
+        public async Task UploadApartmentRoomsCalendarAsync(IFormFile file)
         {
-            var calendars = await _fileReader.ReadApartmentCalendarFileAsync(apartmentId, file);
+            var calendars = await _fileReader.ReadApartmentRoomCalendarFileAsync(file);
             await _calendarRepository.AddCalendarsAsync(calendars.ToList());
         }
 
@@ -164,6 +164,17 @@ namespace MVP.BusinessLogic.Services
 
             var rooms = await _apartmentRepository.GetRoomsByApartmentIdAndDateAsync(apartmentId, trip.Start, trip.End);
             return rooms.Select(ApartmentRoomDto.ToDto);
+        }
+
+        public async Task DeleteRoomAsync(int apartmentRoomId)
+        {
+            var apartmentRoom = await _apartmentRepository.GetRoomByIdAsync(apartmentRoomId);
+            if (apartmentRoom is null)
+            {
+                throw new BusinessLogicException("Apartment room was not found", "roomNotFound");
+            }
+
+            await _apartmentRepository.DeleteApartmentRoomAsync(apartmentRoom);
         }
     }
 }

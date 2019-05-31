@@ -1,6 +1,9 @@
 ﻿using MVP.Entities.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 using MVP.Entities.Dtos.Trips;
 
 namespace MVP.Entities.Entities
@@ -19,7 +22,13 @@ namespace MVP.Entities.Entities
         public virtual List<FlightInformation> FlightInformations { get; set; } = new List<FlightInformation>();
         public virtual List<RentalCarInformation> RentalCarInformations { get; set; } = new List<RentalCarInformation>();
         public virtual ICollection<UserTrip> UserTrips { get; set; } = new List<UserTrip>();
+        public string OrganizerId { get; set; }
+        public User Organizer { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        [Timestamp]
+        [ConcurrencyCheck]
+        public byte[] Timestamp { get; set; }
 
         public void UpdateTrip(CreateTripDto updateTripDto)
         {
@@ -29,6 +38,7 @@ namespace MVP.Entities.Entities
             FromOfficeId = updateTripDto.FromOfficeId;
             ToOfficeId = updateTripDto.ToOfficeId;
             TripStatus = updateTripDto.TripStatus;
+            Timestamp = updateTripDto.Timestamp;
         }
     }
 }

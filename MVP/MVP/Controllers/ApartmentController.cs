@@ -36,7 +36,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var response = await _apartmentService.CreateApartmentAsync(createApartmentDto);
@@ -62,7 +62,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 await _apartmentService.AddRoomToApartmentAsync(apartmentId, createRoomDto);
@@ -70,7 +70,7 @@ namespace MVP.Controllers
             }
             catch (BusinessLogicException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                _logger.Log(LogLevel.Warning, "Could not add room to apartment:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)
@@ -81,52 +81,20 @@ namespace MVP.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPut("api/[controller]")]
-        public async Task<IActionResult> UpdateApartment([FromBody] UpdateApartmentDto updateApartmentDto)
+        [HttpPut("api/[controller]/{apartmentId}")]
+        public async Task<IActionResult> UpdateApartment(int apartmentId, [FromBody] ApartmentDto updateApartmentDto)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
-                var response = await _apartmentService.UpdateApartmentAsync(updateApartmentDto);
+                var response = await _apartmentService.UpdateApartmentAsync(apartmentId, updateApartmentDto);
                 return Ok(response);
             }
             catch(BusinessLogicException ex)
-            {
-                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
-                return BadRequest($"apartment.{ex.ErrorCode}");
-            }
-            catch (Exception ex)
-            {
-                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
-                return StatusCode(500, "common.internal");
-            }
-        }
-
-        [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPost("api/[controller]/{apartmentId}/Calendar")]
-        public async Task<IActionResult> UploadCalendar(int apartmentId, IFormFile file)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest("Model is not valid");
-                }
-
-                if (file.ContentType != "text/csv")
-                {
-                    return BadRequest("Invalid file format");
-                }
-
-                await _apartmentService.UploadCalendarAsync(apartmentId, file);
-
-                return Ok();
-            }
-            catch (FileReaderException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
@@ -146,7 +114,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 await _apartmentService.DeleteApartmentAsync(apartmentId);
@@ -155,7 +123,7 @@ namespace MVP.Controllers
             }
             catch (BusinessLogicException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", ex);
+                _logger.Log(LogLevel.Warning, "Invalid apartment deletion request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)
@@ -177,7 +145,7 @@ namespace MVP.Controllers
             }
             catch (BusinessLogicException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid apartment get request:", ex);
+                _logger.Log(LogLevel.Warning, "Invalid apartments get request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)
@@ -195,7 +163,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var apartment = await _apartmentService.GetApartmentByIdAsync(apartmentId);
@@ -222,7 +190,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var rooms = await _apartmentService.GetRoomsByApartmentIdAsync(apartmentId);
@@ -249,7 +217,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var calendars = await _apartmentService.GetCalendarByRoomAndApartmentIdAsync(apartmentId, roomId);
@@ -258,12 +226,34 @@ namespace MVP.Controllers
             }
             catch (BusinessLogicException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid apartment rooms get request:", ex);
+                _logger.Log(LogLevel.Warning, "Invalid apartment rooms calendar get request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)
             {
                 _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireAdministratorRole")]
+        [HttpPost("api/[controller]/UploadCalendar")]
+        public async Task<IActionResult> UploadApartmentRoomsCalendar(IFormFile file)
+        {
+            try
+            {
+                await _apartmentService.UploadApartmentRoomsCalendarAsync(file);
+
+                return Ok();
+            }
+            catch (BusinessLogicException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid upload apartment rooms calendar request: ", exception);
+                return BadRequest($"apartment.{exception.ErrorCode}");
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured: ", exception);
                 return StatusCode(500, "common.internal");
             }
         }
@@ -298,7 +288,7 @@ namespace MVP.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest("Model is not valid");
+                    return BadRequest("model.invalid");
                 }
 
                 var rooms = await _apartmentService.GetAvailableRooms(apartmentId, tripId);
@@ -307,6 +297,27 @@ namespace MVP.Controllers
             catch (BusinessLogicException ex)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment rooms get request:", ex);
+                return BadRequest($"apartment.{ex.ErrorCode}");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Internal error occured:", ex);
+                return StatusCode(500, "common.internal");
+            }
+        }
+
+        [Authorize(Policy = "RequireOrganizerRole")]
+        [HttpDelete("api/[controller]/Room/{apartmentRoomId}")]
+        public async Task<IActionResult> DeleteRoom(int apartmentRoomId)
+        {
+            try
+            {
+                await _apartmentService.DeleteRoomAsync(apartmentRoomId);
+                return Ok();
+            }
+            catch (BusinessLogicException ex)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid room delete request:", ex);
                 return BadRequest($"apartment.{ex.ErrorCode}");
             }
             catch (Exception ex)

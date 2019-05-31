@@ -4,19 +4,20 @@ using MVP.Entities.Entities;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 
 namespace MVP.Entities.Dtos.Trips
 {
     public class TripViewDto : TripDto
     {
         [Required]
-        public OfficeViewDto FromOffice { get; set; }
+        public new OfficeViewDto FromOffice { get; set; }
 
         [Required]
-        public OfficeViewDto ToOffice { get; set; }
+        public new OfficeViewDto ToOffice { get; set; }
 
         [Required]
-        public IEnumerable<UserDto> Users { get; set; }
+        public new IEnumerable<UserDto> Users { get; set; }
 
 
         public new static TripViewDto ToDto(Trip trip)
@@ -31,6 +32,7 @@ namespace MVP.Entities.Dtos.Trips
                 FromOffice = OfficeViewDto.ToDto(trip.FromOffice),
                 ToOffice = OfficeViewDto.ToDto(trip.ToOffice),
                 Users = trip.UserTrips.Select(userTrip => UserDto.ToDto(userTrip.User)),
+                Timestamp = trip.Timestamp
             };
         }
     }

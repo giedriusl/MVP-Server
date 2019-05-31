@@ -115,6 +115,7 @@ namespace MVP
             services.AddScoped<IFileReader, CsvReaderService>();
             services.AddScoped<IOfficeService, OfficeService>();
             services.AddScoped<ITripService, TripService>();
+            services.AddScoped<IExceptionHandlingService, ExceptionHandlingService>();
 
             //repositories
             services.AddScoped<IApartmentRepository, ApartmentRepository>();

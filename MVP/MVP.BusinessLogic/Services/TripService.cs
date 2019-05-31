@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MVP.BusinessLogic.Factory;
 using MVP.BusinessLogic.Helpers.UrlBuilder;
 using MVP.BusinessLogic.Interfaces;
 using MVP.DataAccess.Interfaces;
@@ -53,7 +54,7 @@ namespace MVP.BusinessLogic.Services
             _tripApartmentInfoRepository = tripApartmentInfoRepository;
         }
 
-        public async Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto)
+        public async Task<CreateTripDto> CreateTripAsync(CreateTripDto createTripDto, string organizerEmail)
         {
             ValidateCreateTrip(createTripDto);
 
@@ -73,27 +74,35 @@ namespace MVP.BusinessLogic.Services
                 throw new BusinessLogicException("Office to not found", "officeNotFound");
             }
 
+            var organizer = await _userManager.FindByEmailAsync(organizerEmail);
+
+            if (organizer is null)
+            {
+                throw new BusinessLogicException("Organizer not found", "userNotFound");
+            }
+
             trip.FromOffice = fromOffice;
             trip.ToOffice = toOffice;
+            trip.OrganizerId = organizer.Id;
 
             var tripEntity = await _tripRepository.AddTripAsync(trip);
 
-                var usersInTrip = _userManager.Users
-                    .Where(user => createTripDto.UserIds.Contains(user.Id))
-                    .Select(u => new { u.Id, u.Email })
-                    .ToList();
+            var usersInTrip = _userManager.Users
+                .Where(user => createTripDto.UserIds.Contains(user.Id))
+                .Select(u => new { u.Id, u.Email })
+                .ToList();
 
-                foreach (var user in usersInTrip)
+            foreach (var user in usersInTrip)
+            {
+                userTrips.Add(new UserTrip
                 {
-                    userTrips.Add(new UserTrip
-                    {
-                        TripId = tripEntity.Id, UserId = user.Id
-                    });
+                    TripId = tripEntity.Id, UserId = user.Id
+                });
 
-                    SendConfirmationEmail(user.Email, tripEntity.Id);
-                }
+                SendConfirmationEmail(user.Email, tripEntity.Id);
+            }
 
-                trip.UserTrips = userTrips;
+            trip.UserTrips = userTrips;
 
             await _userTripRepository.AddUserTripsAsync(userTrips);
 
@@ -107,10 +116,27 @@ namespace MVP.BusinessLogic.Services
             await _tripRepository.DeleteTripAsync(existingTrip);
         }
 
-        public async Task<IEnumerable<TripDto>> GetAllTripsAsync()
+        public async Task<IEnumerable<TripDto>> GetAllTripsAsync(string userEmail)
         {
-            var trips = await _tripRepository.GetAllTripsAsync();
-            var tripsDto = trips.Select(TripDto.ToDto).ToList();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            
+            if (user is null)
+            {
+                throw new BusinessLogicException("Specified user not found", "userNotFound" );
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRole = userRoles.First();
+
+            var getTrips = GetAllTripsFactory.GetAllTrips(user, _tripRepository, userRole);
+            var trips = await getTrips.GetAllTrips();
+
+            if (trips is null)
+            {
+                throw new BusinessLogicException("No trips were found", "tripNotFound");
+            }
+
+            var tripsDto = trips.Select(TripDto.ToDto);
 
             return tripsDto;
         }
@@ -207,9 +233,10 @@ namespace MVP.BusinessLogic.Services
 
             var toOffice = baseTrip.ToOffice;
             var fromOffice = baseTrip.FromOffice;
+            var organizer = await _userManager.FindByIdAsync(baseTrip.OrganizerId);
 
-            var createTripDto = MergedTripDto.ToCreateTripDto(mergedTripDto, toOffice.Id, fromOffice.Id);
-            var createdTrip = await CreateTripAsync(createTripDto);
+            var createTripDto = MergedTripDto.ToCreateTripDto(mergedTripDto, toOffice.Id, fromOffice.Id, organizer.Id);
+            var createdTrip = await CreateTripAsync(createTripDto, organizer.Email);
 
             await _tripRepository.DeleteTripAsync(baseTrip);
             await DeleteTripAsync(mergedTripDto.AdditionalTripId);
