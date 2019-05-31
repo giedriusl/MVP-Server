@@ -15,7 +15,7 @@ namespace MVP.DataAccess.EntityTypeConfigurations
             builder.Property(x => x.BedCount).IsRequired();
             builder.Property(x => x.ApartmentId).IsRequired();
 
-            builder.HasMany(x => x.Calendars);
+            builder.HasMany(x => x.Calendars).WithOne(y => y.ApartmentRoom).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

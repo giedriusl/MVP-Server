@@ -5,6 +5,7 @@ using MVP.Entities.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MVP.DataAccess.Repositories
 {
@@ -105,8 +106,7 @@ namespace MVP.DataAccess.Repositories
 
         public async Task<ApartmentRoom> GetRoomByIdAsync(int apartmentRoomId)
         {
-            var apartmentRoom = await _context.Apartments
-                .SelectMany(a => a.Rooms)
+            var apartmentRoom = await _context.ApartmentRooms
                 .FirstOrDefaultAsync(r => r.Id == apartmentRoomId);
 
             return apartmentRoom;
@@ -114,8 +114,7 @@ namespace MVP.DataAccess.Repositories
 
         public async Task DeleteApartmentRoomAsync(ApartmentRoom apartmentRoom)
         {
-            var rooms = await _context.Apartments.SelectMany(a => a.Rooms).ToListAsync();
-            rooms.Remove(apartmentRoom);
+            _context.ApartmentRooms.Remove(apartmentRoom);
 
             await _context.SaveChangesAsync();
         }

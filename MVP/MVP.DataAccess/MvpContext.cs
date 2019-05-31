@@ -17,6 +17,7 @@ namespace MVP.DataAccess
         public DbSet<Trip> Trips{ get; set; }
         public DbSet<UserTrip> UserTrips { get; set; }
         public DbSet<TripApartmentInfo> TripApartmentInfos { get; set; }
+        public DbSet<ApartmentRoom> ApartmentRooms { get; set; }
 
         public MvpContext(DbContextOptions<MvpContext> options) : base(options)
         {
