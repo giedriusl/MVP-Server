@@ -28,7 +28,7 @@ namespace MVP.Entities.Dtos.Apartments
                 Title = apartment.Title,
                 OfficeId = apartment.OfficeId,
                 Location = LocationDto.ToDto(apartment.Location),
-                RoomId = apartment.Rooms.FirstOrDefault().Id
+                RoomId = apartment.Rooms.FirstOrDefault()?.Id
             };
         }
     }
