@@ -562,7 +562,7 @@ namespace MVP.BusinessLogic.Services
 
             if (createTripDto.End < createTripDto.Start)
             {
-                throw new BusinessLogicException("Trip start date cannot be later than trip end date!", "invalidDateRage");
+                throw new BusinessLogicException("Trip start date cannot be later than trip end date!", "invalidDateRange");
             }
 
             foreach (var flightInformation in createTripDto.FlightInformations)

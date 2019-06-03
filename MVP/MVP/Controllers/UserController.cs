@@ -180,8 +180,8 @@ namespace MVP.Controllers
             }
             catch (FileReaderException ex)
             {
-                _logger.Log(LogLevel.Warning, "Invalid user upload request:", ex);
-                return BadRequest($"apartment.{ex.ErrorCode}");
+                _logger.Log(LogLevel.Warning, "Invalid user upload file: ", ex);
+                return BadRequest($"file.{ex.ErrorCode}");
             }
             catch (InvalidUserException exception)
             {
@@ -214,7 +214,7 @@ namespace MVP.Controllers
             catch (FileReaderException exception)
             {
                 _logger.Log(LogLevel.Warning, "Invalid apartment creation request:", exception);
-                return BadRequest($"apartment.{exception.ErrorCode}");
+                return BadRequest($"file.{exception.ErrorCode}");
             }
             catch (Exception exception)
             {

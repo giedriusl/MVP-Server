@@ -33,47 +33,6 @@ namespace MVP.BusinessLogic.Services
             _calendarRepository = calendarRepository;
         }
 
-        public async Task<IEnumerable<Calendar>> ReadApartmentCalendarFileAsync(int apartmentId, IFormFile file)
-        {
-            try
-            {
-                var data = await ReadData(file);
-                var roomNumbers = new List<int>();
-                data.ForEach(l => roomNumbers.Add(Int32.Parse(l[2])));
-
-                var rooms = await _apartmentRepository.GetApartmentRoomsByNumberAsync(apartmentId, roomNumbers);
-
-                var calendars = new List<Calendar>();
-
-                if (rooms.Count == 0)
-                {
-                    throw new FileReaderException("Apartment Rooms were not found");
-                }
-
-                foreach (var line in data)
-                {
-                    var room = rooms.FirstOrDefault(r => r.Id == Int32.Parse(line[UserIdPosition]));
-
-                    if (room != null)
-                    {
-                        calendars.Add(new Calendar
-                        {
-                            Start = DateTimeOffset.Parse(line[StartDateTimePosition]),
-                            End = DateTimeOffset.Parse(line[EndDateTimePosition]),
-                            ApartmentRoomId = room.Id
-                        });
-                    }
-                }
-
-                return calendars;
-            }
-            catch
-            {
-                throw new FileReaderException($"Exception while reading {file.FileName} file", "invalidFile");
-            }
-
-        }
-
         public async Task<IEnumerable<CreateUserDto>> ReadUsersFileAsync(IFormFile file)
         {
             try

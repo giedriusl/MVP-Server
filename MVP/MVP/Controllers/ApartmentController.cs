@@ -251,6 +251,11 @@ namespace MVP.Controllers
                 _logger.Log(LogLevel.Warning, "Invalid upload apartment rooms calendar request: ", exception);
                 return BadRequest($"apartment.{exception.ErrorCode}");
             }
+            catch (FileReaderException exception)
+            {
+                _logger.Log(LogLevel.Warning, "Invalid upload apartment rooms calendar file: ", exception);
+                return BadRequest($"file.{exception.ErrorCode}");
+            }
             catch (Exception exception)
             {
                 _logger.Log(LogLevel.Error, "Internal error occured: ", exception);
