@@ -436,7 +436,7 @@ namespace MVP.BusinessLogic.Services
         {
             if (baseTrip is null || additionalTrip is null)
             {
-                throw new BusinessLogicException("Trip was not found");
+                throw new BusinessLogicException("Trip was not found", "tripNotFound");
             }
 
             ValidateTripStatus(baseTrip);
@@ -447,7 +447,7 @@ namespace MVP.BusinessLogic.Services
         {
             if (trip.TripStatus == TripStatus.InProgress || trip.TripStatus == TripStatus.Completed)
             {
-                throw new BusinessLogicException($"One of the trips is in {trip.TripStatus} status so it cannot be merged.");
+                throw new BusinessLogicException($"One of the trips is in {trip.TripStatus} status so it cannot be merged.", "invalidTripStatus");
             }
         }
 

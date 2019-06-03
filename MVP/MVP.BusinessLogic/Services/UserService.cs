@@ -54,7 +54,7 @@ namespace MVP.BusinessLogic.Services
             var user = _userManager.Users.FirstOrDefault(u => u.Email == email);
             if (user is null)
             {
-                throw new InvalidUserException($"User with email {email} was not found.");
+                throw new InvalidUserException($"User with email {email} was not found.", "userNotFound");
             }
 
             await SendResetPasswordLinkAsync(user);
@@ -110,7 +110,7 @@ namespace MVP.BusinessLogic.Services
 
             if (!result.Succeeded)
             {
-                throw new InvalidUserException("Invalid login attempt");
+                throw new InvalidUserException("Invalid login attempt", "invalidLogin");
             }
 
             var user = _userManager.Users.First(u => u.Email == userDto.Email);
@@ -126,7 +126,7 @@ namespace MVP.BusinessLogic.Services
 
             if (!result.Succeeded)
             {
-                throw new InvalidUserException("Password reset failed.");
+                throw new InvalidUserException("Password reset failed.", "passwordResetFail");
             }
         }
 
@@ -154,7 +154,7 @@ namespace MVP.BusinessLogic.Services
 
             if (user is null)
             {
-                throw new InvalidUserException("There are no user with this email", "noUser");
+                throw new InvalidUserException("There is no user with this email", "noUser");
             }
             var roles = await _userManager.GetRolesAsync(user);
             var userDto = CreateUserDto.ToDto(user);
@@ -175,13 +175,13 @@ namespace MVP.BusinessLogic.Services
             var user = await _userManager.FindByEmailAsync(email);
             if (user is null)
             {
-                throw new BusinessLogicException("User not found.");
+                throw new BusinessLogicException("User not found.", "userNotFound");
             }
 
             var valid = await _userManager.VerifyUserTokenAsync(user, this._userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", token);
             if (!valid)
             {
-                throw new BusinessLogicException("Invalid token.");
+                throw new BusinessLogicException("Invalid token.", "invalidToken");
             }
         }
 
@@ -200,7 +200,7 @@ namespace MVP.BusinessLogic.Services
 
             if (!identityResult.Succeeded)
             {
-                throw new InvalidUserException("Assigning user to role failed.");
+                throw new InvalidUserException("Assigning user to role failed.", "roleAssignFail");
             }
         }
     }
