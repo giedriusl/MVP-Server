@@ -1,4 +1,5 @@
 ﻿using MVP.Entities.Entities;
+using System;
 
 namespace MVP.Entities.Dtos.TripInfo
 {
@@ -15,6 +16,10 @@ namespace MVP.Entities.Dtos.TripInfo
         public string ApartmentName { get; set; }
         public int RoomNumber { get; set; }
 
+        public DateTimeOffset Start { get; set; }
+
+        public DateTimeOffset End { get; set; }
+
         public static TripApartmentInfoDto ToDto(TripApartmentInfo tripApartmentInfo)
         {
             var dto = new TripApartmentInfoDto
@@ -23,7 +28,9 @@ namespace MVP.Entities.Dtos.TripInfo
                 TripId = tripApartmentInfo.TripId,
                 ApartmentRoomId = tripApartmentInfo.ApartmentRoomId,
                 UserId = tripApartmentInfo.UserId,
-                CalendarId = tripApartmentInfo.CalendarId
+                CalendarId = tripApartmentInfo.CalendarId,
+                Start = tripApartmentInfo.Calendar.Start,
+                End = tripApartmentInfo.Calendar.End
             };
 
             return dto;
