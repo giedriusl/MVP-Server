@@ -187,6 +187,7 @@ namespace MVP.BusinessLogic.Services
             if (userTrips.All(ut => ut.Confirmed))
             {
                 trip.TripStatus = TripStatus.Approved;
+                await _tripRepository.UpdateTripAsync(trip);
             }
         }
 
