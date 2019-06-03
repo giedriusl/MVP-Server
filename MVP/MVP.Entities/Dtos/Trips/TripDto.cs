@@ -25,7 +25,7 @@ namespace MVP.Entities.Dtos.Trips
         [Required]
         public DateTimeOffset End { get; set; }
 
-        public TripStatus TripStatus { get; set; }
+        public TripStatus? TripStatus { get; set; }
         public string OrganizerId { get; set; }
         public byte[] Timestamp { get; set; }
         public List<FlightInformationDto> FlightInformations { get; set; } = new List<FlightInformationDto>();
