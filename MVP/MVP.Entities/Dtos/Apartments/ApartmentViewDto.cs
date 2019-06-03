@@ -17,7 +17,7 @@ namespace MVP.Entities.Dtos.Apartments
                 Title = apartment.Title,
                 OfficeId = apartment.OfficeId,
                 Location = LocationDto.ToDto(apartment.Location),
-                OfficeName = apartment.Office.Name
+                OfficeName = apartment.Office?.Name
             };
         }
     }

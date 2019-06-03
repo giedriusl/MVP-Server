@@ -86,8 +86,6 @@ namespace MVP.DataAccess.Repositories
             return rooms;
         }
 
-        
-
         public async Task<Apartment> GetApartmentByRoomIdAsync(int roomId)
         {
             var apartment = await _context.Apartments
