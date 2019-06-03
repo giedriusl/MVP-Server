@@ -59,6 +59,7 @@ namespace MVP.BusinessLogic.Services
             ValidateCreateTrip(createTripDto);
 
             var userTrips = new List<UserTrip>();
+            createTripDto.TripStatus = TripStatus.WaitingForApproval;
             var trip = CreateTripDto.ToEntity(createTripDto);
             var fromOffice = await _officeRepository.GetOfficeByIdAsync(createTripDto.FromOfficeId);
 
