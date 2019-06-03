@@ -83,15 +83,7 @@ namespace MVP.DataAccess.Repositories
             return rooms;
         }
 
-        public async Task<bool> IsRoomAvailable(int apartmentId, int roomId, DateTimeOffset start, DateTimeOffset end)
-        {
-            var calendar = await _context.Calendars
-                .Where(c => c.ApartmentRoomId == roomId)
-                .Where(c => start < c.End && c.Start < end)
-                .FirstOrDefaultAsync();
-
-            return calendar is null;
-        }
+        
 
         public async Task<Apartment> GetApartmentByRoomIdAsync(int roomId)
         {
