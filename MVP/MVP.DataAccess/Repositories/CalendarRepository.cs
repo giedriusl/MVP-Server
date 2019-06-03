@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using MVP.DataAccess.Interfaces;
 using MVP.Entities.Entities;
 using System.Collections.Generic;
@@ -43,6 +44,26 @@ namespace MVP.DataAccess.Repositories
         {
             _context.Calendars.Remove(calendar);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> IsUserAvailable(string userId, DateTimeOffset start, DateTimeOffset end)
+        {
+            var calendar = await _context.Calendars
+                .Where(c => c.UserId == userId)
+                .Where(c => start < c.End && c.Start < end)
+                .FirstOrDefaultAsync();
+
+            return calendar is null;
+        }
+
+        public async Task<bool> IsRoomAvailable(int roomId, DateTimeOffset start, DateTimeOffset end)
+        {
+            var calendar = await _context.Calendars
+                .Where(c => c.ApartmentRoomId == roomId)
+                .Where(c => start < c.End && c.Start < end)
+                .FirstOrDefaultAsync();
+
+            return calendar is null;
         }
     }
 }

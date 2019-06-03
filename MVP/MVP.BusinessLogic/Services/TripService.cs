@@ -459,7 +459,7 @@ namespace MVP.BusinessLogic.Services
                 throw new BusinessLogicException("Apartment not found", "apartmentNotFound");
             }
 
-            var isRoomAvailable = await _apartmentRepository.IsRoomAvailable(userToRoom.ApartmentId, userToRoom.ApartmentRoomId, userToRoom.Start, userToRoom.End);
+            var isRoomAvailable = await _calendarRepository.IsRoomAvailable(userToRoom.ApartmentRoomId, userToRoom.Start, userToRoom.End);
             if (!isRoomAvailable)
             {
                 throw new BusinessLogicException("This room is not available at given time period.", "roomNotAvailable");
@@ -469,6 +469,12 @@ namespace MVP.BusinessLogic.Services
             if (user is null)
             {
                 throw new BusinessLogicException("User not found", "userNotFound");
+            }
+
+            var isUserAvailable = await _calendarRepository.IsUserAvailable(user.Id, userToRoom.Start, userToRoom.End);
+            if (!isUserAvailable)
+            {
+                throw new BusinessLogicException("This user is not available at given time period.", "userNotAvailable");
             }
 
             var calendar = await _calendarRepository.AddAsync(new Calendar
