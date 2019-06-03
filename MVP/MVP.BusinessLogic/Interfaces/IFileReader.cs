@@ -8,7 +8,6 @@ namespace MVP.BusinessLogic.Interfaces
 {
     public interface IFileReader
     {
-        Task<IEnumerable<Calendar>> ReadApartmentCalendarFileAsync(int apartmentId, IFormFile file);
         Task<IEnumerable<CreateUserDto>> ReadUsersFileAsync(IFormFile file);
         Task<IEnumerable<Calendar>> ReadUsersCalendarFileAsync(IFormFile file);
         Task<IEnumerable<Calendar>> ReadApartmentRoomCalendarFileAsync(IFormFile file);
