@@ -7,6 +7,7 @@ namespace MVP.Entities.Dtos.Apartments
     {
         public int Id { get; set; }
         public LocationDto Location { get; set; }
+        public string OfficeName { get; set; }
 
         public static ApartmentViewDto ToDto(Apartment apartment)
         {
@@ -15,7 +16,8 @@ namespace MVP.Entities.Dtos.Apartments
                 Id = apartment.Id,
                 Title = apartment.Title,
                 OfficeId = apartment.OfficeId,
-                Location = LocationDto.ToDto(apartment.Location)
+                Location = LocationDto.ToDto(apartment.Location),
+                OfficeName = apartment.Office?.Name
             };
         }
     }
