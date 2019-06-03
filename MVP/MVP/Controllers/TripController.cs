@@ -611,7 +611,7 @@ namespace MVP.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireOrganizerRole")]
+        [Authorize(Policy = "AllowAllRoles")]
         [HttpGet("api/[controller]/{tripId}/GetUsersWithRooms")]
         public async Task<IActionResult> GetUsersWithRooms(int tripId)
         {
