@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -180,6 +181,13 @@ namespace MVP.BusinessLogic.Services
 
             userTrip.Confirmed = true;
             await _userTripRepository.UpdateUserTripAsync(userTrip);
+
+            var trip = await _tripRepository.GetTripByIdAsync(tripId);
+            var userTrips = await _userTripRepository.GetUserTripsByTripIdAsync(tripId);
+            if (userTrips.All(ut => ut.Confirmed))
+            {
+                trip.TripStatus = TripStatus.Approved;
+            }
         }
 
         public async Task<TripDto> GetConfirmingTrip(int tripId, string userEmail)
@@ -345,8 +353,13 @@ namespace MVP.BusinessLogic.Services
                 var userTripsToDelete = userTrips.Where(userTrip => usersToDelete.Contains(userTrip.UserId)).ToList();
                 usersToAdd.ForEach(add => userTripsToAdd.Add(new UserTrip { TripId = trip.Id, UserId = add }));
 
+                trip.TripStatus = TripStatus.WaitingForApproval;
+
                 await _userTripRepository.DeleteUserTripsAsync(userTripsToDelete);
                 await _userTripRepository.AddUserTripsAsync(userTripsToAdd);
+
+                var newUsers = await _userManager.Users.Where(user => usersToAdd.Contains(user.Id)).ToListAsync();
+                newUsers.ForEach(user => SendConfirmationEmail(user.Email, tripId));
             }
 
             trip.UpdateTrip(updateTripDto);

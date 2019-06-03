@@ -12,11 +12,6 @@ namespace MVP.Entities.Entities
         public Location Location { get; set; }
         public virtual List<ApartmentRoom> Rooms { get; set; } = new List<ApartmentRoom>();
 
-        public void SetId(int id)
-        {
-            Id = id;
-        }
-
         public void UpdateApartment(string title)
         {
             Title = title;
