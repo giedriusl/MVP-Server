@@ -63,7 +63,15 @@ namespace MVP.BusinessLogic.Services
         public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
             var users = await _userManager.Users.ToListAsync();
-            return users.Select(UserDto.ToDto);
+            var usersWithRoles = new List<CreateUserDto>();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var userDto = CreateUserDto.ToDto(user);
+                 userDto.Role = (UserRoles)Enum.Parse(typeof(UserRoles), roles.First());
+                 usersWithRoles.Add(userDto);
+            }
+            return usersWithRoles;
         }
 
         public async Task<UserDto> GetUserByIdAsync(string userId)

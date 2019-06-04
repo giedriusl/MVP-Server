@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace MVP.BusinessLogic.Services
 {
@@ -17,7 +18,7 @@ namespace MVP.BusinessLogic.Services
     {
         private const int StartDateTimePosition = 0;
         private const int EndDateTimePosition = 1;
-        private const int UserIdPosition = 2;
+        private const int UserEmailPosition = 2;
         private const int NamePosition = 0;
         private const int SurnamePosition = 1;
         private const int EmailPosition = 2;
@@ -26,11 +27,15 @@ namespace MVP.BusinessLogic.Services
 
         private readonly IApartmentRepository _apartmentRepository;
         private readonly ICalendarRepository _calendarRepository;
+        private readonly UserManager<User> _userManager;
 
-        public CsvReaderService(IApartmentRepository apartmentRepository, ICalendarRepository calendarRepository)
+        public CsvReaderService(IApartmentRepository apartmentRepository, 
+            ICalendarRepository calendarRepository, 
+            UserManager<User> userManager)
         {
             _apartmentRepository = apartmentRepository;
             _calendarRepository = calendarRepository;
+            _userManager = userManager;
         }
 
         public async Task<IEnumerable<CreateUserDto>> ReadUsersFileAsync(IFormFile file)
@@ -68,11 +73,13 @@ namespace MVP.BusinessLogic.Services
 
                 foreach (var line in data)
                 {
+                    var userEmail = line[UserEmailPosition];
+                    var user = await _userManager.FindByEmailAsync(userEmail);
                     calendars.Add(new Calendar
                     {
                         Start = DateTimeOffset.Parse(line[StartDateTimePosition]),
                         End = DateTimeOffset.Parse(line[EndDateTimePosition]),
-                        UserId = line[UserIdPosition]
+                        UserId = user.Id
                     });
                 }
 
